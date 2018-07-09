@@ -6,11 +6,27 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var rootCas = require('ssl-root-cas/latest').create();
 require('https').globalAgent.options.ca = rootCas;
+
+
+var mongoose = require('mongoose');
+mongoose.connect('mongodb://localhost/iuno_production_manager', { promiseLibrary: require('bluebird') })
+    .then(() =>  console.log('connection successful'))
+    .catch((err) => console.error(err));
+
+var ultimaker_discovery = require('./services/ultimaker_printer_discovery_service');
+ultimaker_discovery.on('serviceUp',function (service) {
+    console.debug('mDNS service up',service);
+});
+ultimaker_discovery.on('serviceDown',function (service) {
+    console.debug('mDNS service down',service);
+});
+
 // var drinks = require('./routes/drinks');
 // var users = require('./routes/users');
 // var orders = require('./routes/orders');
 // var admin = require('./routes/admin');
 // var components = require('./routes/components');
+var machines = require('./routes/machines');
 
 var app = express();
 
@@ -30,6 +46,7 @@ app.use(express.static(path.join(__dirname, 'dist')));
 // app.use('/api/orders', orders);
 // app.use('/api/admin', admin);
 // app.use('/api/components', components);
+app.use('/api/machines', machines);
 
 app.all('/api/*', function (req, res, next) {
     res.sendStatus(404);
