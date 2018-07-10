@@ -3,6 +3,7 @@
  */
 const logger = require('../global/logger');
 const request = require('request');
+const CONFIG = require('../config/config_loader');
 
 const self = {};
 
@@ -103,6 +104,34 @@ self.verifyAuthentication = function (hostname, id, key, callback) {
     })
 };
 
+self.uploadPrintjob = function (hostname, id, key, jobname, file, callback) {
+    const options = buildOptionsForRequest(
+        'POST',
+        hostname,
+        {},
+        null,
+        '/api/v1/print_job'
+    );
+
+    options['auth'] = {
+        'user': id,
+        'pass': key,
+        'sendImmediately': false
+    };
+
+    options['form'] = {
+        'jobname': jobname,
+        'file': key,
+        'sendImmediately': false
+    };
+
+
+    request(options, function (e, r, data) {
+        const err = logger.logRequestAndResponse(e, options, r, data);
+        callback(err, data);
+    })
+};
+
 self.getActiveMaterial = function (hostname, extruder, callback) {
     const options = buildOptionsForRequest(
         'GET',
@@ -132,7 +161,6 @@ self.getMaterialDetails = function (hostname, materialid, callback) {
         callback(err, data);
     })
 };
-
 
 self.getPrinterStatus = function (hostname, callback) {
     const options = buildOptionsForRequest(
@@ -224,8 +252,6 @@ self.getPrintJobTimeTotal = function (hostname, callback) {
     })
 };
 
-
-
 function buildOptionsForRequest(method, host, qs, body, path) {
 
     if (!path) {
@@ -234,7 +260,7 @@ function buildOptionsForRequest(method, host, qs, body, path) {
 
     return {
         method: method,
-        url: 'http://' + host + ':' + '80' + path,
+        url: CONFIG.HOST_SETTINGS.ULTIMAKER.PROTOCOL + '://' + host + ':' + CONFIG.HOST_SETTINGS.ULTIMAKER.PORT + path,
 
         json: true,
         headers: {

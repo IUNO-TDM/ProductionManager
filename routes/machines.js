@@ -7,12 +7,12 @@ var async = require('async');
 var parseString = require('xml2js').parseString;
 var _ = require('lodash');
 var request = require('request');
+
 _.mapPick = function (objs, keys) {
     return _.map(objs, function (obj) {
         return _.pick(obj, keys)
     })
 };
-
 
 router.get('/', function (req, res, next) {
     Machine.find(function (err, products) {
@@ -98,7 +98,7 @@ router.get('/:id/materials/active', function (req, res, next) {
 
         async.series([
                 function (callback) {
-                    printer_adapter.getActiveMaterial(machine.hostname, 0,  callback)
+                    printer_adapter.getActiveMaterial(machine.hostname, 0, callback)
                 },
                 function (callback) {
                     printer_adapter.getActiveMaterial(machine.hostname, 1, callback)
@@ -246,6 +246,7 @@ router.get('/:id/printjob', function (req, res, next) {
 
     });
 });
+
 router.get('/:id/printjob/state', function (req, res, next) {
     Machine.findById(req.params.id, function (err, machine) {
         if (!machine || !machine.hostname) {
@@ -296,6 +297,7 @@ router.get('/:id/printjob/time/total', function (req, res, next) {
 
     });
 });
+
 router.get('/:id/printjob/time/elapsed', function (req, res, next) {
     Machine.findById(req.params.id, function (err, machine) {
         if (!machine || !machine.hostname) {
@@ -327,7 +329,7 @@ router.get('/:id/printjob/time/remaining', function (req, res, next) {
                 res.status(500);
                 res.send(err.message);
             } else {
-                res.send('' + Math.max((results[1]-results[0]),0));
+                res.send('' + Math.max((results[1] - results[0]), 0));
             }
         });
     });
@@ -337,11 +339,13 @@ router.get('/:id/camera/stream', function (req, res, next) {
     Machine.findById(req.params.id, function (err, machine) {
         if (!machine || !machine.hostname) {
             return res.sendStatus(404);
-        }sou
+        }
+        sou
 
         request('http://' + machine.hostname + ':8080/?action=stream').pipe(res);
     });
 });
+
 router.get('/:id/camera/snapshot', function (req, res, next) {
     Machine.findById(req.params.id, function (err, machine) {
         if (!machine || !machine.hostname) {

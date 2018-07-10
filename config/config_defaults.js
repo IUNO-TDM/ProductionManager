@@ -19,6 +19,10 @@ self.HOST_SETTINGS = {
         HOST: 'localhost',
         PORT: 3005,
         PROTOCOL: 'http'
+    },
+    ULTIMAKER: {
+        PORT: 80,
+        PROTOCOL: 'http'
     }
 };
 
