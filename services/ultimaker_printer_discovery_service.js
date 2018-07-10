@@ -21,45 +21,30 @@ discovery_service.browser.on('serviceUp', function (service) {
 
         async.parallel([
             function (callback) {
-                ultimakerAdapter.getSystemGuid(service.host, function (err, data) {
-                    callback(err, data);
-                })
+                ultimakerAdapter.getSystemGuid(service.host, callback)
             },
             function (callback) {
-                ultimakerAdapter.getSystemName(service.host, function (err, data) {
-                    callback(err, data);
-                })
+                ultimakerAdapter.getSystemName(service.host, callback)
             },
             function (callback) {
-                ultimakerAdapter.getSystemVariant(service.host, function (err, data) {
-                    callback(err, data);
-                })
+                ultimakerAdapter.getSystemVariant(service.host, callback)
             }
         ], function (err, results) {
-            if(!err){
+            if (!err) {
                 var m = {};
                 m._id = results[0];
                 m.displayname = results[1];
                 m.variant = results[2];
                 m.hostname = service.host;
 
-                machine.findById(m._id, function(err,mach){
-                    if(!mach){
+                machine.findById(m._id, function (err, mach) {
+                    if (!mach) {
                         machine.create(m);
                     }
                 });
-
-
-
-
-
             }
         })
-
-
     }
-
-
 });
 discovery_service.browser.on('serviceDown', function (service) {
     discovery_service.emit('serviceDown', service);

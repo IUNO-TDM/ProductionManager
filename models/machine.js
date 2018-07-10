@@ -5,7 +5,9 @@ var MachineSchema = new mongoose.Schema({
     displayname: String,
     hostname: String,
     ipaddress: String,
-    variant: String
+    variant: String,
+    auth_id: String,
+    auth_key: String
 }, { _id: false });
 
 module.exports = mongoose.model('Machine', MachineSchema);
