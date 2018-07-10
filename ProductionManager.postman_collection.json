@@ -1,0 +1,397 @@
+{
+	"info": {
+		"_postman_id": "a75aeb81-695b-455f-ba5c-4f07d83cc561",
+		"name": "ProductionManager",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Machine",
+			"description": "",
+			"item": [
+				{
+					"name": "Get Machines",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "http://localhost:3042/api/machines/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3042",
+							"path": [
+								"api",
+								"machines",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Machine",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "http://localhost:3042/api/machines/{{machineId}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3042",
+							"path": [
+								"api",
+								"machines",
+								"{{machineId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Machine Authentication",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "http://localhost:3042/api/machines/{{machineId}}/authentication",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3042",
+							"path": [
+								"api",
+								"machines",
+								"{{machineId}}",
+								"authentication"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Authenticate Machine",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "http://localhost:3042/api/machines/{{machineId}}/authentication",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3042",
+							"path": [
+								"api",
+								"machines",
+								"{{machineId}}",
+								"authentication"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Verify Machine Authentication",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "http://localhost:3042/api/machines/{{machineId}}/authentication/verify",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3042",
+							"path": [
+								"api",
+								"machines",
+								"{{machineId}}",
+								"authentication",
+								"verify"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Machine Materials",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "http://localhost:3042/api/machines/{{machineId}}/materials/active",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3042",
+							"path": [
+								"api",
+								"machines",
+								"{{machineId}}",
+								"materials",
+								"active"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Material Details",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "http://localhost:3042/api/machines/{{machineId}}/materials/{{materialId}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3042",
+							"path": [
+								"api",
+								"machines",
+								"{{machineId}}",
+								"materials",
+								"{{materialId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Material Name",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "http://localhost:3042/api/machines/{{machineId}}/materials/{{materialId}}/name",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3042",
+							"path": [
+								"api",
+								"machines",
+								"{{machineId}}",
+								"materials",
+								"{{materialId}}",
+								"name"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Material short description",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "http://localhost:3042/api/machines/{{machineId}}/materials/{{materialId}}/short",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3042",
+							"path": [
+								"api",
+								"machines",
+								"{{machineId}}",
+								"materials",
+								"{{materialId}}",
+								"short"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Printjob",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "http://localhost:3042/api/machines/{{machineId}}/printjob",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3042",
+							"path": [
+								"api",
+								"machines",
+								"{{machineId}}",
+								"printjob"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Printjob State",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "http://localhost:3042/api/machines/{{machineId}}/printjob/state",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3042",
+							"path": [
+								"api",
+								"machines",
+								"{{machineId}}",
+								"printjob",
+								"state"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Printjob Progress",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "http://localhost:3042/api/machines/{{machineId}}/printjob/progress",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3042",
+							"path": [
+								"api",
+								"machines",
+								"{{machineId}}",
+								"printjob",
+								"progress"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Printjob Time Elapsed",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "http://localhost:3042/api/machines/{{machineId}}/printjob/time/elapsed",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3042",
+							"path": [
+								"api",
+								"machines",
+								"{{machineId}}",
+								"printjob",
+								"time",
+								"elapsed"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Printjob Time Total",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "http://localhost:3042/api/machines/{{machineId}}/printjob/time/total",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3042",
+							"path": [
+								"api",
+								"machines",
+								"{{machineId}}",
+								"printjob",
+								"time",
+								"total"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Camera Snapshot",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "http://localhost:3042/api/machines/{{machineId}}/camera/snapshot",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3042",
+							"path": [
+								"api",
+								"machines",
+								"{{machineId}}",
+								"camera",
+								"snapshot"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Printjob Time Remaining",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "http://localhost:3042/api/machines/{{machineId}}/printjob/time/remaining",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3042",
+							"path": [
+								"api",
+								"machines",
+								"{{machineId}}",
+								"printjob",
+								"time",
+								"remaining"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
