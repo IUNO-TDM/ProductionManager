@@ -27,6 +27,8 @@ ultimaker_discovery.on('serviceDown',function (service) {
 // var admin = require('./routes/admin');
 // var components = require('./routes/components');
 var machines = require('./routes/machines');
+var shopping_cart = require('./routes/shopping_cart');
+var orders = require('./routes/orders');
 
 var app = express();
 
@@ -47,6 +49,8 @@ app.use(express.static(path.join(__dirname, 'dist')));
 // app.use('/api/admin', admin);
 // app.use('/api/components', components);
 app.use('/api/machines', machines);
+app.use('/api/shopping_cart', shopping_cart);
+app.use('/api/orders', orders);
 
 app.all('/api/*', function (req, res, next) {
     res.sendStatus(404);
