@@ -31,6 +31,7 @@
     "cookie-parser": "^1.4.3",
     "core-js": "^2.5.4",
     "express": "^4.16.3",
+    "express-json-validator-middleware": "^1.2.0",
     "mdns": "^2.4.0",
     "mongoose": "^5.2.2",
     "morgan": "^1.9.0",
@@ -45,7 +46,7 @@
     "zone.js": "^0.8.26",
     "async": "^2.6.1",
     "xml2js": "^0.4.19",
-    "tdm-common": "https://github.com/IUNO-TDM/TDM-Common/releases/download/v0.1.1/tdm-common-0.1.1.tgz"
+    "tdm-common": "https://github.com/IUNO-TDM/TDM-Common/releases/download/v0.1.2/tdm-common-0.1.2.tgz"
   },
   "devDependencies": {
     "@angular/compiler-cli": "^6.0.7",

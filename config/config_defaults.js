@@ -28,7 +28,7 @@ self.HOST_SETTINGS = {
 
 
 self.OAUTH_CREDENTIALS = {
-    CLIENT_ID: 'adb4c297-45bd-437e-ac90-9179eea41746',
+    CLIENT_ID: 'adb4c297-5f53-4332-88ff-07398ee44b6e',
     CLIENT_SECRET: 'IsSecret'
 };
 

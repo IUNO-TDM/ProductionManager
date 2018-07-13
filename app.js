@@ -8,6 +8,9 @@ var rootCas = require('ssl-root-cas/latest').create();
 require('https').globalAgent.options.ca = rootCas;
 
 
+const contentTypeValidation = require('./services/content_type_validation');
+const schemaValidation = require('./services/schema_validation');
+
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/iuno_production_manager', { promiseLibrary: require('bluebird') })
     .then(() =>  console.log('connection successful'))
@@ -21,14 +24,12 @@ ultimaker_discovery.on('serviceDown',function (service) {
     console.debug('mDNS service down',service);
 });
 
-// var drinks = require('./routes/drinks');
-// var users = require('./routes/users');
-// var orders = require('./routes/orders');
-// var admin = require('./routes/admin');
-// var components = require('./routes/components');
 var machines = require('./routes/machines');
 var shopping_cart = require('./routes/shopping_cart');
 var orders = require('./routes/orders');
+var objects = require('./routes/objects');
+var materials = require('./routes/materials');
+var machine_types = require('./routes/machine_types');
 
 var app = express();
 
@@ -43,14 +44,16 @@ app.use(cookieParser());
 
 app.use(express.static(path.join(__dirname, 'dist')));
 
-// app.use('/api/drinks', drinks);
-// app.use('/api/users', users);
-// app.use('/api/orders', orders);
-// app.use('/api/admin', admin);
-// app.use('/api/components', components);
 app.use('/api/machines', machines);
 app.use('/api/shopping_cart', shopping_cart);
 app.use('/api/orders', orders);
+app.use('/api/objects', objects);
+app.use('/api/materials', materials);
+app.use('/api/machinetypes', machine_types);
+
+
+// parse schema validation errors
+app.use(schemaValidation);
 
 app.all('/api/*', function (req, res, next) {
     res.sendStatus(404);

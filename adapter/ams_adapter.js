@@ -1,0 +1,385 @@
+/**
+ * Created by gorergch on 12.07.18.
+ */
+
+const self = {};
+const request = require('request');
+
+const logger = require('../global/logger');
+const CONFIG = require('../config/config_loader');
+const helper = require('../services/helper_service');
+const common = require('tdm-common');
+const authServer = require('./auth_service_adapter');
+
+
+function buildOptionsForRequest(method, protocol, host, port, path, qs, callback) {
+
+    authServer.getAccessToken(function (err, token) {
+
+        if (err) {
+            logger.crit(err);
+        }
+
+        callback(err, {
+            method: method,
+            url: protocol + '://' + host + ':' + port + path,
+            qs: qs,
+            json: true,
+            headers: {
+                'Authorization': 'Bearer ' + (token ? token.accessToken : ''),
+                'Content-Type': 'application/json'
+            }
+        });
+    })
+}
+
+
+self.getAllMachines = function (language, callback) {
+
+    if (typeof(callback) !== 'function') {
+
+        callback = function () {
+            logger.info('Callback not registered');
+        }
+    }
+
+    buildOptionsForRequest(
+        'GET',
+        CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.PROTOCOL,
+        CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.HOST,
+        CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.PORT,
+        '/machines',
+        {
+            lang: language
+        }, function (err, options) {
+            request(options, function (e, r, jsonData) {
+                const err = logger.logRequestAndResponse(e, options, r, jsonData);
+
+                callback(err, jsonData);
+            });
+        }
+    );
+
+
+};
+
+self.getAllMaterials = function (language, callback) {
+
+    if (typeof(callback) !== 'function') {
+
+        callback = function () {
+            logger.info('Callback not registered');
+        }
+    }
+
+    buildOptionsForRequest(
+        'GET',
+        CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.PROTOCOL,
+        CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.HOST,
+        CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.PORT,
+        '/materials',
+        {
+            lang: language
+        }, function (err, options) {
+            request(options, function (e, r, jsonData) {
+                const err = logger.logRequestAndResponse(e, options, r, jsonData);
+
+                callback(err, jsonData);
+            });
+        }
+    );
+
+
+};
+
+self.getAllObjects = function (language, machines, materials, callback) {
+
+
+    if (typeof(callback) !== 'function') {
+
+        callback = function () {
+            logger.info('Callback not registered');
+        }
+    }
+
+    buildOptionsForRequest(
+        'GET',
+        CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.PROTOCOL,
+        CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.HOST,
+        CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.PORT,
+        '/objects',
+        {
+            machines: machines,
+            materials: materials,
+            lang: language,
+        }, function (err, options) {
+            request(options, function (e, r, jsonData) {
+                const err = logger.logRequestAndResponse(e, options, r, jsonData);
+                callback(err, jsonData);
+            });
+        }
+    );
+
+
+};
+
+self.getBinaryForObjectWithId = function (objectId, offerId, callback) {
+    if (typeof(callback) !== 'function') {
+
+        callback = function () {
+            logger.info('Callback not registered');
+        }
+    }
+
+    buildOptionsForRequest(
+        'GET',
+        CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.PROTOCOL,
+        CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.HOST,
+        CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.PORT,
+        `/objects/${objectId}/binary`,
+        {
+            offerId: offerId
+        }, function (err, options) {
+            request(options, function (e, r, binary) {
+
+                const err = logger.logRequestAndResponse(e, options, r, binary);
+
+                callback(err, binary);
+            });
+        }
+    );
+
+};
+
+self.saveObject = function (objectData, callback) {
+    if (typeof(callback) !== 'function') {
+
+        callback = function () {
+            logger.info('Callback not registered');
+        }
+    }
+
+    buildOptionsForRequest(
+        'POST',
+        CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.PROTOCOL,
+        CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.HOST,
+        CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.PORT,
+        '/objects',
+        {}, function (err, options) {
+            options.body = objectData;
+
+            request(options, function (e, r, jsonData) {
+                const err = logger.logRequestAndResponse(e, options, r, jsonData);
+
+                if (err) {
+                    return callback(err);
+                }
+                let objectId = null;
+
+                if (r.headers['location']) {
+                    objectId = r.headers['location'].substr(r.headers['location'].lastIndexOf('/') + 1)
+                }
+
+                callback(err, objectId);
+            });
+        }
+    );
+
+};
+
+self.getImageForObject = function (objectid, callback) {
+    if (typeof(callback) !== 'function') {
+
+        callback = function () {
+            logger.info('Callback not registered');
+        }
+    }
+
+    buildOptionsForRequest(
+        'GET',
+        CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.PROTOCOL,
+        CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.HOST,
+        CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.PORT,
+        '/objects/' + objectid + '/image',
+        {}, function (err, options) {
+            options.encoding = null;
+
+            request(options, function (e, r, data) {
+                const err = logger.logRequestAndResponse(e, options, r, data);
+
+                callback(err, {
+                    imageBuffer: data,
+                    contentType: r ? r.headers['content-type'] : null
+                });
+            });
+        }
+    );
+
+};
+
+self.createOfferForRequest = function (offerRequest, callback) {
+    if (typeof(callback) !== 'function') {
+
+        callback = function () {
+            logger.info('Callback not registered');
+        }
+    }
+
+    buildOptionsForRequest(
+        'POST',
+        CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.PROTOCOL,
+        CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.HOST,
+        CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.PORT,
+        '/offers',
+        {}, function (err, options) {
+            options.body = offerRequest;
+
+            request(options, function (e, r, jsonData) {
+                const err = logger.logRequestAndResponse(e, options, r, jsonData);
+
+                if (err) {
+                    return callback(err);
+                }
+
+                callback(err, jsonData);
+            });
+        }
+    );
+
+};
+
+self.getLicenseUpdate = function (hsmId, context, accessToken, callback) {
+    if (typeof(callback) !== 'function') {
+        return logger.info('[ADDITIVE_MACHINE_SERVICE_adapter] Callback not registered');
+    }
+
+    if (!hsmId || !context) {
+        return logger.info('[ADDITIVE_MACHINE_SERVICE_adapter] missing function arguments');
+    }
+
+    buildOptionsForRequest(
+        'POST',
+        CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.PROTOCOL,
+        CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.HOST,
+        CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.PORT,
+        '/cmdongle/' + hsmId + '/update',
+        {}, function (err, options) {
+            options.headers.authorization = 'Bearer ' + accessToken;
+
+            options.body = {
+                RAC: context
+            };
+
+            request(options, function (e, r, jsonData) {
+                const err = logger.logRequestAndResponse(e, options, r, jsonData);
+
+                let rau = null;
+                let isOutOfDate = false;
+                if (jsonData) {
+                    rau = jsonData['RAU'];
+                    isOutOfDate = jsonData['isOutOfDate']
+                }
+
+                callback(err, rau, isOutOfDate);
+            });
+        }
+    );
+
+
+};
+
+self.confirmLicenseUpdate = function (hsmId, context, accessToken, callback) {
+    if (typeof(callback) !== 'function') {
+        return logger.info('[ADDITIVE_MACHINE_SERVICE_adapter] Callback not registered');
+    }
+
+    if (!hsmId || !context) {
+        return logger.info('[ADDITIVE_MACHINE_SERVICE_adapter] missing function arguments');
+    }
+
+    buildOptionsForRequest(
+        'POST',
+        CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.PROTOCOL,
+        CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.HOST,
+        CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.PORT,
+        '/cmdongle/' + hsmId + '/update/confirm',
+        {}, function (err, options) {
+            options.headers.authorization = 'Bearer ' + accessToken;
+
+            options.body = {
+                RAC: context
+            };
+
+            request(options, function (e, r, jsonData) {
+                const err = logger.logRequestAndResponse(e, options, r, jsonData);
+
+                let rau = null;
+                let isOutOfDate = false;
+                if (jsonData) {
+                    rau = jsonData['RAU'];
+                    isOutOfDate = jsonData['isOutOfDate']
+                }
+
+                callback(err, rau, isOutOfDate);
+            });
+        }
+    );
+
+};
+
+self.getUserForId = function (userId, callback) {
+    if (typeof(callback) !== 'function') {
+
+        callback = function () {
+            logger.info('Callback not registered');
+        }
+    }
+
+    buildOptionsForRequest(
+        'GET',
+        CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.PROTOCOL,
+        CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.HOST,
+        CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.PORT,
+        '/users/' + userId,
+        {}, function (err, options) {
+            request(options, function (e, r, jsonData) {
+                const err = logger.logRequestAndResponse(e, options, r, jsonData);
+
+                callback(err, jsonData);
+            });
+        }
+    );
+
+};
+
+self.getImageForUser = function (userId, callback) {
+    if (typeof(callback) !== 'function') {
+
+        callback = function () {
+            logger.info('Callback not registered');
+        }
+    }
+
+    buildOptionsForRequest(
+        'GET',
+        CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.PROTOCOL,
+        CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.HOST,
+        CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.PORT,
+        '/users/' + userId + '/image',
+        {}, function (err, options) {
+            options.encoding = null;
+
+            request(options, function (e, r, imageBuffer) {
+                const err = logger.logRequestAndResponse(e, options, r, imageBuffer);
+
+                callback(err, {
+                    imageBuffer: imageBuffer,
+                    contentType: r ? r.headers['content-type'] : null
+                });
+            });
+        }
+    );
+
+};
+
+module.exports = self;

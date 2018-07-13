@@ -4,6 +4,8 @@ var mongoose = require('mongoose');
 var Item = require('../models/item');
 var Order = require('../models/order');
 var _ = require('lodash');
+const ams_adapter = require('../adapter/ams_adapter');
+const common = require('tdm-common');
 
 _.mapPick = function (objs, keys) {
     return _.map(objs, function (obj) {
@@ -22,20 +24,34 @@ router.post('/order',  function (req, res, next) {
             items: items,
         };
 
-        //TODO Create an order at the marketplace and then save this order locally
-        Order.create(order, function(err, order){
-            if (err) {
-                return next(err);
-            }
-            Item.remove({}, function (err) {
-                if(err){
-                    console.error("Error on deleting shopping cart items", err);
+        var or = {
+            hsmId: "3-1234567",
+            items: [
+                {
+                    dataId: "7B864F08-F89D-4036-93B3-A44B09F4B4C0",
+                    amount: 1
                 }
+            ]
+        };
 
-                res.json(_.pick(order, ['_id', 'orderNumber','articles', 'createdAt']));
+        ams_adapter.createOfferForRequest(or, function(err,offer){
 
-            });
-        })
+            //TODO Create an order at the marketplace and then save this order locally
+            Order.create(order, function(err, order){
+                if (err) {
+                    return next(err);
+                }
+                Item.remove({}, function (err) {
+                    if(err){
+                        console.error("Error on deleting shopping cart items", err);
+                    }
+
+                    res.json(_.pick(order, ['_id', 'orderNumber','articles', 'createdAt']));
+
+                });
+            })
+        });
+
     });
 
 });
