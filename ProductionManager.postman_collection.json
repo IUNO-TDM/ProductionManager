@@ -392,6 +392,465 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "Shopping Cart",
+			"description": null,
+			"item": [
+				{
+					"name": "Create Items",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"objectId\": \"foo\",\n\t\"amount\": 1\n}"
+						},
+						"url": {
+							"raw": "http://localhost:3042/api/shopping_cart/items",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3042",
+							"path": [
+								"api",
+								"shopping_cart",
+								"items"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Items",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "\"object\": \"foo\",\n\"amount\": 1"
+						},
+						"url": {
+							"raw": "http://localhost:3042/api/shopping_cart/items",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3042",
+							"path": [
+								"api",
+								"shopping_cart",
+								"items"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete all Items",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:3042/api/shopping_cart/items",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3042",
+							"path": [
+								"api",
+								"shopping_cart",
+								"items"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Items by Id",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "\"object\": \"foo\",\n\"amount\": 1"
+						},
+						"url": {
+							"raw": "http://localhost:3042/api/shopping_cart/items/5b461370452ad715e1812dfb",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3042",
+							"path": [
+								"api",
+								"shopping_cart",
+								"items",
+								"5b461370452ad715e1812dfb"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Items by Id",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:3042/api/shopping_cart/items/5b46ebdf95ebd7278a35f935",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3042",
+							"path": [
+								"api",
+								"shopping_cart",
+								"items",
+								"5b46ebdf95ebd7278a35f935"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Item",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"objectId\": \"foo2\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:3042/api/shopping_cart/items/5b46ebf495ebd7278a35f936",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3042",
+							"path": [
+								"api",
+								"shopping_cart",
+								"items",
+								"5b46ebf495ebd7278a35f936"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Order",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"objectId\": \"foo\",\n\t\"amount\": 1\n}"
+						},
+						"url": {
+							"raw": "http://localhost:3042/api/shopping_cart/order",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3042",
+							"path": [
+								"api",
+								"shopping_cart",
+								"order"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Orders",
+			"description": "",
+			"item": [
+				{
+					"name": "Get Orders",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:3042/api/orders",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3042",
+							"path": [
+								"api",
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Order by id",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:3042/api/orders/5b462097c813b51e8f275900",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3042",
+							"path": [
+								"api",
+								"orders",
+								"5b462097c813b51e8f275900"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete all Orders",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:3042/api/orders",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3042",
+							"path": [
+								"api",
+								"orders"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Objects",
+			"description": "",
+			"item": [
+				{
+					"name": "Get all Objects",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:3042/api/objects",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3042",
+							"path": [
+								"api",
+								"objects"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create object",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:3042/api/objects",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3042",
+							"path": [
+								"api",
+								"objects"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Materials",
+			"description": "",
+			"item": [
+				{
+					"name": "Get all materials",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:3042/api/materials?lang=en",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3042",
+							"path": [
+								"api",
+								"materials"
+							],
+							"query": [
+								{
+									"key": "lang",
+									"value": "en"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "MachineTypes",
+			"description": "",
+			"item": [
+				{
+					"name": "Get all machines types",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:3042/api/machinetypes?lang=en",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3042",
+							"path": [
+								"api",
+								"machinetypes"
+							],
+							"query": [
+								{
+									"key": "lang",
+									"value": "en"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	]
 }
