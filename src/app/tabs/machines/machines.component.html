@@ -1,0 +1,14 @@
+<div fxFlex fxLayout="row wrap" fxLayoutGap="15px">
+  <mat-card *ngFor="let machine of machines" class="machine-card" fxFlex>
+      <mat-card-header>
+        <mat-card-title i18n>{{machine.displayname}}</mat-card-title>
+        <mat-card-subtitle>{{machine.variant}}</mat-card-subtitle>
+        <!-- <mat-card-subtitle>{{machine.hostname}}</mat-card-subtitle> -->
+      </mat-card-header>
+      <mat-card-content fxLayoutAlign="center">
+        <img src="" class="machine-image">
+        <!-- <div *ngIf="licensesChart"> -->
+        <!-- </div> -->
+      </mat-card-content>
+    </mat-card>
+</div>

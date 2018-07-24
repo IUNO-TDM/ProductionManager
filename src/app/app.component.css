@@ -1,0 +1,32 @@
+.app {
+    height: 100vh;
+}
+
+.main-header {
+    font-size: 20px;
+}
+
+.nav-button {
+    /* padding-left: 25px; */
+}
+
+  .spacer {
+    flex: 1 1 auto;
+  }
+
+  .container {
+    /* background-color: #f00; */
+    background-color: #f1f1f1;
+    /* background-color: #2A2A2A; */
+    /* padding: 50px; */
+}
+
+.content {
+    /* background-color: green; */
+    max-width: 960px;
+    /* margin: auto; */
+}
+
+.sidenav {
+    /* background-color: #404040;     */
+}

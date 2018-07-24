@@ -33,7 +33,7 @@ router.post('/', function (req, res, next) {
     od.encryptedBinary = "c2RmZ2hqa2zDtmhnZmRzeWZnaGpraGdmZHh5c2ZnaGprbGhnZmRzeWZnaGprbGpoZ2Zkc3lmZ2hqa2zDtmpoZ2ZkaGprbMO2amhnZmRzdG8=";
     od.description = "dfghjkl";
     od.licenseFee = 10000000;
-    od.title = "45rtzu8iokjhbj";
+    od.title = "45rtzu8iokjhbj3";
     od.backgroundColor = "#777777";
     ams_adapter.saveObject(od, function (err, dataId) {
 

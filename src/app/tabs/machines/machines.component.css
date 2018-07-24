@@ -1,0 +1,23 @@
+.machine-card {
+    min-width: 300px;
+    max-width: 300px;
+    margin-bottom: 15px;
+}
+
+.machine-card:hover {
+    background-color: #efefef;
+}
+
+.machine-card:active {
+    background-color: #eaeaea;
+}
+
+.machine-image {
+    width: 150px;
+    height: 150px;
+}
+
+.machine-image-na {
+    width: 150px;
+    height: 150px;
+}

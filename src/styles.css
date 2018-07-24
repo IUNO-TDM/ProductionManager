@@ -1,1 +1,14 @@
 /* You can add global styles to this file, and also import other style files */
+@import '~@angular/material/prebuilt-themes/indigo-pink.css';
+
+body {
+    margin: 0;
+}
+
+.lightupper{
+    font-family: Roboto,Helvetica Neue Light,Helvetica Neue,Helvetica,Arial,Lucida Grande,sans-serif !important;
+    /* text-transform: uppercase !important; */
+    font-size: 16px !important;
+    font-weight: 400 !important;
+    letter-spacing: 2px !important;
+}
