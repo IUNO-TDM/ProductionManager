@@ -1,3 +1,7 @@
+.content {
+    margin: 15px;
+}
+
 .machine-card {
     min-width: 300px;
     max-width: 300px;

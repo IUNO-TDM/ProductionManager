@@ -1,1 +1,50 @@
-<app-object-browser [objects]="objects"></app-object-browser>
+<div fxLayout="row" style='height: 100%;'>
+  <div class="sidebar">
+    <div class="sidebar-item-container">
+      <form>
+        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
+          <mat-icon matPrefix>search</mat-icon>
+          <mat-form-field class="example-full-width" floatLabel="never">
+            <input type="text" matInput placeholder="Suchen">
+          </mat-form-field>
+        </div>
+      </form>
+    </div>
+    <div class="sidebar-item-container">
+      <h1 class="title">Material</h1>
+      <mat-checkbox *ngFor="let material of materials" class="filter-item" [checked]="isMaterialSelected(material.id)" (change)="onMaterialCheckboxChanged(material.id, $event.checked)">{{material.name}}</mat-checkbox>
+    </div>
+    <div class="sidebar-item-container">
+      <h1 class="title">Maschinen</h1>
+      <mat-checkbox *ngFor="let machineType of machineTypes" class="filter-item" [checked]="isMachineTypeSelected(machineType.id)"
+        (change)="onMachineTypeCheckboxChanged(machineType.id, $event.checked)">{{machineType.name}}</mat-checkbox>
+    </div>
+  </div>
+  <div fxFlex fxLayoutAlign="center">
+    <div class="content" fxFlex>
+      <app-object-browser [objects]="objects"></app-object-browser>
+    </div>
+  </div>
+</div>
+
+<!-- <div fxLayout="column" fxLayoutGap="15px">
+  <mat-card>
+    <button mat-button>Material</button>
+    <button mat-button>Maschine</button>
+    <div fxFlex></div>
+    <form class="example-form">
+
+      <mat-form-field class="example-full-width">
+        <mat-icon matPrefix>search</mat-icon>
+        <input type="tel" matInput matNoFloat placeholder="Telephone">
+      </mat-form-field>
+
+    </form>
+    <div fxFlex></div>
+    <button mat-button>Warenkorb
+      <mat-icon>shopping_cart</mat-icon>
+    </button>
+  </mat-card>
+  <app-object-browser [objects]="objects"></app-object-browser>
+
+</div> -->

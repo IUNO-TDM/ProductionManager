@@ -2,6 +2,10 @@
     height: 100vh;
 }
 
+.app-toolbar {
+    z-index: 2;
+}
+
 .main-header {
     font-size: 20px;
 }
@@ -10,11 +14,11 @@
     /* padding-left: 25px; */
 }
 
-  .spacer {
-    flex: 1 1 auto;
-  }
+.spacer {
+flex: 1 1 auto;
+}
 
-  .container {
+.container {
     /* background-color: #f00; */
     background-color: #f1f1f1;
     /* background-color: #2A2A2A; */
@@ -22,8 +26,10 @@
 }
 
 .content {
+    overflow-y: scroll;
+    overflow-x: scroll;
     /* background-color: green; */
-    max-width: 960px;
+    /* max-width: 960px; */
     /* margin: auto; */
 }
 

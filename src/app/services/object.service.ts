@@ -13,14 +13,25 @@ export class ObjectService {
   ) { }
 
   // get 
-  getObjects() {
+  getObjects(machineTypes: string[], materials: string[]) {
     const url = this.apiUrl + "objects";
+    var params = {}
+
+    // add language to query parameters
+    params['lang'] = 'de'
+
+    // add machine types to query parameters
+    for (var i = 0; i < machineTypes.length; i += 1) {
+      params['machines['+i+']'] = machineTypes[i]
+    }
+
+    // add materials to query parameters
+    for (var i = 0; i < materials.length; i += 1) {
+      params['materials['+i+']'] = materials[i]
+    }
+
     return this.http.get<any[]>(url, {
-      params: {
-        "materials[0]": "763c926e-a5f7-4ba0-927d-b4e038ea2735",
-        "machines[0]": "adb4c297-45bd-437e-ac90-a33d0f24de7e",
-        "lang": "de"
-      }
+      params: params
     })
   }
 

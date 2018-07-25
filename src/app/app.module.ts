@@ -18,6 +18,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule, MAT_DATE_LOCALE } from '@angular/material/core';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 // Production Manager imports
 import { AppRoutingModule } from './app-routing.module';
@@ -59,6 +60,7 @@ import { ObjectBrowserComponent } from './object-browser/object-browser.componen
     MatInputModule,
     MatDatepickerModule,
     MatNativeDateModule,
+    MatCheckboxModule,
 
     // Product Manager Modules
     AppRoutingModule,
