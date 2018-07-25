@@ -16,6 +16,7 @@ export class MarketplaceComponent implements OnInit {
   machineTypesSelected = []
   materials = []
   materialsSelected = []
+  searchQuery = ""
 
   constructor(
     private titleService: TitleService,
@@ -34,6 +35,11 @@ export class MarketplaceComponent implements OnInit {
       this.materials = materials
       this.updateObjects()
     })
+  }
+
+  onSearchQueryChanged() {
+    console.log("hallo")
+    this.updateObjects()
   }
 
   /**
@@ -109,7 +115,7 @@ export class MarketplaceComponent implements OnInit {
    */
   private updateObjects() {
     if (this.machineTypes.length > 0 && this.materials.length > 0) {
-      console.log(this.materialsSelected)
+
       // setup machine type array
       var machineTypeIds = this.machineTypesSelected
       if (machineTypeIds.length == 0) {
@@ -124,7 +130,17 @@ export class MarketplaceComponent implements OnInit {
       
       // perform query
       this.objectService.getObjects(machineTypeIds, materialIds).subscribe(objects => {
-        this.objects = objects
+        console.log(this.searchQuery)
+        if (this.searchQuery.length > 0) {
+          this.objects = objects.filter(object => {
+            var include = false
+            include = include || object.name.toUpperCase().indexOf(this.searchQuery.toUpperCase()) != -1
+            include = include || object.description.toUpperCase().indexOf(this.searchQuery.toUpperCase()) != -1
+            return include
+          })
+        } else {
+          this.objects = objects
+        }
       })
     } else {
       this.objects = []

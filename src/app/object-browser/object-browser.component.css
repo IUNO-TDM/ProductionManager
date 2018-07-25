@@ -1,6 +1,8 @@
 .object-card {
     min-width: 310px;
     max-width: 310px;
+    height: 200px;
+
     margin-bottom: 15px;
 }
 

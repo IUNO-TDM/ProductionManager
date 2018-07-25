@@ -5,7 +5,7 @@
         <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
           <mat-icon matPrefix>search</mat-icon>
           <mat-form-field class="example-full-width" floatLabel="never">
-            <input type="text" matInput placeholder="Suchen">
+            <input type="text" name="searchQuery" matInput placeholder="Suchen" [(ngModel)]="searchQuery" (input)="onSearchQueryChanged()">
           </mat-form-field>
         </div>
       </form>
@@ -22,7 +22,14 @@
   </div>
   <div fxFlex fxLayoutAlign="center">
     <div class="content" fxFlex>
-      <app-object-browser [objects]="objects"></app-object-browser>
+      <ng-container *ngIf="objects.length > 0">
+        <app-object-browser [objects]="objects"></app-object-browser>
+      </ng-container>
+      <ng-container *ngIf="objects.length == 0">
+        <div fxFlex fxLayoutAlign="center center">
+          Es wurden keine Objekte gefunden.
+        </div>
+      </ng-container>
     </div>
   </div>
 </div>
