@@ -28,6 +28,7 @@ import { MachinesComponent } from './tabs/machines/machines.component';
 import { OwnObjectsComponent } from './tabs/own-objects/own-objects.component';
 import { PurchasedObjectsComponent } from './tabs/purchased-objects/purchased-objects.component';
 import { ObjectBrowserComponent } from './object-browser/object-browser.component';
+import { ObjectDetailsComponent } from './object-details/object-details.component';
 // import { TdmCommonModule } from 'tdm-common'
 
 @NgModule({
@@ -38,6 +39,7 @@ import { ObjectBrowserComponent } from './object-browser/object-browser.componen
     OwnObjectsComponent,
     PurchasedObjectsComponent,
     ObjectBrowserComponent,
+    ObjectDetailsComponent,
   ],
   imports: [
     // Angular Core

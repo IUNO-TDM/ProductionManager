@@ -12,6 +12,7 @@ import { MachineType } from '../../models/machineType';
 })
 export class MarketplaceComponent implements OnInit {
   objects: any[] = []
+  selectedObject: any = null;
   machineTypes: MachineType[] = []
   machineTypesSelected = []
   materials = []
@@ -38,8 +39,15 @@ export class MarketplaceComponent implements OnInit {
   }
 
   onSearchQueryChanged() {
-    console.log("hallo")
     this.updateObjects()
+  }
+
+  onObjectSelected(object) {
+    this.selectedObject = object
+  }
+
+  deselectObject() {
+    this.selectedObject = null;
   }
 
   /**
@@ -130,7 +138,6 @@ export class MarketplaceComponent implements OnInit {
       
       // perform query
       this.objectService.getObjects(machineTypeIds, materialIds).subscribe(objects => {
-        console.log(this.searchQuery)
         if (this.searchQuery.length > 0) {
           this.objects = objects.filter(object => {
             var include = false
