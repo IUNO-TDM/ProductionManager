@@ -12,6 +12,8 @@ export class OwnObjectsComponent implements OnInit {
   objects: any[] = []
   materials = ['763c926e-a5f7-4ba0-927d-b4e038ea2735']
   machineTypes = []
+  selectedObject: any = null
+  loading = true
 
   constructor(
     private titleService: TitleService,
@@ -31,9 +33,18 @@ export class OwnObjectsComponent implements OnInit {
     this.titleService.setTitle("Eigene Objekte")
   }
 
+  onObjectSelected(object) {
+    this.selectedObject = object
+  }
+
+  deselectObject() {
+    this.selectedObject = null;
+  }
+
   updateObjects() {
     this.objectService.getObjects(this.machineTypes, this.materials).subscribe(objects => {
       this.objects = objects
+      this.loading = false
     })
   }
 }

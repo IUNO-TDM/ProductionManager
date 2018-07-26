@@ -21,6 +21,7 @@ export class MarketplaceComponent implements OnInit {
   materialsSelected = []
   searchQuery = ""
   shoppingCartItemCount = 0
+  loading = true
 
   constructor(
     private router: Router,
@@ -166,6 +167,7 @@ export class MarketplaceComponent implements OnInit {
         } else {
           this.objects = objects
         }
+        this.loading = false
       })
     } else {
       this.objects = []

@@ -31,14 +31,14 @@
         <div class="section-title">Kompatibel mit</div>
         <div class="section-text">
           <div *ngFor="let machine of object.machines">{{machine.name}}</div>
-        </div>
+      </div>
       </div>
       <div class="section">
         <div class="section-title">Lizenzkosten</div>
         <div class="section-text">{{object.licenseFee}}</div>
       </div>
-      <ng-container *ngIf="canAddToShoppingCart">
-        <button mat-raised-button color="primary" (click)="addToShoppingCart()">In den Warenkorb</button>
+      <ng-container *ngIf="(!canAddToShoppingCart == false)">
+        <button *ngIf="canAddToShoppingCart" mat-raised-button color="primary" (click)="addToShoppingCart()">In den Warenkorb</button>
       </ng-container>
     </div>
   </div>

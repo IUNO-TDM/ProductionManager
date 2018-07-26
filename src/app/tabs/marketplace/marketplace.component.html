@@ -21,33 +21,42 @@
         (change)="onMachineTypeCheckboxChanged(machineType.id, $event.checked)">{{machineType.name}}</mat-checkbox>
     </div>
     <div class="sidebar-item-container" fxLayout="column">
-        <button *ngIf="shoppingCartItemCount == 0" mat-raised-button color="primary" (click)="onShoppingCartClicked()"><mat-icon>shopping_cart</mat-icon> Warenkorb</button>
-        <button *ngIf="shoppingCartItemCount > 0" mat-raised-button color="primary" (click)="onShoppingCartClicked()"><mat-icon>shopping_cart</mat-icon> Warenkorb ({{shoppingCartItemCount}})</button>
-      </div>
+      <button *ngIf="shoppingCartItemCount == 0" mat-raised-button color="primary" (click)="onShoppingCartClicked()">
+        <mat-icon>shopping_cart</mat-icon> Warenkorb</button>
+      <button *ngIf="shoppingCartItemCount > 0" mat-raised-button color="primary" (click)="onShoppingCartClicked()">
+        <mat-icon>shopping_cart</mat-icon> Warenkorb ({{shoppingCartItemCount}})</button>
+    </div>
     <div fxFlex></div>
   </div>
-  <div fxFlex fxLayoutAlign="center">
-    <div class="content" fxFlex>
-      <ng-container *ngIf="selectedObject">
-        <div fxLayout="column" fxLayoutGap="15px">
-          <div>
-            <button mat-button (click)="deselectObject()">← Zurück</button>
-          </div>
-          <app-object-details [object]="selectedObject" canAddToShoppingCart="true" (onAddToShoppingCart)="onAddToShoppingCart($event)"></app-object-details>
-        </div>
-      </ng-container>
-      <ng-container *ngIf="!selectedObject">
-        <ng-container *ngIf="objects.length > 0">
-          <app-object-browser [objects]="objects" (onObjectSelected)="onObjectSelected($event)"></app-object-browser>
-        </ng-container>
-        <ng-container *ngIf="objects.length == 0">
-          <div fxFlex fxLayoutAlign="center center">
-            Es wurden keine Objekte gefunden.
-          </div>
-        </ng-container>
-      </ng-container>
+  <ng-container *ngIf="loading">
+    <div fxFlex fxLayoutAlign="center center">
+      <mat-progress-spinner color="primary" mode="indeterminate"></mat-progress-spinner>
     </div>
-  </div>
+  </ng-container>
+  <ng-container *ngIf="!loading">
+    <div fxFlex fxLayoutAlign="center">
+      <div class="content" fxFlex>
+        <ng-container *ngIf="selectedObject">
+          <div fxLayout="column" fxLayoutGap="15px">
+            <div>
+              <button mat-button (click)="deselectObject()">← Zurück</button>
+            </div>
+            <app-object-details [object]="selectedObject" [canAddToShoppingCart]="true" (onAddToShoppingCart)="onAddToShoppingCart($event)"></app-object-details>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="!selectedObject">
+          <ng-container *ngIf="objects.length > 0">
+            <app-object-browser [objects]="objects" (onObjectSelected)="onObjectSelected($event)"></app-object-browser>
+          </ng-container>
+          <ng-container *ngIf="objects.length == 0">
+            <div fxFlex fxLayoutAlign="center center">
+              Es wurden keine Objekte gefunden.
+            </div>
+          </ng-container>
+        </ng-container>
+      </div>
+    </div>
+  </ng-container>
 </div>
 
 <!-- <div fxLayout="column" fxLayoutGap="15px">

@@ -1,3 +1,27 @@
 <div class="content">
-    <app-object-browser [objects]="objects"></app-object-browser>
+    <ng-container *ngIf="selectedObject">
+        <div fxLayout="column" fxLayoutGap="15px">
+            <div>
+                <button mat-button (click)="deselectObject()">← Zurück</button>
+            </div>
+            <app-object-details [object]="selectedObject" [canAddToShoppingCart]="false"></app-object-details>
+        </div>
+    </ng-container>
+    <ng-container *ngIf="loading">
+        <div fxFlex fxLayoutAlign="center center">
+            <mat-progress-spinner color="primary" mode="indeterminate"></mat-progress-spinner>
+        </div>
+    </ng-container>
+    <ng-container *ngIf="!loading">
+        <ng-container *ngIf="!selectedObject">
+            <ng-container *ngIf="objects.length > 0">
+                <app-object-browser [objects]="objects" (onObjectSelected)="onObjectSelected($event)"></app-object-browser>
+            </ng-container>
+            <ng-container *ngIf="objects.length == 0">
+                <div fxFlex fxLayoutAlign="center center">
+                    Es wurden keine eigenen Objekte gefunden.
+                </div>
+            </ng-container>
+        </ng-container>
+    </ng-container>
 </div>
