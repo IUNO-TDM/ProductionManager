@@ -1,5 +1,5 @@
 export class Machine {
-    id: string
+    _id: string
     displayName: string
     variant: string
     hostname: string

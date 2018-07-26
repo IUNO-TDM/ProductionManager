@@ -19,6 +19,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatRadioModule } from '@angular/material/radio';
 
 // Production Manager imports
 import { AppRoutingModule } from './app-routing.module';
@@ -65,6 +66,7 @@ import { ShoppingCartComponent } from './tabs/marketplace/shopping-cart/shopping
     MatDatepickerModule,
     MatNativeDateModule,
     MatCheckboxModule,
+    MatRadioModule,
 
     // Product Manager Modules
     AppRoutingModule,

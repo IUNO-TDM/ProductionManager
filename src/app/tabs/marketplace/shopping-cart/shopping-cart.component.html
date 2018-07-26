@@ -1,11 +1,17 @@
 <div class="content" fxFlex>
   <div class="shopping-cart" fxLayout="column" fxLayoutGap="15px">
     <div *ngFor="let item of items" fxLayout="row" fxLayoutGap="15px">
-      <div fxFlex="250px">{{item.objectId}}</div>
+      <div fxFlex="400px">{{item.objectId}}</div>
       <div fxFlex="50px">{{item.amount}}</div>
       <div fxFlex="50px">
         <button mat-raised-button color="primary" (click)="onRemoveItem(item)">Entfernen</button>
       </div>
+    </div>
+    <mat-radio-group [(ngModel)]="selectedMachine" fxLayout="column">
+      <mat-radio-button *ngFor="let machine of machines" value="{{machine._id}}" fxLayoutGap="15px">{{machine.displayname}}</mat-radio-button>
+    </mat-radio-group>
+    <div class="order-section">
+      <button mat-raised-button color="primary" (click)="onOrderClicked()">Kauf abschließen</button>
     </div>
   </div>
 </div>

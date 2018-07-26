@@ -20,7 +20,6 @@ export class MachinesComponent implements OnInit {
     this.machineService.machines.subscribe(machines => {
       this.machines = machines
     })
-    this.machineService.updateMachines()
   }
 
   ngAfterViewInit() {

@@ -18,7 +18,7 @@ export class MachineService {
   constructor(
     private http: HttpClient,
   ) {
-
+    this.updateMachines()
   }
 
   updateMachines() {
