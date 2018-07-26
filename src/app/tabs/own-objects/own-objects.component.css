@@ -1,4 +1,25 @@
 .content {
-    height: 100%;
     margin: 15px;
+}
+
+
+.title {
+    color: rgba(0, 0, 0, 0.38);
+    font-size: 14px;
+    font-weight: bold;    
+}
+
+.sidebar {
+    background: rgb(252, 252, 252);
+    color: rgba(0, 0, 0, 0.75);
+    border-right: 1px solid rgba(0, 0, 0, 0.12);
+    height: 100%;
+    overflow-y: auto;
+    padding-bottom: 56px;
+    width: 300px;
+}
+
+.sidebar-item-container {
+    padding: 20px 24px 20px 24px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
 }

@@ -1,0 +1,14 @@
+<div class="content">
+  <form>
+    <div fxLayout="column" fxLayoutGap="15px">
+      <div>Title</div>
+      <div>Beschreibung</div>
+      <div>Lizenzgebühr</div>
+      <div>Komponenten</div>
+      <div fxLayout="row" fxLayoutGap="15px">
+        <button mat-raised-button color="warn" (click)="onCancelClicked()">Abbrechen</button>
+        <button mat-raised-button color="primary" (click)="onSaveClicked()">Speichern</button>
+      </div>
+    </div>
+  </form>
+</div>

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { TitleService } from '../../services/title.service';
 import { ObjectService } from '../../services/object.service';
 import { MachineService } from '../../services/machine.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-own-objects',
@@ -16,6 +17,7 @@ export class OwnObjectsComponent implements OnInit {
   loading = true
 
   constructor(
+    private router: Router,
     private titleService: TitleService,
     private objectService: ObjectService,
     private machineService: MachineService
@@ -31,6 +33,10 @@ export class OwnObjectsComponent implements OnInit {
 
   ngAfterViewInit() {
     this.titleService.setTitle("Eigene Objekte")
+  }
+
+  onAddObjectClicked() {
+    this.router.navigateByUrl('own-objects/create')
   }
 
   onObjectSelected(object) {

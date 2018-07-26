@@ -21,6 +21,7 @@ import { MatNativeDateModule, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatDialogModule } from '@angular/material/dialog';
 
 // Production Manager imports
 import { AppRoutingModule } from './app-routing.module';
@@ -32,6 +33,8 @@ import { PurchasedObjectsComponent } from './tabs/purchased-objects/purchased-ob
 import { ObjectBrowserComponent } from './object-browser/object-browser.component';
 import { ObjectDetailsComponent } from './object-details/object-details.component';
 import { ShoppingCartComponent } from './tabs/marketplace/shopping-cart/shopping-cart.component';
+import { CreateObjectComponent } from './tabs/own-objects/create-object/create-object.component';
+import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
 // import { TdmCommonModule } from 'tdm-common'
 
 @NgModule({
@@ -44,6 +47,8 @@ import { ShoppingCartComponent } from './tabs/marketplace/shopping-cart/shopping
     ObjectBrowserComponent,
     ObjectDetailsComponent,
     ShoppingCartComponent,
+    CreateObjectComponent,
+    ConfirmationDialogComponent,
   ],
   imports: [
     // Angular Core
@@ -69,11 +74,15 @@ import { ShoppingCartComponent } from './tabs/marketplace/shopping-cart/shopping
     MatCheckboxModule,
     MatRadioModule,
     MatProgressSpinnerModule,
+    MatDialogModule,
 
     // Product Manager Modules
     AppRoutingModule,
     // TdmCommonModule,
 
+  ],
+  entryComponents: [
+    ConfirmationDialogComponent
   ],
   providers: [],
   bootstrap: [AppComponent]
