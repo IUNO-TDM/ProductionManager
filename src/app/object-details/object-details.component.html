@@ -1,3 +1,45 @@
-<p>
-  object-details works!
-</p>
+<div fxLayout="column" fxLayoutGap="15px">
+  <div class="creator" fxLayout="row" fxLayoutGap="15px" fxLayoutAlign="start center">
+    <img class="creator-image">
+    <div fxLayout="column">
+        <div class="object-name">{{object.name}}</div>
+        <div class="object-creator-name">Daniel Düsentrieb</div>
+      </div>
+  </div>
+  <div class="details" fxLayout="row" fxLayoutGap="15px">
+    <div class="images" fxLayout="column" fxLayoutGap="15px">
+      <img class="preview-image-big">
+        <div class="previews-small" fxLayout="row" fxLayoutGap="15px">
+            <img class="preview-image-small">
+            <img class="preview-image-small">
+            <img class="preview-image-small">
+            <img class="preview-image-small">
+        </div>
+    </div>
+    <div class="description" fxLayout="column">
+      <div class="section">
+        <div class="section-title">Beschreibung</div>
+        <div class="section-text">{{object.description}}</div>
+      </div>
+      <div class="section">
+        <div class="section-title">Designed für</div>
+        <div class="section-text">
+          <div *ngFor="let material of object.materials">{{material.name}}</div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="section-title">Kompatibel mit</div>
+        <div class="section-text">
+          <div *ngFor="let machine of object.machines">{{machine.name}}</div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="section-title">Lizenzkosten</div>
+        <div class="section-text">{{object.licenseFee}}</div>
+      </div>
+      <ng-container *ngIf="canAddToShoppingCart">
+        <button mat-raised-button color="primary" (click)="addToShoppingCart()">In den Warenkorb</button>
+      </ng-container>
+    </div>
+  </div>
+</div>

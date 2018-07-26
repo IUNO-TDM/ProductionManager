@@ -4,6 +4,8 @@ import { ObjectService } from '../../services/object.service';
 import { Machine } from '../../models/machine';
 import { MachineService } from '../../services/machine.service';
 import { MachineType } from '../../models/machineType';
+import { ShoppingCartService } from '../../services/shopping-cart.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-marketplace',
@@ -18,11 +20,14 @@ export class MarketplaceComponent implements OnInit {
   materials = []
   materialsSelected = []
   searchQuery = ""
+  shoppingCartItemCount = 0
 
   constructor(
+    private router: Router,
     private titleService: TitleService,
     private objectService: ObjectService,
-    private machineService: MachineService
+    private machineService: MachineService,
+    private shoppingCartService: ShoppingCartService
   ) { }
 
   ngOnInit() {
@@ -36,6 +41,19 @@ export class MarketplaceComponent implements OnInit {
       this.materials = materials
       this.updateObjects()
     })
+    this.shoppingCartService.items.subscribe(items => {
+      this.shoppingCartItemCount = items.map(item => item.amount).reduce((sum, itemCount) => sum + itemCount, 0)
+    })
+  }
+
+  onAddToShoppingCart(object) {
+    this.shoppingCartService.addToShoppingCart(object).subscribe(result => {
+      console.log(result)
+    })
+  }
+
+  onShoppingCartClicked() {
+    this.router.navigateByUrl('marketplace/shoppingcart')
   }
 
   onSearchQueryChanged() {

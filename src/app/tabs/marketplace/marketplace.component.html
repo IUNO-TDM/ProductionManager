@@ -1,5 +1,5 @@
 <div fxLayout="row" style='height: 100%;'>
-  <div class="sidebar">
+  <div class="sidebar" fxLayout="column">
     <div class="sidebar-item-container">
       <form>
         <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
@@ -20,12 +20,21 @@
       <mat-checkbox *ngFor="let machineType of machineTypes" class="filter-item" color="primary" [checked]="isMachineTypeSelected(machineType.id)"
         (change)="onMachineTypeCheckboxChanged(machineType.id, $event.checked)">{{machineType.name}}</mat-checkbox>
     </div>
+    <div class="sidebar-item-container" fxLayout="column">
+        <button *ngIf="shoppingCartItemCount == 0" mat-raised-button color="primary" (click)="onShoppingCartClicked()"><mat-icon>shopping_cart</mat-icon> Warenkorb</button>
+        <button *ngIf="shoppingCartItemCount > 0" mat-raised-button color="primary" (click)="onShoppingCartClicked()"><mat-icon>shopping_cart</mat-icon> Warenkorb ({{shoppingCartItemCount}})</button>
+      </div>
+    <div fxFlex></div>
   </div>
   <div fxFlex fxLayoutAlign="center">
     <div class="content" fxFlex>
       <ng-container *ngIf="selectedObject">
-        <button mat-button (click)="deselectObject()">Zurück</button>
-          <app-object-details [object]="selectedObject"></app-object-details>
+        <div fxLayout="column" fxLayoutGap="15px">
+          <div>
+            <button mat-button (click)="deselectObject()">← Zurück</button>
+          </div>
+          <app-object-details [object]="selectedObject" canAddToShoppingCart="true" (onAddToShoppingCart)="onAddToShoppingCart($event)"></app-object-details>
+        </div>
       </ng-container>
       <ng-container *ngIf="!selectedObject">
         <ng-container *ngIf="objects.length > 0">

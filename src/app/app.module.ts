@@ -29,6 +29,7 @@ import { OwnObjectsComponent } from './tabs/own-objects/own-objects.component';
 import { PurchasedObjectsComponent } from './tabs/purchased-objects/purchased-objects.component';
 import { ObjectBrowserComponent } from './object-browser/object-browser.component';
 import { ObjectDetailsComponent } from './object-details/object-details.component';
+import { ShoppingCartComponent } from './tabs/marketplace/shopping-cart/shopping-cart.component';
 // import { TdmCommonModule } from 'tdm-common'
 
 @NgModule({
@@ -40,6 +41,7 @@ import { ObjectDetailsComponent } from './object-details/object-details.componen
     PurchasedObjectsComponent,
     ObjectBrowserComponent,
     ObjectDetailsComponent,
+    ShoppingCartComponent,
   ],
   imports: [
     // Angular Core

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-object-details',
@@ -7,10 +7,16 @@ import { Component, OnInit, Input } from '@angular/core';
 })
 export class ObjectDetailsComponent implements OnInit {
   @Input() object: any
+  @Input() canAddToShoppingCart: boolean = false
+  @Output() onAddToShoppingCart = new EventEmitter;
   
   constructor() { }
 
   ngOnInit() {
+  }
+
+  addToShoppingCart() {
+    this.onAddToShoppingCart.emit(this.object)
   }
 
 }
