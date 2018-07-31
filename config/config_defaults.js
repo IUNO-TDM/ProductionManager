@@ -23,7 +23,12 @@ self.HOST_SETTINGS = {
     ULTIMAKER: {
         PORT: 80,
         PROTOCOL: 'http'
-    }
+    },
+    PAYMENT_SERVICE: {
+        HOST: 'localhost',
+        PORT: 8080,
+        PROTOCOL: 'http'
+    },
 };
 
 

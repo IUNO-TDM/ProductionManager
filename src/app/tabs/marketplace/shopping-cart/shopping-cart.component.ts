@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ShoppingCartService, ShoppingCartItem } from '../../../services/shopping-cart.service';
 import { MachineService } from '../../../services/machine.service';
 import { Machine } from '../../../models/machine';
+import { OrderService } from '../../../services/order.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-shopping-cart',
@@ -11,11 +13,13 @@ import { Machine } from '../../../models/machine';
 export class ShoppingCartComponent implements OnInit {
   items: ShoppingCartItem[] = []
   machines: Machine[] = []
-  selectedMachine: string = null
+  selectedMachineId: string = null
 
   constructor(
+    private router: Router,
     private shoppingCartService: ShoppingCartService,
-    private machineService: MachineService
+    private machineService: MachineService,
+    private orderService: OrderService
   ) { }
 
   ngOnInit() {
@@ -25,12 +29,9 @@ export class ShoppingCartComponent implements OnInit {
 
     this.machineService.machines.subscribe(machines => {
       this.machines = machines
-      if (!this.selectedMachine && machines.length > 0) {
-        this.selectedMachine = machines[0]._id
-        console.log("Hallo")
-        console.log(this.selectedMachine)
+      if (!this.selectedMachineId && machines.length > 0) {
+        this.selectedMachineId = machines[0]._id
       }
-      console.log(machines)
     })
   }
 
@@ -39,8 +40,15 @@ export class ShoppingCartComponent implements OnInit {
     })
   }
 
+  onBackButtonClicked() {
+    this.router.navigateByUrl('marketplace')
+  }
+
   onOrderClicked() {
-    console.log(this.selectedMachine)
+    this.shoppingCartService.order(this.selectedMachineId).subscribe(result => {
+      this.router.navigateByUrl('marketplace')
+    })
+    console.log(this.selectedMachineId)
   }
 
 }

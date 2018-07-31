@@ -6,6 +6,7 @@ import { MachineService } from '../../services/machine.service';
 import { MachineType } from '../../models/machineType';
 import { ShoppingCartService } from '../../services/shopping-cart.service';
 import { Router } from '@angular/router';
+import { OrderService } from '../../services/order.service';
 
 @Component({
   selector: 'app-marketplace',
@@ -28,10 +29,23 @@ export class MarketplaceComponent implements OnInit {
     private titleService: TitleService,
     private objectService: ObjectService,
     private machineService: MachineService,
+    private orderService: OrderService,
     private shoppingCartService: ShoppingCartService
   ) { }
 
   ngOnInit() {
+    // check if open orders exist. If yes, marketplace view is deaktivated and order must be completed or canceled.
+    this.orderService.getOpenOrders().subscribe(orders => {
+      if (orders.length > 0) {
+        this.router.navigateByUrl('marketplace/order')
+      } else {
+        this.initMarketplaceComponent()
+      }
+    })
+  }
+
+  private initMarketplaceComponent() {
+    console.log("Init!")
     this.machineService.getMachineTypes().subscribe(machineTypes => {
       this.machineTypesSelected = machineTypes.map(machineType => machineType.id)
       this.machineTypes = machineTypes

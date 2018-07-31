@@ -3,6 +3,7 @@ var mongoose = require('mongoose');
 var MachineSchema = new mongoose.Schema({
     _id: String,
     displayname: String,
+    hsmIds: [String],
     hostname: String,
     ipaddress: String,
     variant: String,

@@ -4,8 +4,8 @@
 
 var logger = require('../global/logger');
 //
-// function onOrderNamespaceConnect(socket) {
-//     logger.info('[socket_io_controller] a user connected: ' + socket.id);
+function onOrderNamespaceConnect(socket) {
+    logger.info('[socket_io_controller] a user connected: ' + socket.id);
 //
 //     socket.on('room', function (orderId) {
 //         socket.join(orderId);
@@ -41,14 +41,15 @@ var logger = require('../global/logger');
 //         }
 //     });
 //
-//     socket.on('leave', function (orderId) {
-//         socket.leave(orderId);
-//     });
-//
-//     socket.on('disconnect', function () {
-//         logger.info('a user disconnected: ' + socket.id);
-//     });
-// }
+    socket.on('leave', function (orderId) {
+        logger.info('[socket_io_controller] a userleaves order ' + orderId + ' on socket ' + socket.id);
+        socket.leave(orderId);
+    });
+
+    socket.on('disconnect', function () {
+        logger.info('[socket_io_controller] a user disconnected: ' + socket.id);
+    });
+}
 //
 // function onProductionNamespaceConnect(socket) {
 //     logger.info('[socket_io_controller] a user connected: ' + socket.id);
@@ -227,8 +228,9 @@ var logger = require('../global/logger');
 // }
 
 module.exports = function (io) {
-    // var orderNamespace = io.of('/orders');
-    // orderNamespace.on('connection', onOrderNamespaceConnect);
+    logger.info("[socket_io_controller] Installing socket_io_controller.")
+    var orderNamespace = io.of('/orders');
+    orderNamespace.on('connection', onOrderNamespaceConnect);
     //
     //
     // var productionNamespace = io.of('/production');

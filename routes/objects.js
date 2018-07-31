@@ -30,11 +30,13 @@ router.get('/', validate({
 router.post('/', function (req, res, next) {
     var od = {}
     od.components = ["adb4c297-45bd-437e-ac90-a33d0f24de7e","763c926e-a5f7-4ba0-927d-b4e038ea2735"];
-    od.encryptedBinary = "c2RmZ2hqa2zDtmhnZmRzeWZnaGpraGdmZHh5c2ZnaGprbGhnZmRzeWZnaGprbGpoZ2Zkc3lmZ2hqa2zDtmpoZ2ZkaGprbMO2amhnZmRzdG8=";
+    // od.encryptedBinary = "c2RmZ2hqa2zDtmhnZmRzeWZnaGpraGdmZHh5c2ZnaGprbGhnZmRzeWZnaGprbGpoZ2Zkc3lmZ2hqa2zDtmpoZ2ZkaGprbMO2amhnZmRzdG8=";
+    // od.licenseType = 0
     od.description = "dfghjkl";
-    od.licenseFee = 10000000;
-    od.title = "45rtzu8iokjhbj3";
+    od.licenseFee = 1;
+    od.title = "Dies ist ein günstiges Teil";
     od.backgroundColor = "#777777";
+    od.encryptedKey = "1234567890123456789012345678901234567890123456789012345678901234"
     ams_adapter.saveObject(od, function (err, dataId) {
 
 

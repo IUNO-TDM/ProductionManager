@@ -6,6 +6,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FlexModule } from '@angular/flex-layout';
 import { CommonModule } from "@angular/common";
 import { HttpClientModule } from '@angular/common/http'
+import { NgxQRCodeModule } from 'ngx-qrcode2'
 
 // Angular Material imports
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -35,6 +36,7 @@ import { ObjectDetailsComponent } from './object-details/object-details.componen
 import { ShoppingCartComponent } from './tabs/marketplace/shopping-cart/shopping-cart.component';
 import { CreateObjectComponent } from './tabs/own-objects/create-object/create-object.component';
 import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
+import { OrderComponent } from './tabs/marketplace/order/order.component';
 // import { TdmCommonModule } from 'tdm-common'
 
 @NgModule({
@@ -49,6 +51,7 @@ import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-
     ShoppingCartComponent,
     CreateObjectComponent,
     ConfirmationDialogComponent,
+    OrderComponent,
   ],
   imports: [
     // Angular Core
@@ -59,6 +62,7 @@ import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-
     ReactiveFormsModule,
     FlexModule,
     HttpClientModule,
+    NgxQRCodeModule,
 
     // Angular Material
     MatToolbarModule,

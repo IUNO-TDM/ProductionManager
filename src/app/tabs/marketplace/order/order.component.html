@@ -1,0 +1,17 @@
+<ng-container *ngIf="order">
+  <div fxLayout="row" fxLayoutAlign="center center" style='height: 100%;'>
+    <div fxLayout="row" class="bill">
+      <ngx-qrcode [qrc-element-type]="elementType" [qrc-value]="order.offer.bip21"></ngx-qrcode>
+      <div class="bill" fxLayout="column">
+          <div class="title">Rechnung</div>
+          <div class="items" fxLayout="column">
+          <div *ngFor="let item of order.items" fxLayout="row" fxLayoutGap="15px">
+            <div>{{item._id}}</div>
+            <div>{{item.amount}}</div>
+          </div>
+          <div class="total">Gesamtbetrag: {{amount}} IUNO</div>          
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-container>

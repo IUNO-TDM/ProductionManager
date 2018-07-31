@@ -14,46 +14,79 @@ _.mapPick = function (objs, keys) {
 };
 
 router.post('/order',  function (req, res, next) {
+    // check if there is an open order.
+    const orderCompletedStates = ["completed", "canceled"]
+    Order.find({"state": {"$nin": orderCompletedStates}}, function (err, orders) {
+        if (err) {
+            return next(err);
+        }
+
+        // error: there must not be an open order when creating a new order
+        if (orders.length > 0) {
+            return next("Error")
+        }
+    })
+
     Item.find(function (err, items) {
         if (err) {
             return next(err);
         }
 
-        var order = {
-            orderNumber:42,
-            items: items,
-        };
+        let orderItems = items.map(item => {
+            return {
+                "dataId": item.objectId,
+                "amount": item.amount
+            }
+        })
 
-        var or = {
+        // var order = {
+        //     orderNumber:42,
+        //     items: items,
+        // };
+
+        let offerRequest = {
             hsmId: "3-1234567",
-            items: [
-                {
-                    dataId: "7B864F08-F89D-4036-93B3-A44B09F4B4C0",
-                    amount: 1
-                }
-            ]
+            items: orderItems
         };
 
-        ams_adapter.createOfferForRequest(or, function(err,offer){
+        ams_adapter.createOfferForRequest(offerRequest, function(err, offer) {
+            if (err) {
 
-            //TODO Create an order at the marketplace and then save this order locally
-            Order.create(order, function(err, order){
+            }
+
+            // offer created, save as order
+            let order = {
+                items: orderItems,
+                offer: {
+                    id: offer.id,
+                    bip21: offer.bip21
+                },
+                state: "waitingPayment"
+            }
+
+            Order.create(order, function(err, order) {
                 if (err) {
                     return next(err);
                 }
                 Item.remove({}, function (err) {
-                    if(err){
+                    if(err) {
                         console.error("Error on deleting shopping cart items", err);
                     }
-
-                    res.json(_.pick(order, ['_id', 'orderNumber','articles', 'createdAt']));
+                    res.json(order)
+                    // res.json(_.pick(order, ['_id', 'orderNumber','articles', 'createdAt']));
 
                 });
+                console.log("+++++++++++++++++ Order ++++++++++++++++++++++")
+                console.log(order)
+                console.log("++++++++++++++++++++++++++++++++++++++++++++++")
             })
+
+            console.log("+++++++++++++++++ Order2 ++++++++++++++++++++++")
+            console.log(order)
+            console.log("++++++++++++++++++++++++++++++++++++++++++++++")
+
         });
-
     });
-
 });
 
 router.get('/items', function (req, res, next) {

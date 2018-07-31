@@ -14,12 +14,12 @@ _.mapPick = function (objs, keys) {
 };
 
 router.get('/', function (req, res, next) {
-    Order.find(function (err, products) {
+    Order.find(function (err, orders) {
         if (err) {
             return next(err);
         }
-
-        res.json(_.mapPick(products, ['_id', 'orderNumber', 'createdAt']));
+        res.json(orders)
+        // res.json(_.mapPick(products, ['_id', 'orderNumber', 'createdAt']));
     })
 });
 
