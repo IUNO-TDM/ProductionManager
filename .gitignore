@@ -116,3 +116,4 @@ test/*
 /dist
 /tmp
 /out-tsc
+files
