@@ -1,0 +1,439 @@
+swagger: "2.0"
+info:
+  description: "The REST API of Production Manager"
+  version: "1.0.0"
+  title: "ProductionManager"
+basePath: "/api/"
+tags:
+- name: "machines"
+  description: "Gets the machines connected or available"
+- name: "shopping cart"
+  description: "The articles collected for purchase"
+- name: "orders"
+  description: "The orders at the marketplace"
+- name: "objects"
+  description: "marketplace objects"
+- name: "local objects"
+  description: "the local objects"
+- name: "materials"
+  description: "the material information from the marketplace"
+- name: "machine types"
+  description: "the machine types known by the marketplace"
+schemes:
+- "http"
+paths:
+  /machines:
+    get: 
+      tags:
+      - "machines"
+      summary: "returns all local available and connected machines"
+      operationId: "getMachines"
+      produces: 
+      - "application/json"
+      responses:
+        200:
+          description: "here it comes"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Machine"
+  /machines/{machineId}:
+    delete:
+      tags: 
+      - "machines"
+      summary: "deletes the machine by id"
+      operationId: "deleteMachineById"
+      parameters:
+      - name: "machineId"
+        in: "path"
+        description: "ID of machine to return"
+        required: true
+        type: "string"
+      produces: 
+      - "application/json"
+      responses:
+        200:
+          description: "deleted"
+    get:
+      tags: 
+      - "machines"
+      summary: "returns the machine by id"
+      operationId: "getMachineById"
+      parameters:
+      - name: "machineId"
+        in: "path"
+        description: "ID of machine to return"
+        required: true
+        type: "string"
+      produces: 
+      - "application/json"
+      responses:
+        200:
+          description: "here it comes"
+          schema:
+            $ref: '#/definitions/Machine'
+  /machines/{machineId}/authentication:
+    post:
+      tags: 
+      - "machines"
+      summary: "authenticates the pm at the given machien"
+      operationId: "requestMachineAuthenticationById"
+      parameters:
+      - name: "machineId"
+        in: "path"
+        description: "ID of machine to return"
+        required: true
+        type: "string"
+      produces: 
+      - "application/json"
+      responses:
+        201:
+          description: "seems to be authenticated"
+        500:
+          description: "seems not to be authenticated"
+    get:
+      tags: 
+      - "machines"
+      summary: "gives information about the authenticaton status"
+      operationId: "getMachineAuthenticationById"
+      parameters:
+      - name: "machineId"
+        in: "path"
+        description: "ID of machine to return"
+        required: true
+        type: "string"
+      produces: 
+      - "application/json"
+      responses:
+        200:
+          description: "the status in the body"
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+  /machines/{machineId}/authentication/verify:
+    get:
+      tags: 
+      - "machines"
+      summary: "verifies authentication of pm"
+      operationId: "verifyMachineAuthenticationById"
+      parameters:
+      - name: "machineId"
+        in: "path"
+        description: "ID of machine to return"
+        required: true
+        type: "string"
+      produces: 
+      - "application/json"
+      responses:
+        200:
+          description: "the status in the body"
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+  /machines/{machineId}/materials/active:
+    get:
+      tags: 
+      - "machines"
+      summary: "gets the loaded materials in the machine"
+      operationId: "getActiveMaterialinMachineById"
+      parameters:
+      - name: "machineId"
+        in: "path"
+        description: "ID of machine to return"
+        required: true
+        type: "string"
+      produces: 
+      - "application/json"
+      responses:
+        200:
+          description: "the materials"
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/LoadedMaterial'
+  /machines/{machineId}/materials/active/{extruderId}:
+    get:
+      tags: 
+      - "machines"
+      summary: "gets the loaded materials in the machine for the given extruder"
+      operationId: "getActiveMaterialinMachineByIdAndExtruder"
+      parameters:
+      - name: "machineId"
+        in: "path"
+        description: "ID of machine to return"
+        required: true
+        type: "string"
+      - name: "extruderId"
+        in: "path"
+        description: "ID of extruder to return"
+        required: true
+        type: "integer"
+        minimum: 0
+        maximum: 0
+      produces: 
+      - "application/json"
+      responses:
+        200:
+          description: "the material"
+          schema:
+            $ref: '#/definitions/LoadedMaterial'
+  /machines/{machineId}/materials/{materialId}:
+    get:
+      tags: 
+      - "machines"
+      summary: "gets a material information from the machine (as XML)"
+      operationId: "getMaterialDetailFromMachineByIds"
+      parameters:
+      - name: "machineId"
+        in: "path"
+        description: "ID of machine to return"
+        required: true
+        type: "string"
+      - name: "materialId"
+        in: "path"
+        description: "ID of extruder to return"
+        required: true
+        type: "string"
+      produces: 
+      - "application/xml"
+      responses:
+        200:
+          description: "the material"
+  /machines/{machineId}/materials/{materialId}/short:
+    get:
+      tags: 
+      - "machines"
+      summary: "gets a shorted material information from the machine"
+      operationId: "getMaterialShortFromMachineByIds"
+      parameters:
+      - name: "machineId"
+        in: "path"
+        description: "ID of machine to return"
+        required: true
+        type: "string"
+      - name: "materialId"
+        in: "path"
+        description: "ID of extruder to return"
+        required: true
+        type: "string"
+      produces: 
+      - "application/json"
+      responses:
+        200:
+          description: "the material"
+          schema:
+            $ref: '#/definitions/MaterialInfo'
+  /machines/{machineId}/materials/{materialId}/name:
+    get:
+      tags: 
+      - "machines"
+      summary: "gets material name from the machine"
+      operationId: "getMaterialShortNameFromMachineByIds"
+      parameters:
+      - name: "machineId"
+        in: "path"
+        description: "ID of machine to return"
+        required: true
+        type: "string"
+      - name: "materialId"
+        in: "path"
+        description: "ID of extruder to return"
+        required: true
+        type: "string"
+      produces: 
+      - "text/html"
+      responses:
+        200:
+          description: "the name"
+          
+  /machines/{machineId}/status:
+    get:
+      tags: 
+      - "machines"
+      summary: "gets the machines status"
+      operationId: "getMachineStatusById"
+      parameters:
+      - name: "machineId"
+        in: "path"
+        description: "ID of machine to return"
+        required: true
+        type: "string"
+      produces: 
+      - "text/html"
+      responses:
+        200:
+          description: "the status"
+          
+  /machines/{machineId}/printjob:
+    get:
+      tags: 
+      - "machines"
+      summary: "gets the machines current printjob"
+      operationId: "getMachinePrintjobById"
+      parameters:
+      - name: "machineId"
+        in: "path"
+        description: "ID of machine to return"
+        required: true
+        type: "string"
+      produces: 
+      - "application/json"
+      responses:
+        200:
+          description: "the printjob"
+  /machines/{machineId}/printjob/state:
+    get:
+      tags: 
+      - "machines"
+      summary: "gets the machines current printjobs state"
+      operationId: "getMachinePrintjobStateById"
+      parameters:
+      - name: "machineId"
+        in: "path"
+        description: "ID of machine to return"
+        required: true
+        type: "string"
+      produces: 
+      - "text/html"
+      responses:
+        200:
+          description: "the printjob state"
+  /machines/{machineId}/printjob/progress:
+    get:
+      tags: 
+      - "machines"
+      summary: "gets the machines current printjobs progress"
+      operationId: "getMachinePrintjobProgressById"
+      parameters:
+      - name: "machineId"
+        in: "path"
+        description: "ID of machine to return"
+        required: true
+        type: "string"
+      produces: 
+      - "text/html"
+      responses:
+        200:
+          description: "the printjob progress"
+  /machines/{machineId}/printjob/time/total:
+    get:
+      tags: 
+      - "machines"
+      summary: "gets the machines current printjobs total time"
+      operationId: "getMachinePrintjobTimeTotalById"
+      parameters:
+      - name: "machineId"
+        in: "path"
+        description: "ID of machine to return"
+        required: true
+        type: "string"
+      produces: 
+      - "text/html"
+      responses:
+        200:
+          description: "the printjobs total time"
+  /machines/{machineId}/printjob/time/elapsed:
+    get:
+      tags: 
+      - "machines"
+      summary: "gets the machines current printjobs elapsed time"
+      operationId: "getMachinePrintjobTimeElapsedById"
+      parameters:
+      - name: "machineId"
+        in: "path"
+        description: "ID of machine to return"
+        required: true
+        type: "string"
+      produces: 
+      - "text/html"
+      responses:
+        200:
+          description: "the printjobs total time"
+  /machines/{machineId}/printjob/time/remaining:
+    get:
+      tags: 
+      - "machines"
+      summary: "gets the machines current printjobs remaining time"
+      operationId: "getMachinePrintjobTimeRemainingById"
+      parameters:
+      - name: "machineId"
+        in: "path"
+        description: "ID of machine to return"
+        required: true
+        type: "string"
+      produces: 
+      - "text/html"
+      responses:
+        200:
+          description: "the printjobs remaining time"
+  
+  /machines/{machineId}/camera/stream:
+    get:
+      tags: 
+      - "machines"
+      summary: "the mjpeg stream"
+      parameters:
+      - name: "machineId"
+        in: "path"
+        description: "ID of machine to return"
+        required: true
+        type: "string"
+      produces: 
+      - "video/x-motion-jpeg"
+      responses:
+        200:
+          description: "the stream"
+  /machines/{machineId}/camera/snapshot:
+    get:
+      tags: 
+      - "machines"
+      summary: "the snapshot from the camera"
+      parameters:
+      - name: "machineId"
+        in: "path"
+        description: "ID of machine to return"
+        required: true
+        type: "string"
+      produces: 
+      - "image/jpeg"
+      responses:
+        200:
+          description: "the snapshot"
+  
+definitions:
+
+  Machine:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+      displayname:
+        type: "string"
+      variant:
+        type: "string"
+      hostname:
+        type: "string"
+  
+  LoadedMaterial:
+    type: "object"
+    properties:
+      GUID:
+        type: string
+      length_remaining:
+        type: string
+        
+  MaterialInfo:
+    type: "object"
+    properties:
+      brand:
+        type: string
+      material:
+        type: string
+      color: 
+        type: string
+  
+        

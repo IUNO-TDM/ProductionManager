@@ -364,7 +364,6 @@ router.get('/:id/camera/stream', function (req, res, next) {
         if (!machine || !machine.hostname) {
             return res.sendStatus(404);
         }
-        sou
 
         request('http://' + machine.hostname + ':8080/?action=stream').pipe(res);
     });
