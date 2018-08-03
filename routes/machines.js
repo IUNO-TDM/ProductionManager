@@ -20,7 +20,7 @@ router.get('/', function (req, res, next) {
             return next(err);
         }
 
-        res.json(_.mapPick(products, ['_id', 'displayname', 'variant', 'hostname']));
+        res.json(_.mapPick(products, ['id', 'displayname', 'variant', 'hostname']));
     })
 });var express = require('express');
 var router = express.Router();
@@ -44,7 +44,7 @@ router.get('/', function (req, res, next) {
             return next(err);
         }
 
-        res.json(_.mapPick(products, ['_id', 'displayname', 'variant', 'hostname']));
+        res.json(_.mapPick(products, ['id', 'displayname', 'variant', 'hostname']));
     })
 });
 
@@ -54,7 +54,7 @@ router.get('/:id', function (req, res, next) {
             return next(err);
         }
 
-        res.json(_.pick(post, ['_id', 'displayname', 'variant', 'hostname']));
+        res.json(_.pick(post, ['id', 'displayname', 'variant', 'hostname']));
     })
 });
 
@@ -364,7 +364,6 @@ router.get('/:id/camera/stream', function (req, res, next) {
         if (!machine || !machine.hostname) {
             return res.sendStatus(404);
         }
-        sou
 
         request('http://' + machine.hostname + ':8080/?action=stream').pipe(res);
     });

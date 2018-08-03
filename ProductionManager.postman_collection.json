@@ -6,10 +6,11 @@
 	},
 	"item": [
 		{
+			"_postman_id": "5ee4f0af-b8ed-481c-9aa3-818031d118bd",
 			"name": "Machine",
-			"description": "",
 			"item": [
 				{
+					"_postman_id": "05dc3ec7-60f3-401f-b319-374c1053f236",
 					"name": "Get Machines",
 					"request": {
 						"method": "GET",
@@ -32,6 +33,7 @@
 					"response": []
 				},
 				{
+					"_postman_id": "695602a8-1832-4bce-ba45-94d75681bdf8",
 					"name": "Get Machine",
 					"request": {
 						"method": "GET",
@@ -54,6 +56,7 @@
 					"response": []
 				},
 				{
+					"_postman_id": "46513228-cd02-4d11-8764-7c899e9ec7b1",
 					"name": "Get Machine Authentication",
 					"request": {
 						"method": "GET",
@@ -77,6 +80,7 @@
 					"response": []
 				},
 				{
+					"_postman_id": "fb980637-0391-4489-84b8-5b0d3f88d263",
 					"name": "Authenticate Machine",
 					"request": {
 						"method": "POST",
@@ -100,6 +104,7 @@
 					"response": []
 				},
 				{
+					"_postman_id": "b3ddcaa2-3445-42de-aca4-ddcc36b9949a",
 					"name": "Verify Machine Authentication",
 					"request": {
 						"method": "GET",
@@ -124,6 +129,7 @@
 					"response": []
 				},
 				{
+					"_postman_id": "551f0874-9fbc-4d49-94c1-2600cee42938",
 					"name": "Get Machine Materials",
 					"request": {
 						"method": "GET",
@@ -148,6 +154,33 @@
 					"response": []
 				},
 				{
+					"_postman_id": "ca452ea3-3ae7-4094-b9f9-f7110dddeea4",
+					"name": "Get Machine Materials by Extruder",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "http://localhost:3042/api/machines/{{machineId}}/materials/active/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3042",
+							"path": [
+								"api",
+								"machines",
+								"{{machineId}}",
+								"materials",
+								"active",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"_postman_id": "779762f8-36c2-4d16-80d5-e6ea2514d675",
 					"name": "Get Material Details",
 					"request": {
 						"method": "GET",
@@ -172,6 +205,7 @@
 					"response": []
 				},
 				{
+					"_postman_id": "bbe0e9a5-c7e1-44a2-ab8b-f4a127fa06a4",
 					"name": "Get Material Name",
 					"request": {
 						"method": "GET",
@@ -197,6 +231,7 @@
 					"response": []
 				},
 				{
+					"_postman_id": "15ae3bd7-fbfa-4001-b943-a72c2ec94dd7",
 					"name": "Get Material short description",
 					"request": {
 						"method": "GET",
@@ -222,6 +257,7 @@
 					"response": []
 				},
 				{
+					"_postman_id": "db7d6efe-9b35-4557-9ba7-81bedb21d59e",
 					"name": "Get Printjob",
 					"request": {
 						"method": "GET",
@@ -245,6 +281,7 @@
 					"response": []
 				},
 				{
+					"_postman_id": "e44b175c-12b9-436e-824c-6901b10d6240",
 					"name": "Get Printjob State",
 					"request": {
 						"method": "GET",
@@ -269,6 +306,7 @@
 					"response": []
 				},
 				{
+					"_postman_id": "06c3b2f4-358a-4b9c-9459-0842c24b61c3",
 					"name": "Get Printjob Progress",
 					"request": {
 						"method": "GET",
@@ -293,6 +331,7 @@
 					"response": []
 				},
 				{
+					"_postman_id": "b643203f-158c-437c-9f43-81b0a3a40b4a",
 					"name": "Get Printjob Time Elapsed",
 					"request": {
 						"method": "GET",
@@ -318,6 +357,7 @@
 					"response": []
 				},
 				{
+					"_postman_id": "ed4fe1a8-b87f-4773-8559-c079bc14331d",
 					"name": "Get Printjob Time Total",
 					"request": {
 						"method": "GET",
@@ -343,6 +383,7 @@
 					"response": []
 				},
 				{
+					"_postman_id": "b00911c2-28e1-4d52-b3b3-95410cdce1f8",
 					"name": "Camera Snapshot",
 					"request": {
 						"method": "GET",
@@ -367,6 +408,7 @@
 					"response": []
 				},
 				{
+					"_postman_id": "fb4c79ad-95b8-4b83-9906-8fd45e8ddff2",
 					"name": "Get Printjob Time Remaining",
 					"request": {
 						"method": "GET",
@@ -390,14 +432,39 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"_postman_id": "938596e3-586a-406e-b624-30ae2c40b479",
+					"name": "Get Machine Status",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "http://localhost:3042/api/machines/{{machineId}}/status",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3042",
+							"path": [
+								"api",
+								"machines",
+								"{{machineId}}",
+								"status"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
 		{
+			"_postman_id": "b099730b-fd58-4f38-9232-6f15b4a9313a",
 			"name": "Shopping Cart",
-			"description": null,
 			"item": [
 				{
+					"_postman_id": "a616eab2-f303-445c-a663-9a05f654da3e",
 					"name": "Create Items",
 					"request": {
 						"method": "POST",
@@ -428,6 +495,7 @@
 					"response": []
 				},
 				{
+					"_postman_id": "27ee8b9d-d0f8-4f60-984d-8cd64c6f180a",
 					"name": "Get Items",
 					"request": {
 						"method": "GET",
@@ -458,6 +526,7 @@
 					"response": []
 				},
 				{
+					"_postman_id": "a28c4dc7-c75d-4b6d-a36a-e001fcc1e91c",
 					"name": "Delete all Items",
 					"request": {
 						"method": "DELETE",
@@ -488,6 +557,7 @@
 					"response": []
 				},
 				{
+					"_postman_id": "bca868c1-898a-4f52-8a88-7e69dd42d94a",
 					"name": "Get Items by Id",
 					"request": {
 						"method": "GET",
@@ -519,6 +589,7 @@
 					"response": []
 				},
 				{
+					"_postman_id": "73fb26eb-4024-40c4-b1d3-5a469157138f",
 					"name": "Delete Items by Id",
 					"request": {
 						"method": "DELETE",
@@ -550,6 +621,7 @@
 					"response": []
 				},
 				{
+					"_postman_id": "00f2d925-6a35-4a20-8f17-567e8fe7316a",
 					"name": "Update Item",
 					"request": {
 						"method": "PUT",
@@ -581,6 +653,7 @@
 					"response": []
 				},
 				{
+					"_postman_id": "d6cea8a8-1aff-4194-9d85-13f0e855adc6",
 					"name": "Create Order",
 					"request": {
 						"method": "POST",
@@ -613,10 +686,11 @@
 			]
 		},
 		{
+			"_postman_id": "6fdec7f5-12ac-4524-972e-7ff99e5f21d7",
 			"name": "Orders",
-			"description": "",
 			"item": [
 				{
+					"_postman_id": "e8e4b2f5-28cc-451f-a077-dd5b59319250",
 					"name": "Get Orders",
 					"request": {
 						"method": "GET",
@@ -646,6 +720,7 @@
 					"response": []
 				},
 				{
+					"_postman_id": "398ee92d-10a7-4be2-b9c8-094dddfdb0e5",
 					"name": "Get Order by id",
 					"request": {
 						"method": "GET",
@@ -676,6 +751,7 @@
 					"response": []
 				},
 				{
+					"_postman_id": "8fa34357-f977-4cf1-96c5-b20df40ad032",
 					"name": "Delete all Orders",
 					"request": {
 						"method": "DELETE",
@@ -707,10 +783,11 @@
 			]
 		},
 		{
+			"_postman_id": "6ca96366-56e5-4237-9985-71866bd8c462",
 			"name": "Objects",
-			"description": "",
 			"item": [
 				{
+					"_postman_id": "554cab87-993c-469d-a67f-35eefb946cf0",
 					"name": "Get all Objects",
 					"request": {
 						"method": "GET",
@@ -740,6 +817,7 @@
 					"response": []
 				},
 				{
+					"_postman_id": "a36ac01e-a8d2-4f65-ac00-846a4d83a4ea",
 					"name": "Create object",
 					"request": {
 						"method": "POST",
@@ -771,10 +849,11 @@
 			]
 		},
 		{
+			"_postman_id": "4d90747a-8758-4924-a6d2-b34e41626483",
 			"name": "Materials",
-			"description": "",
 			"item": [
 				{
+					"_postman_id": "8fd5b43b-19e9-44f9-9cd5-09e9af14b31d",
 					"name": "Get all materials",
 					"request": {
 						"method": "GET",
@@ -812,10 +891,11 @@
 			]
 		},
 		{
+			"_postman_id": "16499e19-1421-4b6b-80a1-bd36339b0c30",
 			"name": "MachineTypes",
-			"description": "",
 			"item": [
 				{
+					"_postman_id": "cfce376e-5dd3-4156-aa7e-7c5009253912",
 					"name": "Get all machines types",
 					"request": {
 						"method": "GET",
@@ -845,6 +925,183 @@
 									"key": "lang",
 									"value": "en"
 								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"_postman_id": "51df532f-bbe8-4ed7-9ac9-16b25c86bcd3",
+			"name": "LocalObjects",
+			"item": [
+				{
+					"_postman_id": "c524cc22-6615-46b9-89c3-e50fa1d5fb5a",
+					"name": "Create local object",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file"
+								},
+								{
+									"key": "title",
+									"value": "Klammer_1",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:3042/api/objects/local",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3042",
+							"path": [
+								"api",
+								"objects",
+								"local"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"_postman_id": "57ac93d7-9891-4f2b-8c45-a3e801b08aee",
+					"name": "Get all local objects",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"value": "",
+									"type": "file"
+								},
+								{
+									"key": "title",
+									"value": "Klammer_1",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:3042/api/objects/local/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3042",
+							"path": [
+								"api",
+								"objects",
+								"local",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"_postman_id": "6bd14798-e80a-4d1b-9096-e1e0cbef0308",
+					"name": "Get specific local object",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"value": "",
+									"type": "file"
+								},
+								{
+									"key": "title",
+									"value": "Klammer_1",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:3042/api/objects/local/5b62f9383a29ad7631d4ee54",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3042",
+							"path": [
+								"api",
+								"objects",
+								"local",
+								"5b62f9383a29ad7631d4ee54"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"_postman_id": "1ebd0830-e79c-4265-b6bf-cab05dba9505",
+					"name": "Get specific local objects image",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"value": "",
+									"type": "file"
+								},
+								{
+									"key": "title",
+									"value": "Klammer_1",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:3042/api/objects/local/5b62f9383a29ad7631d4ee54/image",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3042",
+							"path": [
+								"api",
+								"objects",
+								"local",
+								"5b62f9383a29ad7631d4ee54",
+								"image"
 							]
 						}
 					},

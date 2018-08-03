@@ -36,7 +36,7 @@ self.Object_Query = {
         },
         lang: languageProperty
     },
-    required: ['materials', 'machines', 'lang'],
+    required: [ 'lang'],
     additionalProperties: false
 };
 

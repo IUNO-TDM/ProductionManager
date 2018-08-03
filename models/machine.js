@@ -9,6 +9,5 @@ var MachineSchema = new mongoose.Schema({
     variant: String,
     auth_id: String,
     auth_key: String
-}, { _id: false });
-
+});
 module.exports = mongoose.model('Machine', MachineSchema);
