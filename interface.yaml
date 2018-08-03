@@ -249,7 +249,6 @@ paths:
       responses:
         200:
           description: "the name"
-          
   /machines/{machineId}/status:
     get:
       tags: 
@@ -267,7 +266,6 @@ paths:
       responses:
         200:
           description: "the status"
-          
   /machines/{machineId}/printjob:
     get:
       tags: 
@@ -370,7 +368,6 @@ paths:
       responses:
         200:
           description: "the printjobs remaining time"
-  
   /machines/{machineId}/camera/stream:
     get:
       tags: 
@@ -403,9 +400,444 @@ paths:
       responses:
         200:
           description: "the snapshot"
+  /machinestypes:
+    get:
+      tags: 
+      - "machine types"
+      summary: "Gets the machinetypes defined in the TDM"
+      parameters: 
+      - name: lang
+        in: "query"
+        description: "defines the language the texts should be returned"
+        required: true
+        type: "string"
+      produces: 
+      - "application/json"
+      responses:
+        200:
+          description: "an array of machine types"
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Component'
+  /materials:
+    get:
+      tags: 
+      - "materials"
+      summary: "Gets the materials defined in the TDM"
+      parameters: 
+      - name: lang
+        in: "query"
+        description: "defines the language the texts should be returned"
+        required: true
+        type: "string"
+      produces: 
+      - "application/json"
+      responses:
+        200:
+          description: "an array of material types"
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Component'
+              
+  /shopping_cart/items:
+    post:
+      tags:
+      - "shopping cart"
+      summary: "adds a item to the shopping cart"
+      description: "if an item with this objectid exists, the item is updated in the amount"
+      parameters:
+      - name: "item"
+        in: "body"
+        description: "the item"
+        required: true
+        schema:
+          $ref: '#/definitions/Item'
+      produces: 
+      - "application/json"
+      responses:
+        200:
+          description: "the item in the shopping cart"
+          schema:
+            $ref: '#/definitions/Item'
+    get:
+      tags:
+      - "shopping cart"
+      summary: "returns all items in the shopping cart"
+      produces: 
+      - "application/json"
+      responses:
+        200:
+          description: "the items in the shopping cart"
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Item'
+    delete:
+      tags:
+      - "shopping cart"
+      summary: "deletes all items in the shopping cart"
+      responses:
+        200:
+          description: "the items in the shopping cart"
+              
+  /shopping_cart/items/{itemId}:
+    get:
+      tags:
+      - "shopping cart"
+      summary: "returns a item in the shopping cart"
+      parameters:
+      - name: "itemId"
+        in: "path"
+        description: "ID of item to return"
+        required: true
+        type: "string"
+      produces: 
+      - "application/json"
+      responses:
+        200:
+          description: "the item in the shopping cart"
+          schema:
+            $ref: '#/definitions/Item'
+    put:
+      tags:
+      - "shopping cart"
+      summary: "updates a item in the shopping cart"
+      parameters:
+      - name: "itemId"
+        in: "path"
+        description: "ID of item to update"
+        required: true
+        type: "string"
+      
+      - name: "item"
+        in: "body"
+        description: "the item"
+        required: true
+        schema:
+          $ref: '#/definitions/Item'
+      produces: 
+      - "application/json"
+      responses:
+        200:
+          description: "the item in the shopping cart"
+          schema:
+            $ref: '#/definitions/Item'
+    delete:
+      tags:
+      - "shopping cart"
+      summary: "deletes a item in the shopping cart"
+      parameters:
+      - name: "itemId"
+        in: "path"
+        description: "ID of item to delete"
+        required: true
+        type: "string"
+      produces: 
+      - "application/json"
+      responses:
+        200:
+          description: "the item in the shopping cart"
+          schema:
+            $ref: '#/definitions/Item'
+  /shopping_cart/order:
+    post:
+      tags:
+      - "shopping cart"
+      - "orders"
+      summary: "creates an order out of a shopping cart"
+      produces: 
+      - "application/json"
+      responses:
+        200:
+          description: "the resulting order"
+          schema:
+            $ref: '#/definitions/Order'          
   
+  /objects:
+    get:
+      tags:
+      - "objects"
+      summary: "gets a list of objects from TDM"
+      parameters: 
+      - name: "materials"
+        in: "query"
+        description: "the materialIds to filter the results, none equals all"
+        required: false
+        type: array
+        items:
+          type: string
+      - name: "machines"
+        in: "query"
+        description: "the machinetypeIds to filter the results, none equals all"
+        required: false
+        type: array
+        items:
+          type: string
+      - name: lang
+        in: "query"
+        description: "defines the language the texts should be returned"
+        required: true
+        type: "string"
+      produces: 
+      - "application/json"
+      responses:
+        200:
+          description: "the objects"
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Object' 
+  /objects/{objectId}/image:
+    get:
+      tags:
+      - "objects"
+      summary: "gets the image of a object"
+      parameters:
+      - name: "objectId"
+        in: "path"
+        description: "ID of object to return"
+        required: true
+        type: "string"
+      produces:
+      - "image/svg+xml"
+      - "image/png"
+      responses:
+        200:
+          description: "the image"
+  
+  /objects/{objectId}/binary:
+    get:
+      tags:
+      - "objects"
+      summary: "gets the binary of a object"
+      description: "only available, if this article was purchased once"
+      parameters:
+      - name: "objectId"
+        in: "path"
+        description: "ID of object to return"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "the image"
+  
+  /objects/local:
+    post:
+      tags: 
+      - "local objects"
+      summary: "uplaod a new object"
+      consumes: 
+      - "application/x-www-form-urlencoded"
+      - "multipart/form-data"
+      parameters: 
+      - name: file
+        description: "The ufp containing gcode and image"
+        in: formData
+        type: string
+        format: binary
+      - name: title
+        in: formData
+        type: string
+      responses:
+        200:
+          description: object created
+          headers:
+            Location:
+              type: string
+              description: "the path to the created object"
+    get:
+      tags:
+      - "local objects"
+      summary: "gets a list of local objects"
+      parameters: 
+      - name: "materials"
+        in: "query"
+        description: "the materialIds to filter the results, none equals all"
+        required: false
+        type: array
+        items:
+          type: string
+      - name: "machines"
+        in: "query"
+        description: "the machinetypeIds to filter the results, none equals all"
+        required: false
+        type: array
+        items:
+          type: string
+      - name: lang
+        in: "query"
+        description: "defines the language the texts should be returned"
+        required: true
+        type: "string"
+      produces: 
+      - "application/json"
+      responses:
+        200:
+          description: "the local objects"
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/LocalObject' 
+  
+   
+  /objects/local/{localObjectId}:
+    get:
+      tags:
+      - "local objects"
+      summary: "gets a local objects"
+      parameters: 
+      - name: "localObjectId"
+        in: "path"
+        description: "ID of object to return"
+        required: true
+        type: "string"
+      produces: 
+      - "application/json"
+      responses:
+        200:
+          description: "the local object"
+          schema:
+            $ref: '#/definitions/LocalObject' 
+              
+    delete:
+      tags:
+      - "local objects"
+      summary: "delete a local objects"
+      parameters: 
+      - name: "localObjectId"
+        in: "path"
+        description: "ID of object to delete"
+        required: true
+        type: "string"
+      produces: 
+      - "application/json"
+      responses:
+        200:
+          description: "deleted"
+          
+  /objects/local/{localObjectId}/image:
+    get:
+      tags:
+      - "objects"
+      summary: "gets the image of a local object"
+      parameters:
+      - name: "localObjectId"
+        in: "path"
+        description: "ID of object to return"
+        required: true
+        type: "string"
+      produces:
+      - "image/png"
+      responses:
+        200:
+          description: "the image"
+               
 definitions:
+  LocalObject:
+    type: object
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      description:
+        type: string
+      createdAt:
+        type: string
+      
+      materials:
+        type: array
+        items:
+          type: string
+      machines:
+        type: array
+        items:
+          type: string
 
+  Object:
+    type: object
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      description:
+        type: string
+      licenseFee:
+        type: integer
+      productCode:
+        type: integer
+      backgroundColor:
+        type: string
+      materials:
+        type: array
+        items:
+          $ref: '#/definitions/Component'
+      machines:
+        type: array
+        items:
+          $ref: '#/definitions/Component'
+        
+
+  Order:
+    type: object
+    properties:
+      items:
+        type: array
+        items:
+          type: object
+          properties:
+            objectId:
+              type: string
+            amount:
+              type: integer
+      offer:
+        type: object
+        properties:
+          id: 
+            type: string
+          bip21:
+            type: string
+      state:
+        type: string
+      createdAt:
+        type: string
+      
+  Item:
+    type: object
+    properties:
+      id:
+        type: "string"
+      objectId:
+        type: "string"
+      amount:
+        type: "integer"
+      updated:
+        type: "string"
+        
+  Component:
+    type: object
+    properties:
+      name:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      displayColor:
+        type: string
+      attributes:
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              type: string
+            name:
+              type: string
+  
   Machine:
     type: "object"
     properties:

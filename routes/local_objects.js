@@ -33,7 +33,7 @@ router.get('/', function (req, res, next) {
             return next(err);
         }
 
-        res.json(_.mapPick(products, ['_id', 'name', 'description', 'createdAt', 'materials', 'machines']));
+        res.json(_.mapPick(products, ['id', 'name', 'description', 'createdAt', 'materials', 'machines']));
     })
 });
 
@@ -43,7 +43,7 @@ router.get('/:id', function (req, res, next) {
             return next(err);
         }
 
-        res.json(_.pick(item, ['_id', 'name', 'description', 'createdAt', 'materials', 'machines']));
+        res.json(_.pick(item, ['id', 'name', 'description', 'createdAt', 'materials', 'machines']));
     })
 });
 

@@ -10,5 +10,4 @@ var LocalObjectSchema = new mongoose.Schema({
     machines: [String],
     materials: [String]
 });
-
 module.exports = mongoose.model('LocalObject', LocalObjectSchema);

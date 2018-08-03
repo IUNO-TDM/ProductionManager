@@ -7,6 +7,7 @@ var _ = require('lodash');
 const ams_adapter = require('../adapter/ams_adapter');
 const common = require('tdm-common');
 
+
 _.mapPick = function (objs, keys) {
     return _.map(objs, function (obj) {
         return _.pick(obj, keys)
@@ -72,8 +73,8 @@ router.post('/order',  function (req, res, next) {
                     if(err) {
                         console.error("Error on deleting shopping cart items", err);
                     }
-                    res.json(order)
-                    // res.json(_.pick(order, ['_id', 'orderNumber','articles', 'createdAt']));
+                    // res.json(order)
+                    res.json(_.pick(order, ['id', 'orderNumber','articles', 'createdAt']));
 
                 });
                 console.log("+++++++++++++++++ Order ++++++++++++++++++++++")
@@ -95,7 +96,7 @@ router.get('/items', function (req, res, next) {
             return next(err);
         }
 
-        res.json(_.mapPick(articles, ['_id', 'objectId', 'amount', 'updated']));
+        res.json(_.mapPick(articles, ['id', 'objectId', 'amount', 'updated']));
     });
 });
 
@@ -119,12 +120,12 @@ router.post('/items', function (req, res, next) {
             item.updated = Date.now();
             Item.findByIdAndUpdate(item._id, item, {new: true}, function (err, item2) {
                 if (err) return next(err);
-                res.json(_.pick(item2, ['_id', 'objectId', 'amount', 'updated']));
+                res.json(_.pick(item2, ['id', 'objectId', 'amount', 'updated']));
             });
         } else {
             Item.create(req.body, function (err, article) {
                 if (err) return next(err);
-                res.json(_.pick(article, ['_id', 'objectId', 'amount', 'updated']));
+                res.json(_.pick(article, ['id', 'objectId', 'amount', 'updated']));
             });
         }
     });
@@ -139,7 +140,7 @@ router.get('/items/:id', function (req, res, next) {
             return next(err);
         }
 
-        res.json(_.pick(item, ['_id', 'objectId', 'amount', 'updated']));
+        res.json(_.pick(item, ['id', 'objectId', 'amount', 'updated']));
     })
 });
 
@@ -149,7 +150,7 @@ router.delete('/items/:id', function (req, res, next) {
             return next(err);
         }
 
-        res.json(_.pick(item, ['_id', 'objectId', 'amount', 'updated']));
+        res.json(_.pick(item, ['id', 'objectId', 'amount', 'updated']));
     })
 });
 
@@ -159,7 +160,7 @@ router.delete('/items/:id', function (req, res, next) {
             return next(err);
         }
 
-        res.json(_.pick(item, ['_id', 'objectId', 'amount', 'updated']));
+        res.json(_.pick(item, ['id', 'objectId', 'amount', 'updated']));
     })
 });
 
@@ -169,7 +170,7 @@ router.put('/items/:id', function (req, res, next) {
             return next(err);
         }
 
-        res.json(_.pick(item, ['_id', 'objectId', 'amount', 'updated']));
+        res.json(_.pick(item, ['id', 'objectId', 'amount', 'updated']));
     })
 });
 
