@@ -49,7 +49,7 @@ app.use('/api/machines', machines);
 app.use('/api/shopping_cart', shopping_cart);
 app.use('/api/orders', orders);
 app.use('/api/objects', objects);
-app.use('/api/objects/local', local_objects);
+app.use('/api/localobjects', local_objects);
 app.use('/api/materials', materials);
 app.use('/api/machinetypes', machine_types);
 

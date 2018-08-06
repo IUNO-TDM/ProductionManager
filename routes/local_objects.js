@@ -9,7 +9,8 @@ const path = require('path');
 const CONFIG = require('../config/config_loader');
 const logger = require('../global/logger');
 const gcode_helper = require('../services/gcode_helper_service');
-
+const ultimaker_printer_adapter = require('../adapter/ultimaker_printer_adapter');
+const Machine = require('../models/machine');
 var _ = require('lodash');
 _.mapPick = function (objs, keys) {
     return _.map(objs, function (obj) {
@@ -62,22 +63,22 @@ router.get('/:id/image', function (req, res, next) {
     })
 });
 
-router.delete('/:id', function (req, res, next){
+router.delete('/:id', function (req, res, next) {
     LocalObject.findById(req.params.id, function (err, item) {
         if (err) {
             return next(err);
         }
-        if(!item){
+        if (!item) {
             return res.sendStatus(404);
         }
         deleteFile(item.image_filepath);
         deleteFile(item.gcode_filepath);
-        LocalObject.findByIdAndRemove(req.params.id, function (err,item){
-           if(err){
-               next(err);
-           } else{
-               res.sendStatus(200);
-           }
+        LocalObject.findByIdAndRemove(req.params.id, function (err, item) {
+            if (err) {
+                next(err);
+            } else {
+                res.sendStatus(200);
+            }
         });
     })
 });
@@ -147,5 +148,40 @@ router.post('/', require('../services/file_upload_handler'), function (req, res,
         });
     });
 });
+
+
+router.post('/:id/print', function (req, res, next) {
+    LocalObject.findById(req.params.id, function (err, object) {
+        if (err) {
+            return next(err);
+        }
+        if (!object) {
+            return res.status(404), res.send("No local object with this id");
+        }
+
+        Machine.findById(req.body, function (err, machine) {
+            if (err) {
+                return res.next(err);
+            }
+            if (!machine) {
+                return res.status(404), res.send("Machine not found");
+            }
+            if (!machine.auth_id && !machine.auth_key) {
+                return res.status(405), res.send("not authenticated at the machine");
+            }
+            ultimaker_printer_adapter.uploadPrintjob(machine.hostname, machine.auth_id, machine.auth_key, object.name, object.gcode_filepath, function (err, data) {
+                if (err) {
+                    return res.status(500).send(data);
+                }
+                res.status(200);
+                res.send(data);
+
+            });
+
+        });
+    })
+
+});
+
 
 module.exports = router;

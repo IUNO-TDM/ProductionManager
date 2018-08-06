@@ -623,7 +623,7 @@ paths:
         200:
           description: "the image"
   
-  /objects/local:
+  /localobjects:
     post:
       tags: 
       - "local objects"
@@ -682,7 +682,7 @@ paths:
               $ref: '#/definitions/LocalObject' 
   
    
-  /objects/local/{localObjectId}:
+  /localobjects/{localObjectId}:
     get:
       tags:
       - "local objects"
@@ -717,10 +717,10 @@ paths:
         200:
           description: "deleted"
           
-  /objects/local/{localObjectId}/image:
+  /localobjects/{localObjectId}/image:
     get:
       tags:
-      - "objects"
+      - "local objects"
       summary: "gets the image of a local object"
       parameters:
       - name: "localObjectId"
