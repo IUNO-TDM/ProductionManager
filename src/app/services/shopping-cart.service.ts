@@ -62,11 +62,11 @@ export class ShoppingCartService {
    * @param machineId the id of the machine which this order is placed for.
    * @returns an observable with the http request.
    */
-  order(machineId) {
+  order(hsmId) {
     const url = this.apiUrl + "shopping_cart/order"
 
     const body = {
-      machineId: machineId
+      hsmId: hsmId
     }
     return this.http.post(url, body).pipe(
       tap(val => this.updateItems())

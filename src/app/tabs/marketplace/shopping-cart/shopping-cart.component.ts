@@ -13,7 +13,7 @@ import { Router } from '@angular/router';
 export class ShoppingCartComponent implements OnInit {
   items: ShoppingCartItem[] = []
   machines: Machine[] = []
-  selectedMachineId: string = null
+  selectedHsmId: string = null
 
   constructor(
     private router: Router,
@@ -27,11 +27,21 @@ export class ShoppingCartComponent implements OnInit {
       this.items = items
     })
 
-    this.machineService.machines.subscribe(machines => {
-      this.machines = machines
-      if (!this.selectedMachineId && machines.length > 0) {
-        this.selectedMachineId = machines[0]._id
-      }
+    this.machineService.updateMachines(true, () => {
+      this.machineService.machines.subscribe(machines => {
+        this.machines = machines
+        console.log(this.machines)
+        if (!this.selectedHsmId && machines.length > 0) {
+          machines.forEach(machine => {
+            if (!this.selectedHsmId) {
+              if (machine.hsmIds && machine.hsmIds.length > 0) {
+                this.selectedHsmId = machine.hsmIds[0]
+              }
+            }
+          });
+          // this.selectedHsmId = machines[0]._id
+        }
+      })
     })
   }
 
@@ -45,10 +55,9 @@ export class ShoppingCartComponent implements OnInit {
   }
 
   onOrderClicked() {
-    this.shoppingCartService.order(this.selectedMachineId).subscribe(result => {
+    this.shoppingCartService.order(this.selectedHsmId).subscribe(result => {
       this.router.navigateByUrl('marketplace')
     })
-    console.log(this.selectedMachineId)
   }
 
 }

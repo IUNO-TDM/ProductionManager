@@ -11,6 +11,7 @@ var OrderSchema = new mongoose.Schema({
         id: String,
         bip21: String,
     },
+    hsmId: String,
     state: String,
     createdAt: { type: Date, default: Date.now }
 });

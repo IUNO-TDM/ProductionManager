@@ -45,7 +45,6 @@ export class MarketplaceComponent implements OnInit {
   }
 
   private initMarketplaceComponent() {
-    console.log("Init!")
     this.machineService.getMachineTypes().subscribe(machineTypes => {
       this.machineTypesSelected = machineTypes.map(machineType => machineType.id)
       this.machineTypes = machineTypes
@@ -63,7 +62,7 @@ export class MarketplaceComponent implements OnInit {
 
   onAddToShoppingCart(object) {
     this.shoppingCartService.addToShoppingCart(object).subscribe(result => {
-      console.log(result)
+      //TODO: handle return value
     })
   }
 

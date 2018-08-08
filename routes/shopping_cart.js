@@ -6,6 +6,8 @@ var Order = require('../models/order');
 var _ = require('lodash');
 const ams_adapter = require('../adapter/ams_adapter');
 const common = require('tdm-common');
+const orderStateMachine = require('../models/order_state_machine')
+
 
 _.mapPick = function (objs, keys) {
     return _.map(objs, function (obj) {
@@ -39,13 +41,8 @@ router.post('/order',  function (req, res, next) {
             }
         })
 
-        // var order = {
-        //     orderNumber:42,
-        //     items: items,
-        // };
-
         let offerRequest = {
-            hsmId: "3-1234567",
+            hsmId: req.body.hsmId,
             items: orderItems
         };
 
@@ -61,7 +58,8 @@ router.post('/order',  function (req, res, next) {
                     id: offer.id,
                     bip21: offer.bip21
                 },
-                state: "waitingPayment"
+                hsmId: offerRequest.hsmId,
+                state: "initial"
             }
 
             Order.create(order, function(err, order) {
@@ -73,18 +71,9 @@ router.post('/order',  function (req, res, next) {
                         console.error("Error on deleting shopping cart items", err);
                     }
                     res.json(order)
-                    // res.json(_.pick(order, ['_id', 'orderNumber','articles', 'createdAt']));
-
                 });
-                console.log("+++++++++++++++++ Order ++++++++++++++++++++++")
-                console.log(order)
-                console.log("++++++++++++++++++++++++++++++++++++++++++++++")
+                orderStateMachine.orderCreated(order)
             })
-
-            console.log("+++++++++++++++++ Order2 ++++++++++++++++++++++")
-            console.log(order)
-            console.log("++++++++++++++++++++++++++++++++++++++++++++++")
-
         });
     });
 });

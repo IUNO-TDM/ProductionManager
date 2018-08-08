@@ -14,15 +14,17 @@ _.mapPick = function (objs, keys) {
     })
 };
 
-router.get('/', function (req, res, next) {
-    Machine.find(function (err, products) {
-        if (err) {
-            return next(err);
-        }
+// router.get('/', function (req, res, next) {
+//     Machine.find(function (err, products) {
+//         if (err) {
+//             return next(err);
+//         }
 
-        res.json(_.mapPick(products, ['_id', 'displayname', 'variant', 'hostname']));
-    })
-});var express = require('express');
+//         res.json(_.mapPick(products, ['_id', 'displayname', 'variant', 'hostname']));
+//     })
+// });
+
+var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose');
 var Machine = require('../models/machine');
@@ -30,7 +32,7 @@ var printer_adapter = require('../adapter/ultimaker_printer_adapter');
 var async = require('async');
 var parseString = require('xml2js').parseString;
 var _ = require('lodash');
-var request = require('request');
+const licenseManager = require('../adapter/license_manager_adapter')
 
 _.mapPick = function (objs, keys) {
     return _.map(objs, function (obj) {
@@ -39,13 +41,23 @@ _.mapPick = function (objs, keys) {
 };
 
 router.get('/', function (req, res, next) {
-    Machine.find(function (err, products) {
-        if (err) {
-            return next(err);
-        }
+    if (req.param('refreshHsmIds') == 'true') {
+        licenseManager.updateMachines((err, machines) => {
+            if (err) {
+                return next(err);
+            }
 
-        res.json(_.mapPick(products, ['_id', 'displayname', 'variant', 'hostname']));
-    })
+            res.json(_.mapPick(machines, ['_id', 'displayname', 'variant', 'hostname', 'hsmIds']));
+        })
+    } else {
+        Machine.find(function (err, machines) {
+            if (err) {
+                return next(err);
+            }
+
+            res.json(_.mapPick(machines, ['_id', 'displayname', 'variant', 'hostname', 'hsmIds']));
+        })
+    }
 });
 
 router.get('/:id', function (req, res, next) {
@@ -54,7 +66,7 @@ router.get('/:id', function (req, res, next) {
             return next(err);
         }
 
-        res.json(_.pick(post, ['_id', 'displayname', 'variant', 'hostname']));
+        res.json(_.pick(post, ['_id', 'displayname', 'variant', 'hostname', 'hsmIds']));
     })
 });
 
@@ -91,7 +103,7 @@ router.get('/:id/authentication', function (req, res, next) {
         }
         if (!machine.auth_id || !machine.auth_key) {
             res.status(200);
-            return res.send({"message": "not authenticated"});
+            return res.send({ "message": "not authenticated" });
         }
         printer_adapter.checkAuthentication(machine.hostname, machine.auth_id, function (err, data) {
             res.send(data);
@@ -106,7 +118,7 @@ router.get('/:id/authentication/verify', function (req, res, next) {
         }
         if (!machine.auth_id || !machine.auth_key) {
             res.status(200);
-            return res.send({"message": "not authenticated"});
+            return res.send({ "message": "not authenticated" });
         }
         printer_adapter.verifyAuthentication(machine.hostname, machine.auth_id, machine.auth_key, function (err, data) {
             res.send(data);
@@ -121,12 +133,12 @@ router.get('/:id/materials/active', function (req, res, next) {
         }
 
         async.series([
-                function (callback) {
-                    printer_adapter.getActiveMaterial(machine.hostname, 0, callback)
-                },
-                function (callback) {
-                    printer_adapter.getActiveMaterial(machine.hostname, 1, callback)
-                }], function (err, results) {
+            function (callback) {
+                printer_adapter.getActiveMaterial(machine.hostname, 0, callback)
+            },
+            function (callback) {
+                printer_adapter.getActiveMaterial(machine.hostname, 1, callback)
+            }], function (err, results) {
                 if (err) {
                     res.status(500);
                     res.send(err.message);
@@ -194,7 +206,7 @@ router.get('/:id/materials/:materialid/short', function (req, res, next) {
                         const material = name.material[0];
                         const color = name.color[0];
 
-                        res.send({'brand': brand, 'material': material, 'color': color});
+                        res.send({ 'brand': brand, 'material': material, 'color': color });
                     }
                 })
 
@@ -435,7 +447,7 @@ router.get('/:id/authentication', function (req, res, next) {
         }
         if (!machine.auth_id || !machine.auth_key) {
             res.status(200);
-            return res.send({"message": "not authenticated"});
+            return res.send({ "message": "not authenticated" });
         }
         printer_adapter.checkAuthentication(machine.hostname, machine.auth_id, function (err, data) {
             res.send(data);
@@ -450,7 +462,7 @@ router.get('/:id/authentication/verify', function (req, res, next) {
         }
         if (!machine.auth_id || !machine.auth_key) {
             res.status(200);
-            return res.send({"message": "not authenticated"});
+            return res.send({ "message": "not authenticated" });
         }
         printer_adapter.verifyAuthentication(machine.hostname, machine.auth_id, machine.auth_key, function (err, data) {
             res.send(data);
@@ -465,12 +477,12 @@ router.get('/:id/materials/active', function (req, res, next) {
         }
 
         async.series([
-                function (callback) {
-                    printer_adapter.getActiveMaterial(machine.hostname, 0, callback)
-                },
-                function (callback) {
-                    printer_adapter.getActiveMaterial(machine.hostname, 1, callback)
-                }], function (err, results) {
+            function (callback) {
+                printer_adapter.getActiveMaterial(machine.hostname, 0, callback)
+            },
+            function (callback) {
+                printer_adapter.getActiveMaterial(machine.hostname, 1, callback)
+            }], function (err, results) {
                 if (err) {
                     res.status(500);
                     res.send(err.message);
@@ -538,7 +550,7 @@ router.get('/:id/materials/:materialid/short', function (req, res, next) {
                         const material = name.material[0];
                         const color = name.color[0];
 
-                        res.send({'brand': brand, 'material': material, 'color': color});
+                        res.send({ 'brand': brand, 'material': material, 'color': color });
                     }
                 })
 

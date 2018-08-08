@@ -11,8 +11,10 @@
           <button mat-raised-button color="primary" (click)="onRemoveItem(item)">Entfernen</button>
         </div>
       </div>
-      <mat-radio-group [(ngModel)]="selectedMachineId" fxLayout="column">
-        <mat-radio-button *ngFor="let machine of machines" value="{{machine._id}}" fxLayoutGap="15px">{{machine.displayname}}</mat-radio-button>
+      <mat-radio-group [(ngModel)]="selectedHsmId" fxLayout="column">
+        <ng-container *ngFor="let machine of machines">
+          <mat-radio-button *ngFor="let hsmId of machine.hsmIds" value="{{hsmId}}" fxLayoutGap="15px">{{machine.displayname}} ({{hsmId}})</mat-radio-button>
+        </ng-container>
       </mat-radio-group>
       <div class="order-section">
         <button mat-raised-button color="primary" (click)="onOrderClicked()">Kauf abschließen</button>

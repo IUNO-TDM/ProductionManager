@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Order } from '../models/order';
+import { forEach } from '../../../node_modules/@angular/router/src/utils/collection';
 
 @Injectable({
   providedIn: 'root'
@@ -14,6 +15,13 @@ export class OrderService {
     private http: HttpClient,
   ) { }
 
+  private mapOrders(orders) {
+    return orders.map(order => {
+      order.id = order['_id']
+      return order
+    })
+  }
+
   /**
    * Returns the open orders from the marketplace.
    * @param 
@@ -21,14 +29,25 @@ export class OrderService {
    */
   getOrders() {
     const url = this.apiUrl + "orders"
-    return this.http.get<Order[]>(url)
+    return this.http.get<Order[]>(url).pipe(
+      map(orders => this.mapOrders(orders))
+    )
   }
 
   getOpenOrders() {
     const url = this.apiUrl + "orders"
     return this.http.get<Order[]>(url).pipe(
-      map(orders => orders.filter(order => order.state !== "completed" && order.state !== "canceled"))
+      map(orders => orders.filter(order => order.state !== "completed" && order.state !== "canceled")),
+      map(orders => this.mapOrders(orders))
     )
+  }
+
+  updateLicense(order) {
+    const url = this.apiUrl + "orders/"+order._id+"/licenseupdate"
+    return this.http.get<Order[]>(url)
+    // .pipe(
+    //   map(orders => this.mapOrders(orders))
+    // )
   }
 
 }

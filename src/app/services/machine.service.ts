@@ -18,14 +18,17 @@ export class MachineService {
   constructor(
     private http: HttpClient,
   ) {
-    this.updateMachines()
+    this.updateMachines(true, null)
   }
 
-  updateMachines() {
-    const url = this.apiUrl + "machines";
+  updateMachines(refreshHsmIds: boolean, callback) {
+    const url = this.apiUrl + "machines?refreshHsmIds=" + (refreshHsmIds ? "true" : false);
+    console.log("updating machines with url: "+url)
     this.http.get<Machine[]>(url).subscribe(machines => {
       this._machines.next(machines)
-      machines
+      if (callback) {
+        callback()
+      }
     })
   }
 
@@ -52,6 +55,10 @@ export class MachineService {
         id: '763c926e-a5f7-4ba0-927d-b4e038ea2735',
         name: 'Ultimaker ABS Silver Metallic'
       },
+      {
+        id: '5df7afa6-48bd-4c19-b314-839fe9f08f1f',
+        name: 'Ultimaker ABS Red'
+      }
     ])
   }
 

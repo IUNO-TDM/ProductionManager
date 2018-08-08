@@ -2,17 +2,17 @@
  * Created by goergch on 09.03.17.
  */
 
-const logger = require('../global/logger');
-const io = require('socket.io-client');
-const CONFIG = require('../config/config_loader');
-// const orderDB = require('../database/orderDB');
-const licenseManager = require('../adapter/license_manager_adapter');
-const additiveMachineService = require('../adapter/ams_adapter');
-const EventEmitter = require('events').EventEmitter;
-const util = require('util');
-const authServer = require('../adapter/auth_service_adapter');
+const logger = require('../global/logger')
+const io = require('socket.io-client')
+const CONFIG = require('../config/config_loader')
+// const orderDB = require('../database/orderDB')
+const EventEmitter = require('events').EventEmitter
+const util = require('util')
+const authServer = require('../adapter/auth_service_adapter')
 const Machine = require('../models/machine')
 const Order = require('../models/order')
+const orderStateMachine = require('../models/order_state_machine')
+const ams_adapter = require('../adapter/ams_adapter');
 
 const LicenseService = function () {
     const self = this;
@@ -35,7 +35,7 @@ const LicenseService = function () {
     };
 };
 
-const license_service = new LicenseService();7
+const license_service = new LicenseService();
 util.inherits(LicenseService, EventEmitter);
 
 license_service.socket = io(CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE
@@ -87,6 +87,7 @@ license_service.socket.on('reconnect_attempt', function (number) {
 license_service.socket.on('updateAvailable', function (data) {
     logger.debug("[license_client] License update available for " + JSON.stringify(data));
     // const orderStateMachine = require('../models/order_state_machine');
+    const orderStateMachine = require('../models/order_state_machine')
 
     if (data) {
         // get order from database
@@ -94,15 +95,12 @@ license_service.socket.on('updateAvailable', function (data) {
             if (!order || error) {
                 return
             }
-            order.state = "waitingLicenseAvailable"
-            order.save((error, savedOrder) => {
-                if (error) {
-                    return
-                }
-            })
-            // console.log("------------------------------")
-            // console.log(order)
-            // console.log("------------------------------")
+            orderStateMachine.licenseUpdateAvailable(order)
+            // order.save((error, savedOrder) => {
+            //     if (error) {
+            //         return
+            //     }
+            // })
         })
         return;
         // const order = orderDB.getOrderByOfferId(data.offerId);
@@ -138,83 +136,25 @@ license_service.registerUpdates = function () {
             })
         }
     })
+
+    //FIXME: implement this!
+    // logger.info('[license_client] querying for existing orders.');
+    // Order.find({state: { $ne: 'completed'} }, function(err, orders) {
+    //     if (orders) {
+    //         orders.forEach(order => {
+    //             ams_adapter.requestLicenseUpdate( order.id, () => {
+    //             })            
+    //         })
+    //     }
+    //     console.log("---")
+    //     console.log(orders)
+    //     console.log("---")
+    // })
+
 };
 
 license_service.getConnectionStatus = function () {
     return this.socket.connected;
 };
-
-function updateCMDongle(hsmId, callback) {
-    if (license_service.isUpdating) {
-        logger.warn('[license_service] Update cycle is already running. Retry after 10 seconds');
-        return setTimeout(() => {
-            updateCMDongle(hsmId, callback);
-        }, 10000);
-    }
-
-    license_service.isUpdating = true;
-    logger.debug('[license_service] Starting update cycle for hsmId: ' + hsmId);
-
-    licenseManager.getContextForHsmId(hsmId, function (err, context) {
-        if (err || !context) {
-            logger.crit('[license_service] could not get context from license manager');
-            license_service.isUpdating = false;
-            return callback(err);
-        }
-
-        additiveMachineService.getLicenseUpdate(hsmId, context, function (err, update, isOutOfDate) {
-            if (err || !context) {
-                logger.crit('[license_service] could not get license update from webservice');
-                license_service.isUpdating = false;
-                return callback(err);
-            }
-
-            licenseManager.updateHsm(hsmId, update, function (err, success) {
-                if (err || !success) {
-                    logger.crit('[license_service] could not update hsm on license manager');
-
-                    additiveMachineService.confirmLicenseUpdate(hsmId, context, function (err) {
-                        license_service.isUpdating = false;
-
-                        if (err) {
-                            logger.crit('[license_service] could not confirm update on license manager');
-                            return callback(err);
-                        }
-
-                        logger.warn('[license_service] CM-Dongle context is out of date. Restarting update cycle');
-                        return updateCMDongle(hsmId, callback)
-                    });
-                }
-                else {
-                    licenseManager.getContextForHsmId(hsmId, function (err, context) {
-                        if (err || !context) {
-                            logger.crit('[license_service] could not get context from license manager');
-                            license_service.isUpdating = false;
-                            return callback(err);
-                        }
-
-                        additiveMachineService.confirmLicenseUpdate(hsmId, context, function (err) {
-                            license_service.isUpdating = false;
-
-                            if (err) {
-                                logger.crit('[license_service] could not confirm update on license manager');
-                                return callback(err);
-                            }
-
-                            // Restart the update process as long the returned context is out of date
-                            if (isOutOfDate) {
-                                logger.warn('[license_service] CM-Dongle context is out of date. Restarting update cycle');
-                                return updateCMDongle(hsmId, callback)
-                            }
-
-                            callback(null)
-                        });
-                    });
-                }
-            });
-        });
-    });
-}
-
 
 module.exports = license_service;

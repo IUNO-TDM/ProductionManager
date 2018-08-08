@@ -1,17 +1,34 @@
 <ng-container *ngIf="order">
   <div fxLayout="row" fxLayoutAlign="center center" style='height: 100%;'>
     <div fxLayout="row" class="bill">
-      <ngx-qrcode [qrc-element-type]="elementType" [qrc-value]="order.offer.bip21"></ngx-qrcode>
-      <div class="bill" fxLayout="column">
+      <ng-container *ngIf="order.state == 'completed'">
+        <div class="thankyou" fxLayout="column" fxLayoutAlign="center center">
+            <div class="headline">Vielen Dank für Ihren Einkauf</div>
+            <div class="text">Die gekauften Objekte können Sie unter "Gekaufte Objekte" einsehen und ausdrucken.</div>
+            <div>
+            <button mat-raised-button color="primary" (click)="onPurchasedObjectsClicked()">Gekaufte Objekte</button>
+          </div>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="order.state == 'waitingForLicenseUpdate'">
+        <ngx-qrcode [qrc-element-type]="elementType" [qrc-value]="order.offer.bip21"></ngx-qrcode>
+      </ng-container>
+      <ng-container *ngIf="order.state == 'waitingForLicenseUpdate' || order.state == 'licenseUpdateAvailable'">
+        <div class="bill" fxLayout="column">
           <div class="title">Rechnung</div>
           <div class="items" fxLayout="column">
-          <div *ngFor="let item of order.items" fxLayout="row" fxLayoutGap="15px">
-            <div>{{item._id}}</div>
-            <div>{{item.amount}}</div>
+            <div *ngFor="let item of order.items" fxLayout="row" fxLayoutGap="15px">
+              <div>{{item._id}}</div>
+              <div>{{item.amount}}</div>
+            </div>
+            <div class="total">Gesamtbetrag: {{amount}} IUNO</div>
+            <div class="status">Status: {{order.state}}</div>
+            <div *ngIf="order.state == 'licenseUpdateAvailable'">
+              <button mat-raised-button color="primary" (click)="onUpdateLicenseClicked()">Update license</button>
+            </div>
           </div>
-          <div class="total">Gesamtbetrag: {{amount}} IUNO</div>          
         </div>
-      </div>
+      </ng-container>
     </div>
   </div>
-</ng-container>
+  </ng-container>

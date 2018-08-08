@@ -1,4 +1,5 @@
 const logger = require('../../global/logger');
+const Machine = require('../../models/machine');
 
 const self = require('./default');
 
@@ -15,6 +16,12 @@ self.updateHsm = function (hsmId, update, callback) {
 self.getLicenseInformationForProductCodeOnHsm = function (productCode, hsmId, callback) {
     callback(null, 9999);
 };
+
+self.updateMachines = function(callback) {
+    Machine.find(function (err, machines) {
+        callback(err, machines)
+    })
+}
 
 // self.getHsmId = function (callback) {
 //     callback(null, '9-9999999');

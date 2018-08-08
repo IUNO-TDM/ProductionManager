@@ -248,7 +248,41 @@ self.createOfferForRequest = function (offerRequest, callback) {
 
 };
 
-self.getLicenseUpdate = function (hsmId, context, accessToken, callback) {
+//FIXME: implement this!
+// self.requestLicenseUpdate = function(offerId, callback) {
+//     if (typeof(callback) !== 'function') {
+//         return logger.info('[ADDITIVE_MACHINE_SERVICE_adapter] Callback not registered');
+//     }
+
+//     if (!offerId) {
+//         return logger.info('[ADDITIVE_MACHINE_SERVICE_adapter] missing function arguments');
+//     }
+
+//     buildOptionsForRequest(
+//         'POST',
+//         CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.PROTOCOL,
+//         CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.HOST,
+//         CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.PORT,
+//         '/offers/' + offerId + '/request_license_update',
+//         {}, function (err, options) {
+//             request(options, function (e, r, jsonData) {
+//                 console.log(e)
+//                 // const err = logger.logRequestAndResponse(e, options, r, jsonData);
+
+//                 // let rau = null;
+//                 // let isOutOfDate = false;
+//                 // if (jsonData) {
+//                 //     rau = jsonData['RAU'];
+//                 //     isOutOfDate = jsonData['isOutOfDate']
+//                 // }
+
+//                 callback();
+//             });
+//         }
+//     );
+// }
+
+self.getLicenseUpdate = function (hsmId, context, callback) {
     if (typeof(callback) !== 'function') {
         return logger.info('[ADDITIVE_MACHINE_SERVICE_adapter] Callback not registered');
     }
@@ -264,7 +298,6 @@ self.getLicenseUpdate = function (hsmId, context, accessToken, callback) {
         CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.PORT,
         '/cmdongle/' + hsmId + '/update',
         {}, function (err, options) {
-            options.headers.authorization = 'Bearer ' + accessToken;
 
             options.body = {
                 RAC: context
@@ -288,7 +321,7 @@ self.getLicenseUpdate = function (hsmId, context, accessToken, callback) {
 
 };
 
-self.confirmLicenseUpdate = function (hsmId, context, accessToken, callback) {
+self.confirmLicenseUpdate = function (hsmId, context, callback) {
     if (typeof(callback) !== 'function') {
         return logger.info('[ADDITIVE_MACHINE_SERVICE_adapter] Callback not registered');
     }
@@ -304,7 +337,6 @@ self.confirmLicenseUpdate = function (hsmId, context, accessToken, callback) {
         CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.PORT,
         '/cmdongle/' + hsmId + '/update/confirm',
         {}, function (err, options) {
-            options.headers.authorization = 'Bearer ' + accessToken;
 
             options.body = {
                 RAC: context

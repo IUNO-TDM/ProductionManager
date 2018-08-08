@@ -24,11 +24,10 @@ self.HOST_SETTINGS = {
         PORT: 80,
         PROTOCOL: 'http'
     },
-    PAYMENT_SERVICE: {
-        HOST: 'localhost',
-        PORT: 8080,
+    LICENSE_MANAGER: {
+        PORT: 11432,
         PROTOCOL: 'http'
-    },
+    }
 };
 
 
