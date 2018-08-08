@@ -103,7 +103,7 @@ router.post('/', require('../services/file_upload_handler'), function (req, res,
     LocalObject.create(localObj, function (err, locObj) {
         if (err) return next(err);
         const fullUrl = helper.buildFullUrlFromRequest(req);
-        res.set('Location', fullUrl + locObj["_id"]);
+        res.set('Location', fullUrl + locObj["id"]);
         res.sendStatus(201);
 
         var gcode_filepath;

@@ -24,7 +24,7 @@ function onOrderNamespaceConnect(socket) {
                 })
             })
         } else {
-            Order.findOne({'_id': orderId}, function(error, order) {
+            Order.findOne({'id': orderId}, function(error, order) {
                 if (!order || error) {
                     return
                 }

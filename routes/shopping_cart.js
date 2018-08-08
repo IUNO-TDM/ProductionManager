@@ -107,7 +107,7 @@ router.post('/items', function (req, res, next) {
         if (item) {
             item.amount += 1;
             item.updated = Date.now();
-            Item.findByIdAndUpdate(item._id, item, {new: true}, function (err, item2) {
+            Item.findByIdAndUpdate(item.id, item, {new: true}, function (err, item2) {
                 if (err) return next(err);
                 res.json(_.pick(item2, ['id', 'objectId', 'amount', 'updated']));
             });
@@ -154,7 +154,7 @@ router.delete('/items/:id', function (req, res, next) {
 });
 
 router.put('/items/:id', function (req, res, next) {
-    Item.findByIdAndUpdate(req.params.id, _.pick(req.body, ['_id']), {new: true}, function (err, item) {
+    Item.findByIdAndUpdate(req.params.id, _.pick(req.body, ['id']), {new: true}, function (err, item) {
         if (err) {
             return next(err);
         }

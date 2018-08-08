@@ -17,7 +17,7 @@ export class OrderService {
 
   private mapOrders(orders) {
     return orders.map(order => {
-      order.id = order['_id']
+      order.id = order['id']
       return order
     })
   }
@@ -43,7 +43,7 @@ export class OrderService {
   }
 
   updateLicense(order) {
-    const url = this.apiUrl + "orders/"+order._id+"/licenseupdate"
+    const url = this.apiUrl + "orders/"+order.id+"/licenseupdate"
     return this.http.get<Order[]>(url)
     // .pipe(
     //   map(orders => this.mapOrders(orders))

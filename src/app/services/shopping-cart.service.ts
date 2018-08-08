@@ -4,7 +4,7 @@ import { BehaviorSubject, Observable} from 'rxjs'
 import { tap } from "rxjs/operators"
 
 export class ShoppingCartItem {
-  _id: string
+  id: string
   objectId: string
   amount: number
   updated: string

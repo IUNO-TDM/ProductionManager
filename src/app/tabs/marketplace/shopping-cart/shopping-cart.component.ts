@@ -39,7 +39,7 @@ export class ShoppingCartComponent implements OnInit {
               }
             }
           });
-          // this.selectedHsmId = machines[0]._id
+          // this.selectedHsmId = machines[0].id
         }
       })
     })

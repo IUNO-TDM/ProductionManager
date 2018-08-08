@@ -248,39 +248,32 @@ self.createOfferForRequest = function (offerRequest, callback) {
 
 };
 
-//FIXME: implement this!
-// self.requestLicenseUpdate = function(offerId, callback) {
-//     if (typeof(callback) !== 'function') {
-//         return logger.info('[ADDITIVE_MACHINE_SERVICE_adapter] Callback not registered');
-//     }
+self.requestLicenseUpdate = function(order, callback) {
+    if (typeof(callback) !== 'function') {
+        return logger.info('[ADDITIVE_MACHINE_SERVICE_adapter] Callback not registered');
+    }
 
-//     if (!offerId) {
-//         return logger.info('[ADDITIVE_MACHINE_SERVICE_adapter] missing function arguments');
-//     }
+    if (!order) {
+        return logger.info('[ADDITIVE_MACHINE_SERVICE_adapter] missing function arguments');
+    }
 
-//     buildOptionsForRequest(
-//         'POST',
-//         CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.PROTOCOL,
-//         CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.HOST,
-//         CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.PORT,
-//         '/offers/' + offerId + '/request_license_update',
-//         {}, function (err, options) {
-//             request(options, function (e, r, jsonData) {
-//                 console.log(e)
-//                 // const err = logger.logRequestAndResponse(e, options, r, jsonData);
-
-//                 // let rau = null;
-//                 // let isOutOfDate = false;
-//                 // if (jsonData) {
-//                 //     rau = jsonData['RAU'];
-//                 //     isOutOfDate = jsonData['isOutOfDate']
-//                 // }
-
-//                 callback();
-//             });
-//         }
-//     );
-// }
+    buildOptionsForRequest(
+        'POST',
+        CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.PROTOCOL,
+        CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.HOST,
+        CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.PORT,
+        '/offers/' + order.offer.id + '/request_license_update',
+        {}, function (err, options) {
+            options.body = {
+                hsmId: order.hsmId
+            };
+            request(options, function (e, r, jsonData) {
+                const err = logger.logRequestAndResponse(e, options, r, jsonData);
+                callback(err);
+            });
+        }
+    );
+}
 
 self.getLicenseUpdate = function (hsmId, context, callback) {
     if (typeof(callback) !== 'function') {

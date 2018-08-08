@@ -137,19 +137,16 @@ license_service.registerUpdates = function () {
         }
     })
 
-    //FIXME: implement this!
-    // logger.info('[license_client] querying for existing orders.');
-    // Order.find({state: { $ne: 'completed'} }, function(err, orders) {
-    //     if (orders) {
-    //         orders.forEach(order => {
-    //             ams_adapter.requestLicenseUpdate( order.id, () => {
-    //             })            
-    //         })
-    //     }
-    //     console.log("---")
-    //     console.log(orders)
-    //     console.log("---")
-    // })
+    logger.info('[license_client] querying for license updates of existing orders.');
+    Order.find({state: { $ne: 'completed'} }, function(err, orders) {
+        if (orders) {
+            orders.forEach(order => {
+                ams_adapter.requestLicenseUpdate( order, (err) => {
+                    //FIXME: Think what to do here
+                })            
+            })
+        }
+    })
 
 };
 

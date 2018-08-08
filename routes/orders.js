@@ -14,13 +14,17 @@ _.mapPick = function (objs, keys) {
     })
 };
 
+_.mapReturnValues = function(elements) {
+    return _.mapPick(elements, ['id', 'orderNumber', 'createdAt', 'offer', 'items', 'state'])
+}
+
 router.get('/', function (req, res, next) {
     Order.find(function (err, orders) {
         if (err) {
             return next(err);
         }
         // res.json(orders)
-        res.json(_.mapPick(orders, ['id', 'orderNumber', 'createdAt']));
+        res.json(_.mapReturnValues(orders))
     })
 });
 
@@ -30,7 +34,7 @@ router.get('/:id', function (req, res, next) {
             return next(err);
         }
 
-        res.json(_.pick(order, ['id', 'orderNumber', 'items', 'createdAt']));
+        res.json(_.mapReturnValues(orders))
     })
 });
 

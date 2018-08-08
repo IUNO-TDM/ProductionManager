@@ -18,7 +18,7 @@
           <div class="title">Rechnung</div>
           <div class="items" fxLayout="column">
             <div *ngFor="let item of order.items" fxLayout="row" fxLayoutGap="15px">
-              <div>{{item._id}}</div>
+              <div>{{item.id}}</div>
               <div>{{item.amount}}</div>
             </div>
             <div class="total">Gesamtbetrag: {{amount}} IUNO</div>
