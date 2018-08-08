@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "node ./bin/www",
-    "build": "npm run build-i18n",
+    "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
