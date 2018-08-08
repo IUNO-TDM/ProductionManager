@@ -7,7 +7,7 @@ var bodyParser = require('body-parser');
 const CONFIG = require('./config/config_loader');
 var rootCas = require('ssl-root-cas/latest').create();
 require('https').globalAgent.options.ca = rootCas;
-
+require('./services/advertisement_service')('iuno-pm',process.env.PORT || '3042');
 
 const contentTypeValidation = require('./services/content_type_validation');
 const schemaValidation = require('./services/schema_validation');

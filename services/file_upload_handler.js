@@ -8,10 +8,18 @@ const CONFIG = require('../config/config_loader');
 
 
 if (!fs.existsSync(CONFIG.FILE_DIR)) {
-    fs.mkdir(CONFIG.FILE_DIR);
+    fs.mkdir(CONFIG.FILE_DIR, (err, bytesWritten, buffer)=>{
+        if(err){
+            logger.fatal("Error on creating file directory: ", err);
+        }
+    });
 }
 if (!fs.existsSync(CONFIG.TMP_DIR)) {
-    fs.mkdir(CONFIG.TMP_DIR);
+    fs.mkdir(CONFIG.TMP_DIR, (err, bytesWritten, buffer)=>{
+        if(err){
+            logger.fatal("Error on creating file directory: ", err);
+        }
+    });
 }
 
 const storage = multer.diskStorage({
