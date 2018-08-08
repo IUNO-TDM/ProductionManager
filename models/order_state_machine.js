@@ -56,6 +56,12 @@ const stateMachine = new machina.BehavioralFsm({
 
         licenseUpdateAvailable: {
             _onEnter: function (order) {
+                this.transition(order, "updatingLicense")
+            }
+        },
+
+        updatingLicense: {
+            _onEnter: function(order) {
                 const hsmId = order.hsmId
                 logger.info("[orderStateMachine] Requesting licenseService to update dongle...")
                 const licenseManager = require('../adapter/license_manager_adapter')

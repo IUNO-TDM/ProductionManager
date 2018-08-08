@@ -3,15 +3,28 @@
     <div fxLayout="row" class="bill">
       <ng-container *ngIf="order.state == 'completed'">
         <div class="thankyou" fxLayout="column" fxLayoutAlign="center center">
-            <div class="headline">Vielen Dank für Ihren Einkauf</div>
-            <div class="text">Die gekauften Objekte können Sie unter "Gekaufte Objekte" einsehen und ausdrucken.</div>
-            <div>
+          <div class="headline">Vielen Dank für Ihren Einkauf</div>
+          <div class="text">Die gekauften Objekte können Sie unter "Gekaufte Objekte" einsehen und ausdrucken.</div>
+          <div>
             <button mat-raised-button color="primary" (click)="onPurchasedObjectsClicked()">Gekaufte Objekte</button>
           </div>
         </div>
       </ng-container>
       <ng-container *ngIf="order.state == 'waitingForLicenseUpdate'">
         <ngx-qrcode [qrc-element-type]="elementType" [qrc-value]="order.offer.bip21"></ngx-qrcode>
+      </ng-container>
+      <ng-container *ngIf="order.state == 'licenseUpdateError'">
+        <div>
+          Failed updating license
+        </div>
+      </ng-container>
+      <ng-container *ngIf="order.state == 'updatingLicense'">
+        <div class="thankyou" fxLayout="column" fxLayoutGap="15px" fxLayoutAlign="center center">
+            <mat-progress-spinner mode="indeterminate" diameter="30" strokeWidth="2"></mat-progress-spinner>
+          <div>
+              Lizenz wird auf dem Drucker installiert.
+            </div>
+          </div>
       </ng-container>
       <ng-container *ngIf="order.state == 'waitingForLicenseUpdate' || order.state == 'licenseUpdateAvailable'">
         <div class="bill" fxLayout="column">
@@ -27,11 +40,11 @@
               <button mat-raised-button color="primary" (click)="onUpdateLicenseClicked()">Update license</button>
             </div>
             <div *ngIf="order.state == 'waitingForLicenseUpdate'">
-                <button mat-raised-button color="primary" (click)="onCancelOrderClicked()">Kauf abbrechen</button>
-              </div>
+              <button mat-raised-button color="primary" (click)="onCancelOrderClicked()">Kauf abbrechen</button>
             </div>
+          </div>
         </div>
       </ng-container>
+      </div>
     </div>
-  </div>
-  </ng-container>
+</ng-container>
