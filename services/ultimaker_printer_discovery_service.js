@@ -32,12 +32,12 @@ discovery_service.browser.on('serviceUp', function (service) {
         ], function (err, results) {
             if (!err) {
                 var m = {};
-                m.id = results[0];
+                m._id = results[0];
                 m.displayname = results[1];
                 m.variant = results[2];
                 m.hostname = service.host;
 
-                machine.findById(m.id, function (err, mach) {
+                machine.findById(m._id, function (err, mach) {
                     if (!mach) {
                         machine.create(m);
                     }

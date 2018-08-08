@@ -242,14 +242,14 @@ self.updateMachines = function(callback) {
 
             request(options, function (e, r, data) {
                 const err = logger.logRequestAndResponse(e, options, r, data);
-                logger.info("- found "+data.length+" hsmIds.")
+                // logger.info("- found "+data.length+" hsmIds.")
                 machine.hsmIds = data
                 machine.save((error, savedMachine) => {
                     if (!error) {
                         logger.info("- machine saved with no error.")
                     } else {
                         //TODO: handle error
-                        logger.error("- machine not saved. Error = '"+error+"'.")
+                        logger.crit("- machine not saved. Error = '"+error+"'.")
                     }
                 })
             });
