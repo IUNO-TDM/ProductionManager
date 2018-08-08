@@ -34,7 +34,6 @@ export class MachineService {
 
   getCameraSnapshot(machine) {
     const url = this.apiUrl + "machines/"+machine.id+"/camera/snapshot";
-    console.log(url)
     return this.http.get(url, { responseType: 'blob' })
   }
 
