@@ -9,6 +9,7 @@ const common = require('tdm-common');
 const orderStateMachine = require('../models/order_state_machine')
 
 
+
 _.mapPick = function (objs, keys) {
     return _.map(objs, function (obj) {
         return _.pick(obj, keys)
@@ -84,7 +85,7 @@ router.get('/items', function (req, res, next) {
             return next(err);
         }
 
-        res.json(_.mapPick(articles, ['_id', 'objectId', 'amount', 'updated']));
+        res.json(_.mapPick(articles, ['id', 'objectId', 'amount', 'updated']));
     });
 });
 
@@ -108,12 +109,12 @@ router.post('/items', function (req, res, next) {
             item.updated = Date.now();
             Item.findByIdAndUpdate(item._id, item, {new: true}, function (err, item2) {
                 if (err) return next(err);
-                res.json(_.pick(item2, ['_id', 'objectId', 'amount', 'updated']));
+                res.json(_.pick(item2, ['id', 'objectId', 'amount', 'updated']));
             });
         } else {
             Item.create(req.body, function (err, article) {
                 if (err) return next(err);
-                res.json(_.pick(article, ['_id', 'objectId', 'amount', 'updated']));
+                res.json(_.pick(article, ['id', 'objectId', 'amount', 'updated']));
             });
         }
     });
@@ -128,7 +129,7 @@ router.get('/items/:id', function (req, res, next) {
             return next(err);
         }
 
-        res.json(_.pick(item, ['_id', 'objectId', 'amount', 'updated']));
+        res.json(_.pick(item, ['id', 'objectId', 'amount', 'updated']));
     })
 });
 
@@ -138,7 +139,7 @@ router.delete('/items/:id', function (req, res, next) {
             return next(err);
         }
 
-        res.json(_.pick(item, ['_id', 'objectId', 'amount', 'updated']));
+        res.json(_.pick(item, ['id', 'objectId', 'amount', 'updated']));
     })
 });
 
@@ -148,7 +149,7 @@ router.delete('/items/:id', function (req, res, next) {
             return next(err);
         }
 
-        res.json(_.pick(item, ['_id', 'objectId', 'amount', 'updated']));
+        res.json(_.pick(item, ['id', 'objectId', 'amount', 'updated']));
     })
 });
 
@@ -158,7 +159,7 @@ router.put('/items/:id', function (req, res, next) {
             return next(err);
         }
 
-        res.json(_.pick(item, ['_id', 'objectId', 'amount', 'updated']));
+        res.json(_.pick(item, ['id', 'objectId', 'amount', 'updated']));
     })
 });
 

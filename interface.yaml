@@ -1,0 +1,871 @@
+swagger: "2.0"
+info:
+  description: "The REST API of Production Manager"
+  version: "1.0.0"
+  title: "ProductionManager"
+basePath: "/api/"
+tags:
+- name: "machines"
+  description: "Gets the machines connected or available"
+- name: "shopping cart"
+  description: "The articles collected for purchase"
+- name: "orders"
+  description: "The orders at the marketplace"
+- name: "objects"
+  description: "marketplace objects"
+- name: "local objects"
+  description: "the local objects"
+- name: "materials"
+  description: "the material information from the marketplace"
+- name: "machine types"
+  description: "the machine types known by the marketplace"
+schemes:
+- "http"
+paths:
+  /machines:
+    get: 
+      tags:
+      - "machines"
+      summary: "returns all local available and connected machines"
+      operationId: "getMachines"
+      produces: 
+      - "application/json"
+      responses:
+        200:
+          description: "here it comes"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Machine"
+  /machines/{machineId}:
+    delete:
+      tags: 
+      - "machines"
+      summary: "deletes the machine by id"
+      operationId: "deleteMachineById"
+      parameters:
+      - name: "machineId"
+        in: "path"
+        description: "ID of machine to return"
+        required: true
+        type: "string"
+      produces: 
+      - "application/json"
+      responses:
+        200:
+          description: "deleted"
+    get:
+      tags: 
+      - "machines"
+      summary: "returns the machine by id"
+      operationId: "getMachineById"
+      parameters:
+      - name: "machineId"
+        in: "path"
+        description: "ID of machine to return"
+        required: true
+        type: "string"
+      produces: 
+      - "application/json"
+      responses:
+        200:
+          description: "here it comes"
+          schema:
+            $ref: '#/definitions/Machine'
+  /machines/{machineId}/authentication:
+    post:
+      tags: 
+      - "machines"
+      summary: "authenticates the pm at the given machien"
+      operationId: "requestMachineAuthenticationById"
+      parameters:
+      - name: "machineId"
+        in: "path"
+        description: "ID of machine to return"
+        required: true
+        type: "string"
+      produces: 
+      - "application/json"
+      responses:
+        201:
+          description: "seems to be authenticated"
+        500:
+          description: "seems not to be authenticated"
+    get:
+      tags: 
+      - "machines"
+      summary: "gives information about the authenticaton status"
+      operationId: "getMachineAuthenticationById"
+      parameters:
+      - name: "machineId"
+        in: "path"
+        description: "ID of machine to return"
+        required: true
+        type: "string"
+      produces: 
+      - "application/json"
+      responses:
+        200:
+          description: "the status in the body"
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+  /machines/{machineId}/authentication/verify:
+    get:
+      tags: 
+      - "machines"
+      summary: "verifies authentication of pm"
+      operationId: "verifyMachineAuthenticationById"
+      parameters:
+      - name: "machineId"
+        in: "path"
+        description: "ID of machine to return"
+        required: true
+        type: "string"
+      produces: 
+      - "application/json"
+      responses:
+        200:
+          description: "the status in the body"
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+  /machines/{machineId}/materials/active:
+    get:
+      tags: 
+      - "machines"
+      summary: "gets the loaded materials in the machine"
+      operationId: "getActiveMaterialinMachineById"
+      parameters:
+      - name: "machineId"
+        in: "path"
+        description: "ID of machine to return"
+        required: true
+        type: "string"
+      produces: 
+      - "application/json"
+      responses:
+        200:
+          description: "the materials"
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/LoadedMaterial'
+  /machines/{machineId}/materials/active/{extruderId}:
+    get:
+      tags: 
+      - "machines"
+      summary: "gets the loaded materials in the machine for the given extruder"
+      operationId: "getActiveMaterialinMachineByIdAndExtruder"
+      parameters:
+      - name: "machineId"
+        in: "path"
+        description: "ID of machine to return"
+        required: true
+        type: "string"
+      - name: "extruderId"
+        in: "path"
+        description: "ID of extruder to return"
+        required: true
+        type: "integer"
+        minimum: 0
+        maximum: 0
+      produces: 
+      - "application/json"
+      responses:
+        200:
+          description: "the material"
+          schema:
+            $ref: '#/definitions/LoadedMaterial'
+  /machines/{machineId}/materials/{materialId}:
+    get:
+      tags: 
+      - "machines"
+      summary: "gets a material information from the machine (as XML)"
+      operationId: "getMaterialDetailFromMachineByIds"
+      parameters:
+      - name: "machineId"
+        in: "path"
+        description: "ID of machine to return"
+        required: true
+        type: "string"
+      - name: "materialId"
+        in: "path"
+        description: "ID of extruder to return"
+        required: true
+        type: "string"
+      produces: 
+      - "application/xml"
+      responses:
+        200:
+          description: "the material"
+  /machines/{machineId}/materials/{materialId}/short:
+    get:
+      tags: 
+      - "machines"
+      summary: "gets a shorted material information from the machine"
+      operationId: "getMaterialShortFromMachineByIds"
+      parameters:
+      - name: "machineId"
+        in: "path"
+        description: "ID of machine to return"
+        required: true
+        type: "string"
+      - name: "materialId"
+        in: "path"
+        description: "ID of extruder to return"
+        required: true
+        type: "string"
+      produces: 
+      - "application/json"
+      responses:
+        200:
+          description: "the material"
+          schema:
+            $ref: '#/definitions/MaterialInfo'
+  /machines/{machineId}/materials/{materialId}/name:
+    get:
+      tags: 
+      - "machines"
+      summary: "gets material name from the machine"
+      operationId: "getMaterialShortNameFromMachineByIds"
+      parameters:
+      - name: "machineId"
+        in: "path"
+        description: "ID of machine to return"
+        required: true
+        type: "string"
+      - name: "materialId"
+        in: "path"
+        description: "ID of extruder to return"
+        required: true
+        type: "string"
+      produces: 
+      - "text/html"
+      responses:
+        200:
+          description: "the name"
+  /machines/{machineId}/status:
+    get:
+      tags: 
+      - "machines"
+      summary: "gets the machines status"
+      operationId: "getMachineStatusById"
+      parameters:
+      - name: "machineId"
+        in: "path"
+        description: "ID of machine to return"
+        required: true
+        type: "string"
+      produces: 
+      - "text/html"
+      responses:
+        200:
+          description: "the status"
+  /machines/{machineId}/printjob:
+    get:
+      tags: 
+      - "machines"
+      summary: "gets the machines current printjob"
+      operationId: "getMachinePrintjobById"
+      parameters:
+      - name: "machineId"
+        in: "path"
+        description: "ID of machine to return"
+        required: true
+        type: "string"
+      produces: 
+      - "application/json"
+      responses:
+        200:
+          description: "the printjob"
+  /machines/{machineId}/printjob/state:
+    get:
+      tags: 
+      - "machines"
+      summary: "gets the machines current printjobs state"
+      operationId: "getMachinePrintjobStateById"
+      parameters:
+      - name: "machineId"
+        in: "path"
+        description: "ID of machine to return"
+        required: true
+        type: "string"
+      produces: 
+      - "text/html"
+      responses:
+        200:
+          description: "the printjob state"
+  /machines/{machineId}/printjob/progress:
+    get:
+      tags: 
+      - "machines"
+      summary: "gets the machines current printjobs progress"
+      operationId: "getMachinePrintjobProgressById"
+      parameters:
+      - name: "machineId"
+        in: "path"
+        description: "ID of machine to return"
+        required: true
+        type: "string"
+      produces: 
+      - "text/html"
+      responses:
+        200:
+          description: "the printjob progress"
+  /machines/{machineId}/printjob/time/total:
+    get:
+      tags: 
+      - "machines"
+      summary: "gets the machines current printjobs total time"
+      operationId: "getMachinePrintjobTimeTotalById"
+      parameters:
+      - name: "machineId"
+        in: "path"
+        description: "ID of machine to return"
+        required: true
+        type: "string"
+      produces: 
+      - "text/html"
+      responses:
+        200:
+          description: "the printjobs total time"
+  /machines/{machineId}/printjob/time/elapsed:
+    get:
+      tags: 
+      - "machines"
+      summary: "gets the machines current printjobs elapsed time"
+      operationId: "getMachinePrintjobTimeElapsedById"
+      parameters:
+      - name: "machineId"
+        in: "path"
+        description: "ID of machine to return"
+        required: true
+        type: "string"
+      produces: 
+      - "text/html"
+      responses:
+        200:
+          description: "the printjobs total time"
+  /machines/{machineId}/printjob/time/remaining:
+    get:
+      tags: 
+      - "machines"
+      summary: "gets the machines current printjobs remaining time"
+      operationId: "getMachinePrintjobTimeRemainingById"
+      parameters:
+      - name: "machineId"
+        in: "path"
+        description: "ID of machine to return"
+        required: true
+        type: "string"
+      produces: 
+      - "text/html"
+      responses:
+        200:
+          description: "the printjobs remaining time"
+  /machines/{machineId}/camera/stream:
+    get:
+      tags: 
+      - "machines"
+      summary: "the mjpeg stream"
+      parameters:
+      - name: "machineId"
+        in: "path"
+        description: "ID of machine to return"
+        required: true
+        type: "string"
+      produces: 
+      - "video/x-motion-jpeg"
+      responses:
+        200:
+          description: "the stream"
+  /machines/{machineId}/camera/snapshot:
+    get:
+      tags: 
+      - "machines"
+      summary: "the snapshot from the camera"
+      parameters:
+      - name: "machineId"
+        in: "path"
+        description: "ID of machine to return"
+        required: true
+        type: "string"
+      produces: 
+      - "image/jpeg"
+      responses:
+        200:
+          description: "the snapshot"
+  /machinestypes:
+    get:
+      tags: 
+      - "machine types"
+      summary: "Gets the machinetypes defined in the TDM"
+      parameters: 
+      - name: lang
+        in: "query"
+        description: "defines the language the texts should be returned"
+        required: true
+        type: "string"
+      produces: 
+      - "application/json"
+      responses:
+        200:
+          description: "an array of machine types"
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Component'
+  /materials:
+    get:
+      tags: 
+      - "materials"
+      summary: "Gets the materials defined in the TDM"
+      parameters: 
+      - name: lang
+        in: "query"
+        description: "defines the language the texts should be returned"
+        required: true
+        type: "string"
+      produces: 
+      - "application/json"
+      responses:
+        200:
+          description: "an array of material types"
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Component'
+              
+  /shopping_cart/items:
+    post:
+      tags:
+      - "shopping cart"
+      summary: "adds a item to the shopping cart"
+      description: "if an item with this objectid exists, the item is updated in the amount"
+      parameters:
+      - name: "item"
+        in: "body"
+        description: "the item"
+        required: true
+        schema:
+          $ref: '#/definitions/Item'
+      produces: 
+      - "application/json"
+      responses:
+        200:
+          description: "the item in the shopping cart"
+          schema:
+            $ref: '#/definitions/Item'
+    get:
+      tags:
+      - "shopping cart"
+      summary: "returns all items in the shopping cart"
+      produces: 
+      - "application/json"
+      responses:
+        200:
+          description: "the items in the shopping cart"
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Item'
+    delete:
+      tags:
+      - "shopping cart"
+      summary: "deletes all items in the shopping cart"
+      responses:
+        200:
+          description: "the items in the shopping cart"
+              
+  /shopping_cart/items/{itemId}:
+    get:
+      tags:
+      - "shopping cart"
+      summary: "returns a item in the shopping cart"
+      parameters:
+      - name: "itemId"
+        in: "path"
+        description: "ID of item to return"
+        required: true
+        type: "string"
+      produces: 
+      - "application/json"
+      responses:
+        200:
+          description: "the item in the shopping cart"
+          schema:
+            $ref: '#/definitions/Item'
+    put:
+      tags:
+      - "shopping cart"
+      summary: "updates a item in the shopping cart"
+      parameters:
+      - name: "itemId"
+        in: "path"
+        description: "ID of item to update"
+        required: true
+        type: "string"
+      
+      - name: "item"
+        in: "body"
+        description: "the item"
+        required: true
+        schema:
+          $ref: '#/definitions/Item'
+      produces: 
+      - "application/json"
+      responses:
+        200:
+          description: "the item in the shopping cart"
+          schema:
+            $ref: '#/definitions/Item'
+    delete:
+      tags:
+      - "shopping cart"
+      summary: "deletes a item in the shopping cart"
+      parameters:
+      - name: "itemId"
+        in: "path"
+        description: "ID of item to delete"
+        required: true
+        type: "string"
+      produces: 
+      - "application/json"
+      responses:
+        200:
+          description: "the item in the shopping cart"
+          schema:
+            $ref: '#/definitions/Item'
+  /shopping_cart/order:
+    post:
+      tags:
+      - "shopping cart"
+      - "orders"
+      summary: "creates an order out of a shopping cart"
+      produces: 
+      - "application/json"
+      responses:
+        200:
+          description: "the resulting order"
+          schema:
+            $ref: '#/definitions/Order'          
+  
+  /objects:
+    get:
+      tags:
+      - "objects"
+      summary: "gets a list of objects from TDM"
+      parameters: 
+      - name: "materials"
+        in: "query"
+        description: "the materialIds to filter the results, none equals all"
+        required: false
+        type: array
+        items:
+          type: string
+      - name: "machines"
+        in: "query"
+        description: "the machinetypeIds to filter the results, none equals all"
+        required: false
+        type: array
+        items:
+          type: string
+      - name: lang
+        in: "query"
+        description: "defines the language the texts should be returned"
+        required: true
+        type: "string"
+      produces: 
+      - "application/json"
+      responses:
+        200:
+          description: "the objects"
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Object' 
+  /objects/{objectId}/image:
+    get:
+      tags:
+      - "objects"
+      summary: "gets the image of a object"
+      parameters:
+      - name: "objectId"
+        in: "path"
+        description: "ID of object to return"
+        required: true
+        type: "string"
+      produces:
+      - "image/svg+xml"
+      - "image/png"
+      responses:
+        200:
+          description: "the image"
+  
+  /objects/{objectId}/binary:
+    get:
+      tags:
+      - "objects"
+      summary: "gets the binary of a object"
+      description: "only available, if this article was purchased once"
+      parameters:
+      - name: "objectId"
+        in: "path"
+        description: "ID of object to return"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "the image"
+  
+  /localobjects:
+    post:
+      tags: 
+      - "local objects"
+      summary: "uplaod a new object"
+      consumes: 
+      - "application/x-www-form-urlencoded"
+      - "multipart/form-data"
+      parameters: 
+      - name: file
+        description: "The ufp containing gcode and image"
+        in: formData
+        type: string
+        format: binary
+      - name: title
+        in: formData
+        type: string
+      responses:
+        200:
+          description: object created
+          headers:
+            Location:
+              type: string
+              description: "the path to the created object"
+    get:
+      tags:
+      - "local objects"
+      summary: "gets a list of local objects"
+      parameters: 
+      - name: "materials"
+        in: "query"
+        description: "the materialIds to filter the results, none equals all"
+        required: false
+        type: array
+        items:
+          type: string
+      - name: "machines"
+        in: "query"
+        description: "the machinetypeIds to filter the results, none equals all"
+        required: false
+        type: array
+        items:
+          type: string
+      - name: lang
+        in: "query"
+        description: "defines the language the texts should be returned"
+        required: true
+        type: "string"
+      produces: 
+      - "application/json"
+      responses:
+        200:
+          description: "the local objects"
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/LocalObject' 
+  
+   
+  /localobjects/{localObjectId}:
+    get:
+      tags:
+      - "local objects"
+      summary: "gets a local objects"
+      parameters: 
+      - name: "localObjectId"
+        in: "path"
+        description: "ID of object to return"
+        required: true
+        type: "string"
+      produces: 
+      - "application/json"
+      responses:
+        200:
+          description: "the local object"
+          schema:
+            $ref: '#/definitions/LocalObject' 
+              
+    delete:
+      tags:
+      - "local objects"
+      summary: "delete a local objects"
+      parameters: 
+      - name: "localObjectId"
+        in: "path"
+        description: "ID of object to delete"
+        required: true
+        type: "string"
+      produces: 
+      - "application/json"
+      responses:
+        200:
+          description: "deleted"
+          
+  /localobjects/{localObjectId}/image:
+    get:
+      tags:
+      - "local objects"
+      summary: "gets the image of a local object"
+      parameters:
+      - name: "localObjectId"
+        in: "path"
+        description: "ID of object to return"
+        required: true
+        type: "string"
+      produces:
+      - "image/png"
+      responses:
+        200:
+          description: "the image"
+               
+definitions:
+  LocalObject:
+    type: object
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      description:
+        type: string
+      createdAt:
+        type: string
+      
+      materials:
+        type: array
+        items:
+          type: string
+      machines:
+        type: array
+        items:
+          type: string
+
+  Object:
+    type: object
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      description:
+        type: string
+      licenseFee:
+        type: integer
+      productCode:
+        type: integer
+      backgroundColor:
+        type: string
+      materials:
+        type: array
+        items:
+          $ref: '#/definitions/Component'
+      machines:
+        type: array
+        items:
+          $ref: '#/definitions/Component'
+        
+
+  Order:
+    type: object
+    properties:
+      items:
+        type: array
+        items:
+          type: object
+          properties:
+            objectId:
+              type: string
+            amount:
+              type: integer
+      offer:
+        type: object
+        properties:
+          id: 
+            type: string
+          bip21:
+            type: string
+      state:
+        type: string
+      createdAt:
+        type: string
+      
+  Item:
+    type: object
+    properties:
+      id:
+        type: "string"
+      objectId:
+        type: "string"
+      amount:
+        type: "integer"
+      updated:
+        type: "string"
+        
+  Component:
+    type: object
+    properties:
+      name:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      displayColor:
+        type: string
+      attributes:
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              type: string
+            name:
+              type: string
+  
+  Machine:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+      displayname:
+        type: "string"
+      variant:
+        type: "string"
+      hostname:
+        type: "string"
+  
+  LoadedMaterial:
+    type: "object"
+    properties:
+      GUID:
+        type: string
+      length_remaining:
+        type: string
+        
+  MaterialInfo:
+    type: "object"
+    properties:
+      brand:
+        type: string
+      material:
+        type: string
+      color: 
+        type: string
+  
+        

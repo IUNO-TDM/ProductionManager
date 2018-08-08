@@ -14,16 +14,6 @@ _.mapPick = function (objs, keys) {
     })
 };
 
-// router.get('/', function (req, res, next) {
-//     Machine.find(function (err, products) {
-//         if (err) {
-//             return next(err);
-//         }
-
-//         res.json(_.mapPick(products, ['_id', 'displayname', 'variant', 'hostname']));
-//     })
-// });
-
 var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose');
@@ -47,7 +37,7 @@ router.get('/', function (req, res, next) {
                 return next(err);
             }
 
-            res.json(_.mapPick(machines, ['_id', 'displayname', 'variant', 'hostname', 'hsmIds']));
+            res.json(_.mapPick(machines, ['id', 'displayname', 'variant', 'hostname', 'hsmIds']));
         })
     } else {
         Machine.find(function (err, machines) {
@@ -55,7 +45,7 @@ router.get('/', function (req, res, next) {
                 return next(err);
             }
 
-            res.json(_.mapPick(machines, ['_id', 'displayname', 'variant', 'hostname', 'hsmIds']));
+            res.json(_.mapPick(machines, ['id', 'displayname', 'variant', 'hostname', 'hsmIds']));
         })
     }
 });
@@ -66,7 +56,7 @@ router.get('/:id', function (req, res, next) {
             return next(err);
         }
 
-        res.json(_.pick(post, ['_id', 'displayname', 'variant', 'hostname', 'hsmIds']));
+        res.json(_.pick(post, ['id', 'displayname', 'variant', 'hostname', 'hsmIds']));
     })
 });
 
@@ -376,7 +366,6 @@ router.get('/:id/camera/stream', function (req, res, next) {
         if (!machine || !machine.hostname) {
             return res.sendStatus(404);
         }
-        sou
 
         request('http://' + machine.hostname + ':8080/?action=stream').pipe(res);
     });

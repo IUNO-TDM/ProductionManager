@@ -4,6 +4,7 @@
 const logger = require('../global/logger');
 const request = require('request');
 const CONFIG = require('../config/config_loader');
+const fs = require('fs');
 
 const self = {};
 
@@ -98,16 +99,17 @@ self.verifyAuthentication = function (hostname, id, key, callback) {
     };
 
 
+
     request(options, function (e, r, data) {
         const err = logger.logRequestAndResponse(e, options, r, data);
         callback(err, data);
     })
 };
 
-self.uploadPrintjob = function (hostname, id, key, jobname, file, callback) {
+self.uploadPrintjob = function (hostname, id, key, jobname, filepath, callback) {
     const options = buildOptionsForRequest(
         'POST',
-        hostname,
+        '192.168.178.98',
         {},
         null,
         '/api/v1/print_job'
@@ -119,18 +121,28 @@ self.uploadPrintjob = function (hostname, id, key, jobname, file, callback) {
         'sendImmediately': false
     };
 
-    options['form'] = {
-        'jobname': jobname,
-        'file': key,
-        'sendImmediately': false
+    options.headers = {
+        'connection': 'open'
+        // 'Cache-Control': 'no-cache',
+        // 'Content-Type': 'multipart/form-data',
+        // 'content-type': 'multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW'
+    };
+    options.json = false;
+
+
+    options['formData'] = {
+        file: fs.createReadStream(filepath),
+
+        jobname: jobname
     };
 
 
-    request(options, function (e, r, data) {
-        const err = logger.logRequestAndResponse(e, options, r, data);
-        callback(err, data);
-    })
-};
+request(options, function (e, r, data) {
+    const err = logger.logRequestAndResponse(e, options, r, data);
+    callback(err, data);
+})
+}
+;
 
 self.getActiveMaterial = function (hostname, extruder, callback) {
     const options = buildOptionsForRequest(

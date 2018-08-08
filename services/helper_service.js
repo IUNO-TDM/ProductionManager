@@ -26,5 +26,10 @@ var self = {
     }
 };
 
+self.buildFullUrlFromRequest = function (req) {
+    return req.protocol + '://' + req.get('host') + req.baseUrl + '/';
+};
+
+
 
 module.exports = self;

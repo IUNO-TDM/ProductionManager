@@ -3,6 +3,8 @@
  */
 
 
+const path =  require('path');
+
 const self = {};
 
 
@@ -38,6 +40,16 @@ self.OAUTH_CREDENTIALS = {
 
 self.STATISTICS_ENABLED_KEY = "StatisticsEnabled";
 self.STATISTICS_ENABLED_DEFAULT = false;
+
+
+self.TMP_DIR = path.resolve(__dirname, '../tmp');
+self.FILE_DIR = path.resolve(__dirname, '../files');
+
+self.MONGODB = {
+    HOST: 'localhost',
+    PORT: 27017,
+    DATABASE: 'iuno_production_manager'
+};
 
 
 module.exports = self;

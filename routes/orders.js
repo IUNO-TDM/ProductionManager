@@ -19,8 +19,8 @@ router.get('/', function (req, res, next) {
         if (err) {
             return next(err);
         }
-        res.json(orders)
-        // res.json(_.mapPick(products, ['_id', 'orderNumber', 'createdAt']));
+        // res.json(orders)
+        res.json(_.mapPick(orders, ['id', 'orderNumber', 'createdAt']));
     })
 });
 
@@ -30,7 +30,7 @@ router.get('/:id', function (req, res, next) {
             return next(err);
         }
 
-        res.json(_.pick(order, ['_id', 'orderNumber', 'items', 'createdAt']));
+        res.json(_.pick(order, ['id', 'orderNumber', 'items', 'createdAt']));
     })
 });
 

@@ -62,29 +62,6 @@ router.get('/:id/binary', validate({
 });
 
 
-// router.post('/', validate({
-//     query: validation_schema.Empty,
-//     body: validation_schema.SaveObject_Body
-// }), function (req, res, next) {
-//
-//
-//     ams_adapter.saveObject(req.body, (err, objectId) => {
-//
-//         if (err) {
-//             if (err.statusCode === 409) {
-//                 res.status(409);
-//                 return res.send('Already exists');
-//             }
-//             return next(err);
-//         }
-//
-//         const fullUrl = helper.buildFullUrlFromRequest(req);
-//         res.set('Location', fullUrl + '/api/objects/' + objectId);
-//         res.status(201);
-//         res.send('' + objectId);
-//     });
-// });
-
 router.get('/:id/image', validate({
     query: validation_schema.Empty,
     body: validation_schema.Empty
