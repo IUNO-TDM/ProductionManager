@@ -76,7 +76,7 @@ const stateMachine = new machina.BehavioralFsm({
         },
 
         licenseUpdateError: {
-
+            licenseUpdateAvailable: "licenseUpdateAvailable",
         },
 
         licenseUpdated: {

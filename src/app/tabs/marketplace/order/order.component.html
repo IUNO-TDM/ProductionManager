@@ -14,17 +14,20 @@
         <ngx-qrcode [qrc-element-type]="elementType" [qrc-value]="order.offer.bip21"></ngx-qrcode>
       </ng-container>
       <ng-container *ngIf="order.state == 'licenseUpdateError'">
-        <div>
-          Failed updating license
+        <div class="thankyou" fxLayout="column" fxLayoutGap="15px" fxLayoutAlign="center center">
+          <div>
+            Installation der Lizenz fehlgeschlagen.
+          </div>
+          <button mat-raised-button color="primary" (click)="onRetryUpdateLicenseClicked()">Erneut versuchen</button>
         </div>
       </ng-container>
       <ng-container *ngIf="order.state == 'updatingLicense'">
         <div class="thankyou" fxLayout="column" fxLayoutGap="15px" fxLayoutAlign="center center">
-            <mat-progress-spinner mode="indeterminate" diameter="30" strokeWidth="2"></mat-progress-spinner>
+          <mat-progress-spinner mode="indeterminate" diameter="30" strokeWidth="2"></mat-progress-spinner>
           <div>
-              Lizenz wird auf dem Drucker installiert.
-            </div>
+            Lizenz wird auf dem Drucker installiert.
           </div>
+        </div>
       </ng-container>
       <ng-container *ngIf="order.state == 'waitingForLicenseUpdate' || order.state == 'licenseUpdateAvailable'">
         <div class="bill" fxLayout="column">
@@ -45,6 +48,6 @@
           </div>
         </div>
       </ng-container>
-      </div>
     </div>
+  </div>
 </ng-container>

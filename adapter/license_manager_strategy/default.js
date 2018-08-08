@@ -148,7 +148,7 @@ self.updateCMDongle = function(hsmId, callback) {
     if (self.isUpdating) {
         logger.warn('[license_manager] Update cycle is already running. Retry after 10 seconds');
         return setTimeout(() => {
-            updateCMDongle(hsmId, callback);
+            self.updateCMDongle(hsmId, callback);
         }, 10000);
     }
 
@@ -176,17 +176,23 @@ self.updateCMDongle = function(hsmId, callback) {
                     logger.crit('[license_manager] could not update hsm on license manager');
                     logger.crit(err);
 
-                    additiveMachineService.confirmLicenseUpdate(hsmId, context, function (err) {
-                        self.isUpdating = false;
+                    self.isUpdating = false;
+                    if (err) {
+                        logger.crit('[license_manager] could not confirm update on license manager');
+                        return callback(err);
+                    }
+                    //FIXME: was this code bellow correct?
+                    // additiveMachineService.confirmLicenseUpdate(hsmId, context, function (err) {
+                    //     self.isUpdating = false;
 
-                        if (err) {
-                            logger.crit('[license_manager] could not confirm update on license manager');
-                            return callback(err);
-                        }
+                    //     if (err) {
+                    //         logger.crit('[license_manager] could not confirm update on license manager');
+                    //         return callback(err);
+                    //     }
 
-                        logger.warn('[license_manager] CM-Dongle context is out of date. Restarting update cycle');
-                        return updateCMDongle(hsmId, callback)
-                    });
+                    //     logger.warn('[license_manager] CM-Dongle context is out of date. Restarting update cycle');
+                    //     return self.updateCMDongle(hsmId, callback)
+                    // });
                 }
                 else {
                     self.getContextForHsmId(hsmId, function (err, context) {
@@ -207,7 +213,7 @@ self.updateCMDongle = function(hsmId, callback) {
                             // Restart the update process as long the returned context is out of date
                             if (isOutOfDate) {
                                 logger.warn('[license_manager] CM-Dongle context is out of date. Restarting update cycle');
-                                return updateCMDongle(hsmId, callback)
+                                return self.updateCMDongle(hsmId, callback)
                             }
 
                             callback(null)

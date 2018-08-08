@@ -15,7 +15,8 @@
             // "preLaunchTask": "tsc: build - tsconfig.json",
             "outFiles": [
                 "${workspaceFolder}/dist/out-tsc/**/*.js"
-            ]
+            ],
+            "console": "integratedTerminal"
         },
         {
             "name": "Launch Chrome",

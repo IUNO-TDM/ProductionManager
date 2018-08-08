@@ -54,6 +54,8 @@ router.get('/:id/licenseupdate', function (req, res, next) {
     Order.findById(req.params.id, function (err, order) {
         if (order.state == 'licenseUpdateAvailable') {
             orderStateMachine.licenseUpdateAvailable(order)
+        } else if (order.state == 'licenseUpdateError') {
+            orderStateMachine.licenseUpdateAvailable(order)
         }
         // if (err) {
         //     return next(err);

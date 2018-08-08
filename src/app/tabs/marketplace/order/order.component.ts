@@ -46,6 +46,12 @@ export class OrderComponent implements OnInit {
     })
   }
 
+  onRetryUpdateLicenseClicked() {
+    this.orderService.updateLicense(this.order).subscribe(order => {
+      //FIXME: handle result
+    })
+  }
+
   onCancelOrderClicked() {
     this.orderService.cancelOrder(this.order).subscribe(order => {
       this.router.navigateByUrl('marketplace')
