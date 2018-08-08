@@ -4,4 +4,5 @@ export class Machine {
     variant: string
     hostname: string
     hsmIds: string[]
+    cameraSnapshot: any
 }

@@ -46,7 +46,7 @@ export class ObjectService {
    */
   getPurchasedObjectIds() {
     return this.orderService.getCompletedOrders().pipe(
-      map(orders => orders.map(order => order.items)
+      map(orders => orders.map(order => order.items))
     )
   }
 

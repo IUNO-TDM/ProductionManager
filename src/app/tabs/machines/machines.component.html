@@ -6,8 +6,15 @@
         <!-- <mat-card-subtitle>{{machine.hostname}}</mat-card-subtitle> -->
       </mat-card-header>
       <mat-card-content fxLayoutAlign="center">
-        <img src="" class="machine-image">
-        <!-- <div *ngIf="licensesChart"> -->
+        <ng-container *ngIf="machine.cameraSnapshot">
+          <img [src]="machine.cameraSnapshot" class="machine-image">
+        </ng-container>
+        <ng-container *ngIf="!machine.cameraSnapshot">
+          <div class="machine-image" fxLayoutAlign="center center">
+              <mat-progress-spinner mode="indeterminate" diameter="30" strokeWidth="2"></mat-progress-spinner>
+          </div>
+        </ng-container>
+            <!-- <div *ngIf="licensesChart"> -->
         <!-- </div> -->
       </mat-card-content>
     </mat-card>
