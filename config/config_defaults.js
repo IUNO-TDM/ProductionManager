@@ -25,12 +25,7 @@ self.HOST_SETTINGS = {
     ULTIMAKER: {
         PORT: 80,
         PROTOCOL: 'http'
-    },
-    PAYMENT_SERVICE: {
-        HOST: 'localhost',
-        PORT: 8080,
-        PROTOCOL: 'http'
-    },
+    }
 };
 
 
@@ -45,5 +40,12 @@ self.STATISTICS_ENABLED_DEFAULT = false;
 
 self.TMP_DIR = path.resolve(__dirname, '../tmp');
 self.FILE_DIR = path.resolve(__dirname, '../files');
+
+self.MONGODB = {
+    HOST: 'localhost',
+    PORT: 27017,
+    DATABASE: 'iuno_production_manager'
+};
+
 
 module.exports = self;

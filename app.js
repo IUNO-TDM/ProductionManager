@@ -4,6 +4,7 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+const CONFIG = require('./config/config_loader');
 var rootCas = require('ssl-root-cas/latest').create();
 require('https').globalAgent.options.ca = rootCas;
 
@@ -12,16 +13,16 @@ const contentTypeValidation = require('./services/content_type_validation');
 const schemaValidation = require('./services/schema_validation');
 
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/iuno_production_manager', { promiseLibrary: require('bluebird') })
-    .then(() =>  console.log('connection successful'))
+mongoose.connect('mongodb://' + CONFIG.MONGODB.HOST + ':' + CONFIG.MONGODB.PORT + '/'+CONFIG.MONGODB.DATABASE, {promiseLibrary: require('bluebird')})
+    .then(() => console.log('connection successful'))
     .catch((err) => console.error(err));
 
 var ultimaker_discovery = require('./services/ultimaker_printer_discovery_service');
-ultimaker_discovery.on('serviceUp',function (service) {
-    console.debug('mDNS service up',service);
+ultimaker_discovery.on('serviceUp', function (service) {
+    console.debug('mDNS service up', service);
 });
-ultimaker_discovery.on('serviceDown',function (service) {
-    console.debug('mDNS service down',service);
+ultimaker_discovery.on('serviceDown', function (service) {
+    console.debug('mDNS service down', service);
 });
 
 var machines = require('./routes/machines');
