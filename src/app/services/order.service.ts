@@ -42,12 +42,25 @@ export class OrderService {
     )
   }
 
+  getCompletedOrders() {
+    const url = this.apiUrl + "orders"
+    return this.http.get<Order[]>(url).pipe(
+      map(orders => orders.filter(order => order.state === "completed")),
+      map(orders => this.mapOrders(orders))
+    )
+  }
+
   updateLicense(order) {
     const url = this.apiUrl + "orders/"+order.id+"/licenseupdate"
     return this.http.get<Order[]>(url)
     // .pipe(
     //   map(orders => this.mapOrders(orders))
     // )
+  }
+
+  cancelOrder(order) {
+    const url = this.apiUrl + "orders/"+order.id
+    return this.http.delete<Order>(url)
   }
 
 }

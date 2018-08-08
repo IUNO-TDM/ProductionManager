@@ -18,12 +18,16 @@ export class PurchasedObjectsComponent implements OnInit {
   constructor(
     private titleService: TitleService,
     private objectService: ObjectService,
-    private machineService: MachineService
+    private machineService: MachineService,
   ) {
-    this.machineService.getMachineTypes().subscribe(machineTypes => {
-      this.machineTypes = machineTypes.map(type => type.id)
-      this.updateObjects()      
+    this.objectService.getPurchasedObjectIds().subscribe(items => {
+      console.log("ITEMS:")
+      console.log(items)
     })
+    // this.machineService.getMachineTypes().subscribe(machineTypes => {
+    //   this.machineTypes = machineTypes.map(type => type.id)
+    //   this.updateObjects()      
+    // })
   }
 
   ngOnInit() {

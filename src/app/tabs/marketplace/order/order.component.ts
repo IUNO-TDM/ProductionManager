@@ -46,6 +46,12 @@ export class OrderComponent implements OnInit {
     })
   }
 
+  onCancelOrderClicked() {
+    this.orderService.cancelOrder(this.order).subscribe(order => {
+      this.router.navigateByUrl('marketplace')
+    })
+  }
+
   onPurchasedObjectsClicked() {
     setTimeout(() => {
       this.router.navigateByUrl("purchased-objects")

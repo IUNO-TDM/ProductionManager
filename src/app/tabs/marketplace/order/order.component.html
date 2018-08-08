@@ -26,7 +26,10 @@
             <div *ngIf="order.state == 'licenseUpdateAvailable'">
               <button mat-raised-button color="primary" (click)="onUpdateLicenseClicked()">Update license</button>
             </div>
-          </div>
+            <div *ngIf="order.state == 'waitingForLicenseUpdate'">
+                <button mat-raised-button color="primary" (click)="onCancelOrderClicked()">Kauf abbrechen</button>
+              </div>
+            </div>
         </div>
       </ng-container>
     </div>

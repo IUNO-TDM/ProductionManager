@@ -38,6 +38,17 @@ router.get('/:id', function (req, res, next) {
     })
 });
 
+router.delete('/:id', function (req, res, next) {
+    Order.remove({_id: req.params.id}, function(err, order) {
+        if (err) {
+            return next(err);
+        }
+        res.json({
+            deleted: req.params.id
+        })
+    })
+});
+
 router.get('/:id/licenseupdate', function (req, res, next) {
     console.log("Licenseopdate of id '"+req.params.id+"'");
     Order.findById(req.params.id, function (err, order) {

@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http'
+import { OrderService } from './order.service';
+import { map } from '../../../node_modules/rxjs/operators';
 // import { TdmObjectPrinterObject } from 'tdm-common';
 
 @Injectable({
@@ -10,6 +12,7 @@ export class ObjectService {
 
   constructor(
     private http: HttpClient,
+    private orderService: OrderService
   ) { }
 
   // get 
@@ -33,6 +36,18 @@ export class ObjectService {
     return this.http.get<any[]>(url, {
       params: params
     })
+  }
+
+  /**
+   * Returns a list of purchased objectIds. Therefore all completed orders are requested and
+   * the objectIds of this orders are collected.
+   * @param 
+   * @returns list of purchased objectIds
+   */
+  getPurchasedObjectIds() {
+    return this.orderService.getCompletedOrders().pipe(
+      map(orders => orders.map(order => order.items)
+    )
   }
 
 }
