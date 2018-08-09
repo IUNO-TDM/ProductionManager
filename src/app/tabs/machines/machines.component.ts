@@ -10,8 +10,10 @@ import { TitleService } from '../../services/title.service';
 })
 export class MachinesComponent implements OnInit {
   private updateCameraSnapshotsInterval = 1000
+  private updateCameraSnapshotsErrorInterval = 10000
   private updateCameraSnapshots = true
   machines: Machine[]
+  cameraSnapshotStates = {}
 
   constructor(
     private titleService: TitleService,
@@ -38,12 +40,22 @@ export class MachinesComponent implements OnInit {
 
   private startUpdatingCameraSnapshot(machine) {
     if (this.updateCameraSnapshots) {
-      this.machineService.getCameraSnapshot(machine).subscribe(imageData => {
-        this.createImageFromBlob(imageData, machine);
-        setTimeout(() => {
-          this.startUpdatingCameraSnapshot(machine)
-        }, this.updateCameraSnapshotsInterval)
-      })
+      this.cameraSnapshotStates[machine.id] = 'updating'
+      this.machineService.getCameraSnapshot(machine).subscribe(
+        imageData => {
+          this.cameraSnapshotStates[machine.id] = 'ready'
+          this.createImageFromBlob(imageData, machine);
+          setTimeout(() => {
+            this.startUpdatingCameraSnapshot(machine)
+          }, this.updateCameraSnapshotsInterval)
+        },
+        error => {
+          this.cameraSnapshotStates[machine.id] = 'not available'
+          setTimeout(() => {
+            this.startUpdatingCameraSnapshot(machine)
+          }, this.updateCameraSnapshotsErrorInterval)
+        }
+      )
     }
   }
 
