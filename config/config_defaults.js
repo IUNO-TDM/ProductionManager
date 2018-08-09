@@ -51,5 +51,6 @@ self.MONGODB = {
     DATABASE: 'iuno_production_manager'
 };
 
+self.PUBLIC_KEY_FILE_FOR_ENCRYPTION = 'resources/ultimaker.pub';
 
 module.exports = self;

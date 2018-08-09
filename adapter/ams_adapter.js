@@ -407,4 +407,36 @@ self.getImageForUser = function (userId, callback) {
 
 };
 
+self.uploadFile = function(uuid, accessToken, fileBuffer, callback) {
+    const options = buildOptionsForRequest(
+        CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.PROTOCOL,
+        CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.HOST,
+        CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.PORT,
+        `/object/${uuid}/binary`,
+        {}
+    );
+    options.headers.authorization = 'Bearer ' + accessToken;
+
+    options.formData = {
+        file: {
+            value: fileBuffer,
+            options: {
+                filename: `${uuid}.file`
+            }
+        }
+    };
+
+    logger.debug(`[ams_adapter] uploading file for ${uuid}`);
+
+    request(options, function optionalCallback(e, r, body) {
+        const err = logger.logRequestAndResponse(e, options, r, body);
+
+        if (err) {
+            logger.warn('[ams_adapter] error while uploading file to ams');
+        }
+
+        callback(err);
+    });
+};
+
 module.exports = self;
