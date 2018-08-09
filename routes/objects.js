@@ -56,7 +56,7 @@ router.post('/', function (req, res, next) {
                 const productCode = 12345; //TODO: get this from the actual object
                 const decryptionBundle = encryption.createDecryptionBundle(
                     encryptionResult.keyBundleB64,
-                    od.productCode,
+                    productCode,
                     encryptionResult.encryptedFileBuffer);
             }
 
