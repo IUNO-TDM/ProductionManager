@@ -1,4 +1,4 @@
-var mdns = require('mdns');
+const dnssd = require('dnssd');
 const EventEmitter = require('events').EventEmitter;
 const util = require('util');
 const machine = require('../models/machine');
@@ -12,8 +12,7 @@ const UltimakerPrinterDiscoveryService = function () {
 const discovery_service = new UltimakerPrinterDiscoveryService();
 util.inherits(UltimakerPrinterDiscoveryService, EventEmitter);
 
-
-discovery_service.browser = mdns.createBrowser(mdns.tcp('_ultimaker'));
+discovery_service.browser = dnssd.Browser(dnssd.tcp('_ultimaker'));
 discovery_service.browser.on('serviceUp', function (service) {
     discovery_service.emit('serviceUp', service);
 
