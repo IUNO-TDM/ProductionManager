@@ -3,7 +3,7 @@ var mongoose = require('mongoose');
 var OrderSchema = new mongoose.Schema({
     items: [
         {
-            objectId: String,
+            dataId: String,
             amount: Number
         }
     ],

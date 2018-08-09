@@ -24,6 +24,7 @@
             "name": "ProductionManager (local)",
             "program": "${workspaceFolder}/bin/www",
             "env": {
+                "NODE_ENV": "docker"
                 // "TDM_PM_CONFIG": "private_local.js"
             },
             // "preLaunchTask": "tsc: build - tsconfig.json",

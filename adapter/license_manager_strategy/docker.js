@@ -5,6 +5,12 @@ const self = require('./default');
 
 logger.warn('[license_manager_adapter] RUNNING DOCKER (SIMULATION) MODE. License manager calls will be skipped!');
 
+self.getMachineForHsmId = function (hsmId, callback) {
+    Machine.find(function (err, machines) {
+        callback(machines[0], null)
+    })
+}
+
 self.getContextForHsmId = function (hsmId, callback) {
     callback(null, new Buffer('SIMULATION').toString('base64'));
 };
@@ -19,8 +25,15 @@ self.getLicenseInformationForProductCodeOnHsm = function (productCode, hsmId, ca
 
 self.updateMachines = function(callback) {
     Machine.find(function (err, machines) {
+        machine = machines[0]
+        machine.hsmIds = ['3-1234567']
+        machine.save()
         callback(err, machines)
     })
+}
+
+self.updateCMDongle = function(hsmId, callback) {
+    callback(null)
 }
 
 // self.getHsmId = function (callback) {

@@ -16,6 +16,12 @@ _.mapPick = function (objs, keys) {
     })
 };
 
+/**
+ * Creates a new order in the database by moving all items from the shopping cart
+ * to the order document. Then the marketplace is asked for creating an offer
+ * for this order.
+ * @returns created order object 
+ */
 router.post('/order',  function (req, res, next) {
     // check if there is an open order.
     const orderCompletedStates = ["completed", "canceled"]
@@ -37,7 +43,7 @@ router.post('/order',  function (req, res, next) {
 
         let orderItems = items.map(item => {
             return {
-                "dataId": item.objectId,
+                "dataId": item.dataId,
                 "amount": item.amount
             }
         })
@@ -46,10 +52,13 @@ router.post('/order',  function (req, res, next) {
             hsmId: req.body.hsmId,
             items: orderItems
         };
+        console.log("-------------------------")
+        console.log(offerRequest)
+        console.log("-------------------------")
 
         ams_adapter.createOfferForRequest(offerRequest, function(err, offer) {
             if (err) {
-
+                console.log(err)
             }
 
             // offer created, save as order
@@ -85,7 +94,7 @@ router.get('/items', function (req, res, next) {
             return next(err);
         }
 
-        res.json(_.mapPick(articles, ['id', 'objectId', 'amount', 'updated']));
+        res.json(_.mapPick(articles, ['id', 'dataId', 'amount', 'updated']));
     });
 });
 
@@ -103,18 +112,18 @@ router.delete('/items', function (req, res, next) {
 
 router.post('/items', function (req, res, next) {
 
-    Item.findOne({objectId: req.body.objectId}, function (err, item) {
+    Item.findOne({dataId: req.body.dataId}, function (err, item) {
         if (item) {
             item.amount += 1;
             item.updated = Date.now();
             Item.findByIdAndUpdate(item.id, item, {new: true}, function (err, item2) {
                 if (err) return next(err);
-                res.json(_.pick(item2, ['id', 'objectId', 'amount', 'updated']));
+                res.json(_.pick(item2, ['id', 'dataId', 'amount', 'updated']));
             });
         } else {
             Item.create(req.body, function (err, article) {
                 if (err) return next(err);
-                res.json(_.pick(article, ['id', 'objectId', 'amount', 'updated']));
+                res.json(_.pick(article, ['id', 'dataId', 'amount', 'updated']));
             });
         }
     });
@@ -129,7 +138,7 @@ router.get('/items/:id', function (req, res, next) {
             return next(err);
         }
 
-        res.json(_.pick(item, ['id', 'objectId', 'amount', 'updated']));
+        res.json(_.pick(item, ['id', 'dataId', 'amount', 'updated']));
     })
 });
 
@@ -139,7 +148,7 @@ router.delete('/items/:id', function (req, res, next) {
             return next(err);
         }
 
-        res.json(_.pick(item, ['id', 'objectId', 'amount', 'updated']));
+        res.json(_.pick(item, ['id', 'dataId', 'amount', 'updated']));
     })
 });
 
@@ -149,7 +158,7 @@ router.delete('/items/:id', function (req, res, next) {
             return next(err);
         }
 
-        res.json(_.pick(item, ['id', 'objectId', 'amount', 'updated']));
+        res.json(_.pick(item, ['id', 'dataId', 'amount', 'updated']));
     })
 });
 
@@ -159,7 +168,7 @@ router.put('/items/:id', function (req, res, next) {
             return next(err);
         }
 
-        res.json(_.pick(item, ['id', 'objectId', 'amount', 'updated']));
+        res.json(_.pick(item, ['id', 'dataId', 'amount', 'updated']));
     })
 });
 

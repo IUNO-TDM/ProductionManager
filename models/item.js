@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 
 var ItemSchema = new mongoose.Schema({
-    objectId: String,
+    dataId: String,
     amount: Number,
     updated: { type: Date, default: Date.now }});
 

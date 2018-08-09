@@ -5,7 +5,7 @@ export class Order {
         bip21: String
     }
     items: [{
-        id: String,
+        dataId: String,
         amount: Number
     }]
     state: String
