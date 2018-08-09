@@ -7,10 +7,24 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Programm starten",
+            "name": "ProductionManager (testing)",
             "program": "${workspaceFolder}/bin/www",
             "env": {
                 "TDM_PM_CONFIG": "private_testing.js"
+            },
+            // "preLaunchTask": "tsc: build - tsconfig.json",
+            "outFiles": [
+                "${workspaceFolder}/dist/out-tsc/**/*.js"
+            ],
+            "console": "integratedTerminal"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "ProductionManager (local)",
+            "program": "${workspaceFolder}/bin/www",
+            "env": {
+                // "TDM_PM_CONFIG": "private_local.js"
             },
             // "preLaunchTask": "tsc: build - tsconfig.json",
             "outFiles": [

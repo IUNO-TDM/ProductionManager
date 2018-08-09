@@ -361,26 +361,6 @@ router.get('/:id/printjob/time/remaining', function (req, res, next) {
     });
 });
 
-router.get('/:id/camera/stream', function (req, res, next) {
-    Machine.findById(req.params.id, function (err, machine) {
-        if (!machine || !machine.hostname) {
-            return res.sendStatus(404);
-        }
-
-        request('http://' + machine.hostname + ':8080/?action=stream').pipe(res);
-    });
-});
-
-router.get('/:id/camera/snapshot', function (req, res, next) {
-    Machine.findById(req.params.id, function (err, machine) {
-        if (!machine || !machine.hostname) {
-            return res.sendStatus(404);
-        }
-
-        request('http://' + machine.hostname + ':8080/?action=snapshot').pipe(res);
-    });
-});
-
 router.delete('/:id', function (req, res, next) {
     Machine.findByIdAndRemove(req.params.id, req.body, function (err, post) {
         if (err) {
@@ -709,9 +689,9 @@ router.get('/:id/camera/stream', function (req, res, next) {
         if (!machine || !machine.hostname) {
             return res.sendStatus(404);
         }
-        sou
-
-        request('http://' + machine.hostname + ':8080/?action=stream').pipe(res);
+        request('http://' + machine.hostname + ':8080/?action=stream').on('error', function(error) {
+            return res.sendStatus(404);
+        }).pipe(res);
     });
 });
 
@@ -720,8 +700,9 @@ router.get('/:id/camera/snapshot', function (req, res, next) {
         if (!machine || !machine.hostname) {
             return res.sendStatus(404);
         }
-
-        request('http://' + machine.hostname + ':8080/?action=snapshot').pipe(res);
+        request('http://' + machine.hostname + ':8080/?action=snapshot').on('error', function(error) {
+            return res.sendStatus(404);
+        }).pipe(res);
     });
 });
 
