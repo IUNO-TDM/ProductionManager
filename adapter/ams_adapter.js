@@ -407,15 +407,15 @@ self.getImageForUser = function (userId, callback) {
 
 };
 
-self.uploadFile = function(uuid, accessToken, fileBuffer, callback) {
+self.uploadFile = function(uuid, fileBuffer, callback) {
     const options = buildOptionsForRequest(
+        'POST',
         CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.PROTOCOL,
         CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.HOST,
         CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.PORT,
         `/object/${uuid}/binary`,
         {}
     );
-    options.headers.authorization = 'Bearer ' + accessToken;
 
     options.formData = {
         file: {

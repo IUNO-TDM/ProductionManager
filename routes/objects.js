@@ -1,12 +1,13 @@
-var express = require('express');
-var router = express.Router();
-var ams_adapter = require('../adapter/ams_adapter');
+const express = require('express');
+const router = express.Router();
+const ams_adapter = require('../adapter/ams_adapter');
 const common = require('tdm-common');
 
 const Validator = require('express-json-validator-middleware').Validator;
 const validator = new Validator({allErrors: true});
 const validate = validator.validate;
 const validation_schema = require('../schema/object_schema');
+const encryption = require('../services/encryption_service');
 
 router.get('/', validate({
     query: validation_schema.Object_Query,
@@ -28,18 +29,39 @@ router.get('/', validate({
 });
 
 router.post('/', function (req, res, next) {
+
+    const gcode = 'BlaFasel'; //TODO: get the real gcode with fs.readFileSync(gcode_path, 'utf8');
+    const encryptionResult = encryption.encryptData(gcode);
+
     var od = {}
-    od.components = ["adb4c297-45bd-437e-ac90-a33d0f24de7e","763c926e-a5f7-4ba0-927d-b4e038ea2735"];
+    od.components = ["adb4c297-45bd-437e-ac90-a33d0f24de7e", "763c926e-a5f7-4ba0-927d-b4e038ea2735"];
     // od.encryptedBinary = "c2RmZ2hqa2zDtmhnZmRzeWZnaGpraGdmZHh5c2ZnaGprbGhnZmRzeWZnaGprbGpoZ2Zkc3lmZ2hqa2zDtmpoZ2ZkaGprbMO2amhnZmRzdG8=";
     // od.licenseType = 0
     od.description = "dfghjkl";
     od.licenseFee = 1;
     od.title = "Dies ist ein günstiges Teil";
     od.backgroundColor = "#777777";
-    od.encryptedKey = "1234567890123456789012345678901234567890123456789012345678901234"
+    od.encryptedKey = encryptionResult.keyBundleB64;
+
     ams_adapter.saveObject(od, function (err, dataId) {
 
+        ams_adapter.uploadFile(dataId, encryptionResult.encryptedFileBuffer, (err) => {
+            if (err) {
+                if (err.statusCode >= 500) {
+                    return next(err);
+                }
+                return res.sendStatus(err.statusCode);
 
+                //TODO: Following is example code for create a decryption bundle for the ultimaker
+                const productCode = 12345; //TODO: get this from the actual object
+                const decryptionBundle = encryption.createDecryptionBundle(
+                    encryptionResult.keyBundleB64,
+                    od.productCode,
+                    encryptionResult.encryptedFileBuffer);
+            }
+
+            return res.sendStatus(201);
+        })
     })
 });
 
