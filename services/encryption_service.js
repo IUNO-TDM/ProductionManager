@@ -5,7 +5,7 @@ const crypto = require("crypto");
 const logger = require('../global/logger');
 const CONFIG = require('../config/config_loader');
 
-const self  = {};
+const self = {};
 
 function convertWordArrayToUint8Array(wordArray) {
     let len = wordArray.words.length,
@@ -21,6 +21,42 @@ function convertWordArrayToUint8Array(wordArray) {
     }
     return u8_array;
 }
+
+
+self.encryptGCode = function (gcode) {
+
+    // split header from g-code
+    const splitAt = ';END_OF_HEADER\n';
+    gcode = gcode.split(splitAt);
+
+    if (gcode.length !== 2) {
+        logger.crit('[encryption_service] cannot encrypt malformed g-code string');
+
+        throw  new Error('could not separate header from g-code content');
+    }
+
+    const header = gcode[0] + splitAt;
+    const content = gcode[1];
+
+    // write header into buffer
+    const headerBuffer = new Buffer(header);
+
+    // convert header length into little endian buffer
+    const headerLengthBuffer = Buffer.alloc(4);
+    headerLengthBuffer.writeUInt32LE(headerBuffer.length, 0);
+
+    // encrypt the g-code content only
+    const encryptedData = self.encryptData(content);
+
+    // bundle header length, header and encrypted g-code content together
+    encryptedData['fileBundle'] = Buffer.concat([
+        headerLengthBuffer,
+        headerBuffer,
+        encryptedData.encryptedFileBuffer
+    ]);
+
+    return encryptedData;
+};
 
 self.encryptData = function (data) {
     try {
@@ -70,7 +106,7 @@ self.encryptData = function (data) {
     }
 };
 
-self.createDecryptionBundle = function (encryptedKeysB64, productCode, encryptedFileBuffer) {
+self.createDecryptionBundle = function (encryptedKeysB64, productCode, fileBundle) {
 
     // convert product code to little endian buffer
     const productCodeBuffer = Buffer.alloc(4);
@@ -84,7 +120,8 @@ self.createDecryptionBundle = function (encryptedKeysB64, productCode, encrypted
     return Buffer.concat([
         productCodeBuffer,
         encryptedKeyBuffer,
-        encryptedFileBuffer]);
+        fileBundle
+    ]);
 };
 
 module.exports = self;
