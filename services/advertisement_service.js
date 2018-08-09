@@ -1,19 +1,24 @@
-var mdns = require('mdns');
+var dnssd = require('dnssd');
 const logger = require('../global/logger');
 const os = require('os');
 
 const AdvertisementService = function (servicename, port) {
-    // var servicetype = new mdns.ServiceType(['http', 'tcp', servicename]);
+    var servicetype = new dnssd.ServiceType(['_' + servicename, '_tcp']);
 
-    var ad = mdns.createAdvertisement(mdns.tcp(servicename), parseInt(port), {name: "IUNO ProductionManager on " + os.hostname()}, (error, service) => {
-        if (error) {
-            logger.warn("Registration of advertisement wasn't successful: ", error);
-        }
-    });
-    ad.on('error', function (error) {
-        logger.warn("Registration of advertisement wasn't successful: ", error)
-    });
+    const ad = new dnssd.Advertisement(servicetype, parseInt(port), {name: "IUNO-ProductionManager"});
     ad.start();
+    process.on('exit',()=>{
+        ad.stop();
+        setTimeout(()=>{
+            process.exit()
+        },2000)
+    });
+    process.on('SIGINT', ()=>{
+        ad.stop();
+        setTimeout(()=>{
+            process.exit()
+        },2000)
+    });
 };
 
 module.exports = AdvertisementService;

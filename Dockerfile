@@ -21,4 +21,5 @@ RUN npm install -g @angular/cli --unsafe
 RUN npm run build
 
 EXPOSE 3042
+
 CMD service dbus start && service avahi-daemon start &&  pm2-docker npm -- start
