@@ -1,5 +1,6 @@
 <div fxFlex class="content" fxLayout="row wrap" fxLayoutGap="15px">
-  <mat-card *ngFor="let machine of machines" class="machine-card" fxFlex>
+  <ng-container *ngIf="!selectedMachine">
+    <mat-card *ngFor="let machine of machines" class="machine-card" fxFlex (click)="onMachineClick(machine)">
       <mat-card-header>
         <mat-card-title i18n>{{machine.displayname}}</mat-card-title>
         <mat-card-subtitle>{{machine.variant}}</mat-card-subtitle>
@@ -11,16 +12,25 @@
         </ng-container>
         <ng-container *ngIf="!machine.cameraSnapshot && cameraSnapshotStates[machine.id]=='updating'">
           <div class="machine-image" fxLayoutAlign="center center">
-              <mat-progress-spinner mode="indeterminate" diameter="30" strokeWidth="2"></mat-progress-spinner>
+            <mat-progress-spinner mode="indeterminate" diameter="30" strokeWidth="2"></mat-progress-spinner>
           </div>
         </ng-container>
         <ng-container *ngIf="cameraSnapshotStates[machine.id]=='not available'">
-            <div class="machine-image" fxLayoutAlign="center center">
-                Nicht verfügbar
-            </div>
-          </ng-container>
-            <!-- <div *ngIf="licensesChart"> -->
+          <div class="machine-image" fxLayoutAlign="center center">
+            Nicht verfügbar
+          </div>
+        </ng-container>
+        <!-- <div *ngIf="licensesChart"> -->
         <!-- </div> -->
       </mat-card-content>
     </mat-card>
+  </ng-container>
+  <ng-container *ngIf="selectedMachine">
+    <div fxLayout="column" fxLayoutGap="15px">
+      <div>
+        <button mat-button (click)="deselectMachine()">← Zurück</button>
+      </div>
+      <app-machine machine="selectedMachine"></app-machine>
+    </div>
+  </ng-container>
 </div>

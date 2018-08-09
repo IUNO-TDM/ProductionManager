@@ -37,6 +37,7 @@ import { ShoppingCartComponent } from './tabs/marketplace/shopping-cart/shopping
 import { CreateObjectComponent } from './tabs/own-objects/create-object/create-object.component';
 import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
 import { OrderComponent } from './tabs/marketplace/order/order.component';
+import { MachineComponent } from './tabs/machines/machine/machine.component';
 // import { TdmCommonModule } from 'tdm-common'
 
 @NgModule({
@@ -52,6 +53,7 @@ import { OrderComponent } from './tabs/marketplace/order/order.component';
     CreateObjectComponent,
     ConfirmationDialogComponent,
     OrderComponent,
+    MachineComponent,
   ],
   imports: [
     // Angular Core

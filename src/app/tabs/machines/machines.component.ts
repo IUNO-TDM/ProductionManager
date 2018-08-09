@@ -14,6 +14,7 @@ export class MachinesComponent implements OnInit {
   private updateCameraSnapshots = true
   machines: Machine[]
   cameraSnapshotStates = {}
+  selectedMachine = null
 
   constructor(
     private titleService: TitleService,
@@ -36,6 +37,14 @@ export class MachinesComponent implements OnInit {
 
   ngOnDestroy() {
     this.updateCameraSnapshots = false
+  }
+
+  onMachineClick(machine) {
+    this.selectedMachine = machine
+  }
+
+  deselectMachine() {
+    this.selectedMachine = null
   }
 
   private startUpdatingCameraSnapshot(machine) {
