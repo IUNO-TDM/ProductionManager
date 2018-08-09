@@ -31,7 +31,7 @@ router.get('/', validate({
 router.post('/', function (req, res, next) {
 
     const gcode = 'BlaFasel'; //TODO: get the real gcode with fs.readFileSync(gcode_path, 'utf8');
-    const encryptionResult = encryption.encryptData(gcode);
+    const encryptionResult = encryption.encryptGCode(gcode);
 
     var od = {}
     od.components = ["adb4c297-45bd-437e-ac90-a33d0f24de7e", "763c926e-a5f7-4ba0-927d-b4e038ea2735"];
