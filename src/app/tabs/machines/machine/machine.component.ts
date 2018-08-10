@@ -7,7 +7,7 @@ import { Machine } from '../../../models/machine';
   styleUrls: ['./machine.component.css']
 })
 export class MachineComponent implements OnInit {
-  @Input() machine: Machine
+  @Input() machine: Machine;
   
   constructor() { }
 

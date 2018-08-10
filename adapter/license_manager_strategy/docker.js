@@ -23,21 +23,13 @@ self.getLicenseInformationForProductCodeOnHsm = function (productCode, hsmId, ca
     callback(null, 9999);
 };
 
-self.updateMachines = function(callback) {
-    Machine.find(function (err, machines) {
-        machine = machines[0]
-        machine.hsmIds = ['3-1234567']
-        machine.save()
-        callback(err, machines)
-    })
-}
 
 self.updateCMDongle = function(hsmId, callback) {
     callback(null)
 }
 
-// self.getHsmId = function (callback) {
-//     callback(null, '9-9999999');
-// };
+self.getHsmIds = function (hostname, callback) {
+    callback(null, '9-9999999');
+};
 
 module.exports = self;
