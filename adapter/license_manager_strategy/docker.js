@@ -36,8 +36,8 @@ self.updateCMDongle = function(hsmId, callback) {
     callback(null)
 }
 
-// self.getHsmId = function (callback) {
-//     callback(null, '9-9999999');
-// };
+self.getHsmIds = function (hostname, callback) {
+    callback(null, '9-9999999');
+};
 
 module.exports = self;

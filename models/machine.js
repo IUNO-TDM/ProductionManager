@@ -8,6 +8,8 @@ var MachineSchema = new mongoose.Schema({
     ipaddress: String,
     variant: String,
     auth_id: String,
-    auth_key: String
+    auth_key: String,
+    isAuthenticated: Boolean,
+    isOnline: Boolean
 });
 module.exports = mongoose.model('Machine', MachineSchema);

@@ -38,6 +38,8 @@ const LicenseService = function () {
 const license_service = new LicenseService();
 util.inherits(LicenseService, EventEmitter);
 
+license_service.registeredHsmIds = [];
+
 license_service.socket = io(CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE
         .PROTOCOL + '://' + CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.HOST
     + ":" + CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.PORT + "/licenses", {
@@ -47,7 +49,10 @@ license_service.socket = io(CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE
 license_service.socket.on('connect', function () {
     logger.debug("[license_client] Connected to AMS");
 
-    license_service.registerUpdates();
+    for (var i = 0; i < license_service.registeredHsmIds.length; i++) {
+        license_service.socket.emit('room', license_service.registeredHsmIds[i]);
+        logger.info("Registered for license updates dongleId:" + license_service.registeredHsmIds[i]);
+    }
     license_service.emit('connectionState', true);
 });
 license_service.socket.on('connect_error', function (error) {
@@ -86,68 +91,29 @@ license_service.socket.on('reconnect_attempt', function (number) {
 
 license_service.socket.on('updateAvailable', function (data) {
     logger.debug("[license_client] License update available for " + JSON.stringify(data));
-    // const orderStateMachine = require('../models/order_state_machine');
-    const orderStateMachine = require('../models/order_state_machine')
 
+    const orderStateMachine = require('../models/order_state_machine');
     if (data) {
         // get order from database
-        Order.findOne({'offer.id': data.offerId}, function(error, order) {
+        Order.findOne({'offer.id': data.offerId}, function (error, order) {
             if (!order || error) {
                 return
             }
             orderStateMachine.licenseUpdateAvailable(order)
-            // order.save((error, savedOrder) => {
-            //     if (error) {
-            //         return
-            //     }
-            // })
-        })
-        return;
-        // const order = orderDB.getOrderByOfferId(data.offerId);
-        // if (!order) {
-        //     return;
-        // }
-        // orderStateMachine.licenseAvailable(order);
-
-        // updateCMDongle(data.hsmId, function (err) {
-        //     if (err) {
-        //         orderStateMachine.error(order)
-        //     }
-
-        //     orderStateMachine.licenseArrived(order);
-        // });
-
+        });
     }
 });
 
-license_service.registerUpdates = function () {
-    logger.info('[license_client] registerUpdates.');
-    Machine.find(function (err, machines) {
-        if (err) {
-            logger.err('[license_client] Could not register for license updates! Error = '+err+'.');
-        } else {
-            machines.forEach(machine => {
-                if (machine.hsmIds) {
-                    machine.hsmIds.forEach(hsmId => {
-                        logger.info("[license_client] registering updates for hsmId '"+hsmId+"'")
-                        license_service.socket.emit('room', hsmId);
-                    })
-                }
-            })
-        }
-    })
+license_service.registerHsmId = function (hsmId) {
+    if(license_service.registeredHsmIds.indexOf(hsmId) !== -1){
+        return;
+    }
+    if (license_service.socket.connected) {
 
-    logger.info('[license_client] querying for license updates of existing orders.');
-    Order.find({state: { $ne: 'completed'} }, function(err, orders) {
-        if (orders) {
-            orders.forEach(order => {
-                ams_adapter.requestLicenseUpdate( order, (err) => {
-                    //FIXME: Think what to do here
-                })            
-            })
-        }
-    })
-
+        logger.info("[license_client] registering updates for hsmId '" + hsmId + "'");
+        license_service.socket.emit('room', hsmId);
+    }
+    license_service.registeredHsmIds.push(hsmId);
 };
 
 license_service.getConnectionStatus = function () {

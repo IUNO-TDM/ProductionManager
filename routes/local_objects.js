@@ -102,6 +102,16 @@ router.post('/', require('../services/file_upload_handler'), function (req, res,
 
     LocalObject.create(localObj, function (err, locObj) {
         if (err) return next(err);
+
+        var stats = fs.statSync(req.file.path);
+        var fileSizeInBytes = stats["size"];
+        if(fileSizeInBytes === 0){
+            deleteFile(req.file.path);
+            res.status(400);
+            res.send("Size of uploaded file is 0 :(");
+            return;
+        }
+
         const fullUrl = helper.buildFullUrlFromRequest(req);
         res.set('Location', fullUrl + locObj["id"]);
         res.sendStatus(201);

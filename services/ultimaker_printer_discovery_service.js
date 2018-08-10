@@ -1,10 +1,12 @@
 const dnssd = require('dnssd');
 const EventEmitter = require('events').EventEmitter;
 const util = require('util');
-const machine = require('../models/machine');
+const Machine = require('../models/machine');
 const ultimakerAdapter = require('../adapter/ultimaker_printer_adapter');
 const async = require('async');
-
+const logger = require('../global/logger');
+const licenseManager = require('../adapter/license_manager_adapter');
+const licenseClient = require('../websocket/license_client');
 const UltimakerPrinterDiscoveryService = function () {
 
 };
@@ -12,43 +14,102 @@ const UltimakerPrinterDiscoveryService = function () {
 const discovery_service = new UltimakerPrinterDiscoveryService();
 util.inherits(UltimakerPrinterDiscoveryService, EventEmitter);
 
-discovery_service.browser = dnssd.Browser(dnssd.tcp('_ultimaker'));
-discovery_service.browser.on('serviceUp', function (service) {
-    discovery_service.emit('serviceUp', service);
+const updateMachine = function (machine, callback) {
+    async.parallel([
+        function (cb) {
+            ultimakerAdapter.getSystemGuid(machine.hostname, cb)
+        },
+        function (cb) {
+            ultimakerAdapter.getSystemName(machine.hostname, cb)
+        },
+        function (cb) {
+            ultimakerAdapter.getSystemVariant(machine.hostname, cb)
+        },
+        function (cb) {
 
-    if (service && service.host) {
-
-        async.parallel([
-            function (callback) {
-                ultimakerAdapter.getSystemGuid(service.host, callback)
-            },
-            function (callback) {
-                ultimakerAdapter.getSystemName(service.host, callback)
-            },
-            function (callback) {
-                ultimakerAdapter.getSystemVariant(service.host, callback)
+            licenseManager.getHsmIds(machine.hostname, (err, hsmId) => {
+                cb(null, hsmId);
+            })
+        },
+        function (cb) {
+            if (machine.auth_id && machine.auth_key) {
+                ultimakerAdapter.verifyAuthentication(machine.hostname, machine.auth_id, machine.auth_key, cb);
+            } else {
+                cb(null, false)
             }
-        ], function (err, results) {
-            if (!err) {
-                var m = {};
-                m._id = results[0];
-                m.displayname = results[1];
-                m.variant = results[2];
-                m.hostname = service.host;
+        }
+    ], function (err, results) {
+        if (err) {
+            machine.isOnline = false;
+        } else {
+            machine._id = results[0];
+            machine.displayname = results[1];
+            machine.variant = results[2];
+            machine.hsmIds = results[3];
+            machine.isAuthenticated = results[4];
+            machine.isOnline = true;
+            if (machine.hsmIds && machine.hsmIds.length > 0) {
+                for (var i = 0; i < machine.hsmIds.length; i++) {
+                    licenseClient.registerHsmId(machine.hsmIds[i]);
+                }
+            }
+        }
 
-                machine.findById(m._id, function (err, mach) {
-                    if (!mach) {
-                        machine.create(m);
-                    }
+        Machine.findById(machine._id, (err, foundMachine) => {
+            if (err) {
+                callback(err, null);
+            }
+            else if (foundMachine) {
+                Machine.findByIdAndUpdate(machine._id, machine, {new: true}, (err, updatedMachine) => {
+                    callback(err, null);
+                });
+            } else {
+                Machine.create(machine, (err, updatedMachine) => {
+                    callback(err, null);
                 });
             }
         })
-    }
-});
-discovery_service.browser.on('serviceDown', function (service) {
-    discovery_service.emit('serviceDown', service);
-});
-discovery_service.browser.start();
+    })
+};
 
+async.series(
+    [
+        //first step, before activating dns discovery is checking state of machines in DB
+        (callback) => {
+            Machine.find((err, machines) => {
+                async.map(machines, updateMachine,
+                    (err) => {
+                        if (err) {
+                            logger.warn("There was a problem with updating machine DB data", err);
+                        }
+                        callback();
+                    });
+            });
+        },
+        (callback) => {
+            const updateOnServiceChange = function (service) {
+                var m = {};
+                m.hostname = service.host;
+                updateMachine(m, (err, res) => {
+                    if (err) {
+                        console.warn("error updating found machine");
+                    }
+                });
+            };
+            discovery_service.browser = dnssd.Browser(dnssd.tcp('_ultimaker'));
+            discovery_service.browser.on('serviceUp', function (service) {
+                discovery_service.emit('serviceUp', service);
+                updateOnServiceChange(service);
+
+            });
+            discovery_service.browser.on('serviceDown', function (service) {
+                discovery_service.emit('serviceDown', service);
+                updateOnServiceChange(service);
+            });
+            discovery_service.browser.start();
+            callback();
+        }
+    ]
+);
 
 module.exports = discovery_service;
