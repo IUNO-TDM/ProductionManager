@@ -32,7 +32,7 @@ import { MachinesComponent } from './tabs/machines/machines.component';
 import { OwnObjectsComponent } from './tabs/own-objects/own-objects.component';
 import { PurchasedObjectsComponent } from './tabs/purchased-objects/purchased-objects.component';
 import { ObjectBrowserComponent } from './object-browser/object-browser.component';
-import { ObjectDetailsComponent } from './object-details/object-details.component';
+import { ObjectDetailsComponent, ObjectDetailsActionsComponent } from './object-details/object-details.component';
 import { ShoppingCartComponent } from './tabs/marketplace/shopping-cart/shopping-cart.component';
 import { CreateObjectComponent } from './tabs/own-objects/create-object/create-object.component';
 import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
@@ -49,6 +49,7 @@ import { MachineComponent } from './tabs/machines/machine/machine.component';
     PurchasedObjectsComponent,
     ObjectBrowserComponent,
     ObjectDetailsComponent,
+    ObjectDetailsActionsComponent,
     ShoppingCartComponent,
     CreateObjectComponent,
     ConfirmationDialogComponent,

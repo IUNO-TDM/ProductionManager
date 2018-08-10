@@ -70,6 +70,11 @@ export class PurchasedObjectsComponent implements OnInit {
     this.selectedObject = object
   }
 
+  onDownloadClicked() {
+    //FIXME: Implement this!
+    console.log("Download!")
+  }
+
   deselectObject() {
     this.selectedObject = null;
   }

@@ -42,7 +42,11 @@
               <div>
                 <button mat-button (click)="deselectObject()">← Zurück</button>
               </div>
-              <app-object-details [object]="selectedObject" [canAddToShoppingCart]="true" (onAddToShoppingCart)="onAddToShoppingCart($event)"></app-object-details>
+              <app-object-details [object]="selectedObject">
+                  <app-object-details-actions>
+                      <button mat-raised-button color="primary" (click)="onAddToShoppingCartClicked()">In den Warenkorb</button>
+                  </app-object-details-actions>
+              </app-object-details>
             </div>
           </ng-container>
           <ng-container *ngIf="!selectedObject">

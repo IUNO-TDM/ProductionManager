@@ -19,7 +19,7 @@
                     <div>
                         <button mat-button (click)="deselectObject()">← Zurück</button>
                     </div>
-                    <app-object-details [object]="selectedObject" [canAddToShoppingCart]="false"></app-object-details>
+                    <app-object-details [object]="selectedObject"></app-object-details>
                 </div>
             </ng-container>
             <ng-container *ngIf="loading">

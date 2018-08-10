@@ -60,8 +60,8 @@ export class MarketplaceComponent implements OnInit {
     })
   }
 
-  onAddToShoppingCart(object) {
-    this.shoppingCartService.addToShoppingCart(object).subscribe(result => {
+  onAddToShoppingCartClicked() {
+    this.shoppingCartService.addToShoppingCart(this.selectedObject).subscribe(result => {
       //TODO: handle return value
     })
   }
