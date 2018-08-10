@@ -24,10 +24,10 @@ export class ShoppingCartComponent implements OnInit {
 
   ngOnInit() {
     this.shoppingCartService.items.subscribe(items => {
-      this.items = items
+      this.items = items;
     })
 
-    this.machineService.updateMachines(true, () => {
+    this.machineService.updateMachines( () => {
       this.machineService.machines.subscribe(machines => {
         this.machines = machines
         console.log(this.machines)

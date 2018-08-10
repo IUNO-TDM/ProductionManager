@@ -126,7 +126,7 @@ self.getLicenseInformationForProductCodeOnHsm = function (productCode, hsmId, ca
     }
 
     this.getMachineForHsmId(hsmId, function (machine, error) {
-        const hostname = machine.hostname
+        const hostname = machine.hostname;
         const options = buildOptionsForRequest(
             'GET',
             CONFIG.HOST_SETTINGS.LICENSE_MANAGER.PROTOCOL,
@@ -143,6 +143,9 @@ self.getLicenseInformationForProductCodeOnHsm = function (productCode, hsmId, ca
         });
     })
 };
+
+// self.getLicenses(hostname, )
+
 
 self.updateCMDongle = function (hsmId, callback) {
     if (self.isUpdating) {
@@ -223,40 +226,6 @@ self.updateCMDongle = function (hsmId, callback) {
             });
         });
     });
-}
-
-
-self.updateMachines = function (callback) {
-    Machine.find(function (err, machines) {
-        machines.forEach(machine => {
-            logger.info("Updating hsmIds of machine '" + machine.displayname + "'.")
-            const options = buildOptionsForRequest(
-                'GET',
-                CONFIG.HOST_SETTINGS.LICENSE_MANAGER.PROTOCOL,
-                machine.hostname,
-                CONFIG.HOST_SETTINGS.LICENSE_MANAGER.PORT,
-                '/cmdongles',
-                {}
-            );
-
-            options.json = true;
-
-            request(options, function (e, r, data) {
-                const err = logger.logRequestAndResponse(e, options, r, data);
-                // logger.info("- found "+data.length+" hsmIds.")
-                machine.hsmIds = data
-                machine.save((error, savedMachine) => {
-                    if (!error) {
-                        logger.info("- machine saved with no error.")
-                    } else {
-                        //TODO: handle error
-                        logger.crit("- machine not saved. Error = '" + error + "'.")
-                    }
-                })
-            });
-        })
-        callback(err, machines)
-    })
 };
 
 self.getHsmIds = function (hostname, callback) {

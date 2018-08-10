@@ -3,9 +3,8 @@ const logger = require('../global/logger');
 const os = require('os');
 
 const AdvertisementService = function (servicename, port) {
-    var servicetype = new dnssd.ServiceType(['_' + servicename, '_tcp']);
 
-    const ad = new dnssd.Advertisement(servicetype, parseInt(port), {name: "IUNO-ProductionManager"});
+    const ad = new dnssd.Advertisement(dnssd.tcp(servicename), parseInt(port), {name: "IUNO-ProductionManager"});
     ad.start();
     process.on('exit',()=>{
         ad.stop();

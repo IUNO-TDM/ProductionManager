@@ -55,20 +55,26 @@ const updateMachine = function (machine, callback) {
             }
         }
 
-        Machine.findById(machine._id, (err, foundMachine) => {
-            if (err) {
+        if (machine._id) {
+            Machine.findById(machine._id, (err, foundMachine) => {
+                if (err) {
+                    callback(err, null);
+                }
+                else if (foundMachine) {
+                    Machine.findByIdAndUpdate(machine._id, machine, {new: true}, (err, updatedMachine) => {
+                        callback(err, null);
+                    });
+                } else {
+                    Machine.create(machine, (err, updatedMachine) => {
+                        callback(err, null);
+                    });
+                }
+            })
+        } else {
+            Machine.findOneAndUpdate({hostname: machine.hostname}, machine, {new: true}, (err, updatedMachine) => {
                 callback(err, null);
-            }
-            else if (foundMachine) {
-                Machine.findByIdAndUpdate(machine._id, machine, {new: true}, (err, updatedMachine) => {
-                    callback(err, null);
-                });
-            } else {
-                Machine.create(machine, (err, updatedMachine) => {
-                    callback(err, null);
-                });
-            }
-        })
+            })
+        }
     })
 };
 
