@@ -408,35 +408,66 @@ self.getImageForUser = function (userId, callback) {
 };
 
 self.uploadFile = function(uuid, fileBuffer, callback) {
-    const options = buildOptionsForRequest(
+
+    buildOptionsForRequest(
         'POST',
         CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.PROTOCOL,
         CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.HOST,
         CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.PORT,
-        `/object/${uuid}/binary`,
-        {}
+        `/objects/${uuid}/binary`,
+        {},
+        function (err, options) {
+            options.formData = {
+                file: {
+                    value: fileBuffer,
+                    options: {
+                        filename: `${uuid}.file`
+                    }
+                }
+            };
+
+            logger.debug(`[ams_adapter] uploading file for ${uuid}`);
+
+            request(options, function optionalCallback(e, r, body) {
+                const err = logger.logRequestAndResponse(e, options, r, body);
+
+                if (err) {
+                    logger.warn('[ams_adapter] error while uploading file to ams');
+                }
+
+                callback(err);
+            });
+        }
+    );
+};
+
+self.getObjectWithId = function (objectId, language, callback) {
+
+
+    if (typeof(callback) !== 'function') {
+
+        callback = function () {
+            logger.info('Callback not registered');
+        }
+    }
+
+    buildOptionsForRequest(
+        'GET',
+        CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.PROTOCOL,
+        CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.HOST,
+        CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.PORT,
+        `/objects/${objectId}`,
+        {
+            lang: language,
+        }, function (err, options) {
+            request(options, function (e, r, jsonData) {
+                const err = logger.logRequestAndResponse(e, options, r, jsonData);
+                callback(err, jsonData);
+            });
+        }
     );
 
-    options.formData = {
-        file: {
-            value: fileBuffer,
-            options: {
-                filename: `${uuid}.file`
-            }
-        }
-    };
 
-    logger.debug(`[ams_adapter] uploading file for ${uuid}`);
-
-    request(options, function optionalCallback(e, r, body) {
-        const err = logger.logRequestAndResponse(e, options, r, body);
-
-        if (err) {
-            logger.warn('[ams_adapter] error while uploading file to ams');
-        }
-
-        callback(err);
-    });
 };
 
 module.exports = self;
