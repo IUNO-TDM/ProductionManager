@@ -110,8 +110,6 @@ private*
 
 public/scripts
 
-test/*
-
 # compiled output
 /dist
 /tmp
