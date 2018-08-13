@@ -421,7 +421,7 @@ self.uploadFile = function(uuid, fileBuffer, callback) {
                 file: {
                     value: fileBuffer,
                     options: {
-                        filename: `${uuid}.file`
+                        filename: `${uuid}.iunoum3`
                     }
                 }
             };
