@@ -13,7 +13,7 @@ export class LocalObjectService {
     }
 
     getObjects(machineTypes: string[], materials: string[]) {
-        const url = this.apiUrl + 'objects/local';
+        const url = this.apiUrl + 'localobjects';
         var params = {};
 
         // add language to query parameters

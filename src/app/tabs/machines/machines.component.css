@@ -25,3 +25,11 @@
     width: 150px;
     height: 150px;
 }
+
+.authenticated-icon{
+    color: forestgreen;
+}
+
+.not-authenticated-icon {
+    color: orangered;
+}

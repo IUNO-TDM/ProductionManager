@@ -19,11 +19,11 @@ function buildOptionsForRequest(method, protocol, host, port, path, qs) {
 }
 
 self.getMachineForHsmId = function (hsmId, callback) {
-    logger.debug("[license_manager_adapter] getMachineForHsmId '"+hsmId+"'.")
+    logger.debug("[license_manager_adapter] getMachineForHsmId '" + hsmId + "'.")
 
     //FIXME! this is ugly! Do it with Machine.findOne
     var selectedMachine = null;
-    Machine.find({}, function(err, machines) {
+    Machine.find({}, function (err, machines) {
         console.log("Alle Maschinen:")
         console.log(machines)
         machines.forEach(machine => {
@@ -32,13 +32,13 @@ self.getMachineForHsmId = function (hsmId, callback) {
                     selectedMachine = machine
                     console.log("HIT!")
                 }
-                console.log(" - "+id)
+                console.log(" - " + id)
             })
         })
         console.log("selectedMachine")
         console.log(selectedMachine)
         callback(selectedMachine, null)
-        })
+    })
     // Machine.findOne({ hsmIds: hsmId }, function (err, machines) {
     //     console.log(err)
     //     if (machines.length > 0 && !err) {
@@ -126,7 +126,7 @@ self.getLicenseInformationForProductCodeOnHsm = function (productCode, hsmId, ca
     }
 
     this.getMachineForHsmId(hsmId, function (machine, error) {
-        const hostname = machine.hostname
+        const hostname = machine.hostname;
         const options = buildOptionsForRequest(
             'GET',
             CONFIG.HOST_SETTINGS.LICENSE_MANAGER.PROTOCOL,
@@ -144,7 +144,10 @@ self.getLicenseInformationForProductCodeOnHsm = function (productCode, hsmId, ca
     })
 };
 
-self.updateCMDongle = function(hsmId, callback) {
+// self.getLicenses(hostname, )
+
+
+self.updateCMDongle = function (hsmId, callback) {
     if (self.isUpdating) {
         logger.warn('[license_manager] Update cycle is already running. Retry after 10 seconds');
         return setTimeout(() => {
@@ -223,67 +226,28 @@ self.updateCMDongle = function(hsmId, callback) {
             });
         });
     });
-}
+};
 
-self.updateMachines = function(callback) {
-    Machine.find(function (err, machines) {
-        machines.forEach(machine => {
-            logger.info("Updating hsmIds of machine '"+machine.displayname+"'.")
-            const options = buildOptionsForRequest(
-                'GET',
-                CONFIG.HOST_SETTINGS.LICENSE_MANAGER.PROTOCOL,
-                machine.hostname,
-                CONFIG.HOST_SETTINGS.LICENSE_MANAGER.PORT,
-                '/cmdongles',
-                {}
-            );
+self.getHsmIds = function (hostname, callback) {
+    if (typeof(callback) !== 'function') {
+        return logger.crit('[license_manager_adapter] missing callback');
+    }
 
-            options.json = true;
+    const options = buildOptionsForRequest(
+        'GET',
+        CONFIG.HOST_SETTINGS.LICENSE_MANAGER.PROTOCOL,
+        hostname,
+        CONFIG.HOST_SETTINGS.LICENSE_MANAGER.PORT,
+        '/cmdongles',
+        {}
+    );
 
-            request(options, function (e, r, data) {
-                const err = logger.logRequestAndResponse(e, options, r, data);
-                // logger.info("- found "+data.length+" hsmIds.")
-                machine.hsmIds = data
-                machine.save((error, savedMachine) => {
-                    if (!error) {
-                        logger.info("- machine saved with no error.")
-                    } else {
-                        //TODO: handle error
-                        logger.crit("- machine not saved. Error = '"+error+"'.")
-                    }
-                })
-            });
-        })
-        callback(err, machines)
-    })
-}
+    options.json = true;
 
-// self.getHsmId = function (callback) {
-//     if (typeof(callback) !== 'function') {
-//         return logger.crit('[license_manager_adapter] missing callback');
-//     }
-
-//     const options = buildOptionsForRequest(
-//         'GET',
-//         CONFIG.HOST_SETTINGS.LICENSE_MANAGER.PROTOCOL,
-//         CONFIG.HOST_SETTINGS.LICENSE_MANAGER.HOST,
-//         CONFIG.HOST_SETTINGS.LICENSE_MANAGER.PORT,
-//         '/cmdongles',
-//         {}
-//     );
-
-//     options.json = true;
-
-//     request(options, function (e, r, data) {
-//         const err = logger.logRequestAndResponse(e, options, r, data);
-
-//         let hsmId = null;
-//         if (data && data.length) {
-//             hsmId = data[0];
-//         }
-
-//         callback(err, hsmId);
-//     });
-// };
+    request(options, function (e, r, data) {
+        const err = logger.logRequestAndResponse(e, options, r, data);
+        callback(err, data);
+    });
+};
 
 module.exports = self;

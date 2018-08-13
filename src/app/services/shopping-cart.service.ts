@@ -36,7 +36,7 @@ export class ShoppingCartService {
     const url = this.apiUrl + "shopping_cart/items"
     
     const body = {
-      "objectId": object.id,
+      "dataId": object.id,
       "amount": 1
     }
     return this.http.post(url, body).pipe(
@@ -46,11 +46,11 @@ export class ShoppingCartService {
 
   /**
    * Removes a shopping cart item from the shopping cart.
-   * @param item the item to remove from the shopping cart.
+   * @param item the item to remove from the shopping cart. Item must contain a 'dataId'.
    * @returns an observable with the http request.
    */
   removeItem(item) {
-    const url = this.apiUrl + "shopping_cart/items/"+item._id
+    const url = this.apiUrl + "shopping_cart/items/"+item.dataId
     return this.http.delete(url).pipe(
       tap(val => this.updateItems())
     )
