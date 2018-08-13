@@ -106,12 +106,55 @@ router.get('/:id/authentication/verify', function (req, res, next) {
     });
 });
 
-router.get('/:id/licenses', function (req, res, next){
+router.get('/:id/hsm', function (req, res, next){
+    Machine.findById(req.params.id, function (err, machine) {
+        if (!machine || !machine.hostname) {
+            return res.sendStatus(404);
+        }
+        licenseManager.getHsmIds(machine.hostname, (err, results)=>{
+            if (err) {
+                res.status(500);
+                res.send(err.message);
+            } else {
+                res.send(results);
+            }
+        });
 
+    });
 });
 
-router.get('/:id/licenses/:hsmId', function (req, res, next){
+router.get('/:id/hsm/all/licenses', function (req, res, next){
+    Machine.findById(req.params.id, function (err, machine) {
+        if (!machine || !machine.hostname) {
+            return res.sendStatus(404);
+        }
+        licenseManager.getLicenses(machine.hostname, null, (err, results)=>{
+            if (err) {
+                res.status(500);
+                res.send(err.message);
+            } else {
+                res.send(results);
+            }
+        });
 
+    });
+});
+
+router.get('/:id/hsm/:hsmId/licenses', function (req, res, next){
+    Machine.findById(req.params.id, function (err, machine) {
+        if (!machine || !machine.hostname) {
+            return res.sendStatus(404);
+        }
+        licenseManager.getLicenses(machine.hostname, req.params.hsmId, (err, results)=>{
+            if (err) {
+                res.status(500);
+                res.send(err.message);
+            } else {
+                res.send(results);
+            }
+        });
+
+    });
 });
 
 router.get('/:id/materials/active', function (req, res, next) {

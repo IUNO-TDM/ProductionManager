@@ -144,7 +144,33 @@ self.getLicenseInformationForProductCodeOnHsm = function (productCode, hsmId, ca
     })
 };
 
-// self.getLicenses(hostname, )
+self.getLicenses = function (hostname, hsmId, callback) {
+    var optionns = {};
+    if(hsmId){
+        options = buildOptionsForRequest(
+            'GET',
+            CONFIG.HOST_SETTINGS.LICENSE_MANAGER.PROTOCOL,
+            hostname,
+            CONFIG.HOST_SETTINGS.LICENSE_MANAGER.PORT,
+            '/cmdongles/' + hsmId + '/licenses',
+            {}
+        );
+    }else{
+        options = buildOptionsForRequest(
+            'GET',
+            CONFIG.HOST_SETTINGS.LICENSE_MANAGER.PROTOCOL,
+            hostname,
+            CONFIG.HOST_SETTINGS.LICENSE_MANAGER.PORT,
+            '/cmdongles/all/licenses',
+            {}
+        );
+    }
+    request(options, function (e, r, data) {
+        const err = logger.logRequestAndResponse(e, options, r, data);
+
+        callback(err, data);
+    });
+};
 
 
 self.updateCMDongle = function (hsmId, callback) {
@@ -249,5 +275,6 @@ self.getHsmIds = function (hostname, callback) {
         callback(err, data);
     });
 };
+
 
 module.exports = self;

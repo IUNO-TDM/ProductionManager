@@ -400,6 +400,79 @@ paths:
       responses:
         200:
           description: "the snapshot"
+  
+  
+  /machines/{machineId}/hsm:
+    get:
+      tags: 
+      - "machines"
+      summary: "gets the machines hsms"
+      operationId: "getMachinesHsms"
+      parameters:
+      - name: "machineId"
+        in: "path"
+        description: "ID of machine to return"
+        required: true
+        type: "string"
+      produces: 
+      - "application/json"
+      responses:
+        200:
+          description: "the hsms"
+          schema:
+            type: array
+            items:
+              type: string
+              
+  /machines/{machineId}/hsm/all/licenses:
+    get:
+      tags: 
+      - "machines"
+      summary: "gets the machines current printjob"
+      operationId: "getMachinesLicenses"
+      parameters:
+      - name: "machineId"
+        in: "path"
+        description: "ID of machine to return"
+        required: true
+        type: "string"
+      produces: 
+      - "application/json"
+      responses:
+        200:
+          description: "the licenses"
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/License'
+              
+  /machines/{machineId}/hsm/{hsmId}/licenses:
+    get:
+      tags: 
+      - "machines"
+      summary: "gets the machines current printjob"
+      operationId: "getMachinesLicensesByHsmid"
+      parameters:
+      - name: "machineId"
+        in: "path"
+        description: "ID of machine to return"
+        required: true
+        type: "string"
+      - name: "hsmId"
+        in: "path"
+        description: "ID of machine to return"
+        required: true
+        type: "string"
+      produces: 
+      - "application/json"
+      responses:
+        200:
+          description: "the licenses"
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/License'   
+          
   /machinestypes:
     get:
       tags: 
@@ -481,7 +554,6 @@ paths:
       responses:
         200:
           description: "the items in the shopping cart"
-              
   /shopping_cart/items/{itemId}:
     get:
       tags:
@@ -606,7 +678,6 @@ paths:
       responses:
         200:
           description: "the image"
-  
   /objects/{objectId}/binary:
     get:
       tags:
@@ -680,8 +751,6 @@ paths:
             type: array
             items:
               $ref: '#/definitions/LocalObject' 
-  
-   
   /localobjects/{localObjectId}:
     get:
       tags:
@@ -716,7 +785,6 @@ paths:
       responses:
         200:
           description: "deleted"
-          
   /localobjects/{localObjectId}/image:
     get:
       tags:
@@ -755,7 +823,6 @@ definitions:
         type: array
         items:
           type: string
-
   Object:
     type: object
     properties:
@@ -779,8 +846,6 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/Component'
-        
-
   Order:
     type: object
     properties:
@@ -804,7 +869,6 @@ definitions:
         type: string
       createdAt:
         type: string
-      
   Item:
     type: object
     properties:
@@ -816,7 +880,6 @@ definitions:
         type: "integer"
       updated:
         type: "string"
-        
   Component:
     type: object
     properties:
@@ -837,7 +900,6 @@ definitions:
               type: string
             name:
               type: string
-  
   Machine:
     type: "object"
     properties:
@@ -849,7 +911,6 @@ definitions:
         type: "string"
       hostname:
         type: "string"
-  
   LoadedMaterial:
     type: "object"
     properties:
@@ -857,7 +918,6 @@ definitions:
         type: string
       length_remaining:
         type: string
-        
   MaterialInfo:
     type: "object"
     properties:
@@ -867,5 +927,11 @@ definitions:
         type: string
       color: 
         type: string
-  
+  License:
+    type: "object"
+    properties:
+      product:
+        type: string
+      code:
+        type: integer
         
