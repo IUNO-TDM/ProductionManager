@@ -7,13 +7,13 @@ var bodyParser = require('body-parser');
 const CONFIG = require('./config/config_loader');
 var rootCas = require('ssl-root-cas/latest').create();
 require('https').globalAgent.options.ca = rootCas;
-require('./services/advertisement_service')('iuno-pm',process.env.PORT || '3042');
+require('./services/advertisement_service')('iuno-pm', process.env.PORT || '3042');
 
 const contentTypeValidation = require('./services/content_type_validation');
 const schemaValidation = require('./services/schema_validation');
 
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://' + CONFIG.MONGODB.HOST + ':' + CONFIG.MONGODB.PORT + '/'+CONFIG.MONGODB.DATABASE, {promiseLibrary: require('bluebird')})
+mongoose.connect('mongodb://' + CONFIG.MONGODB.HOST + ':' + CONFIG.MONGODB.PORT + '/' + CONFIG.MONGODB.DATABASE, {promiseLibrary: require('bluebird')})
     .then(() => console.log('connection successful'))
     .catch((err) => console.error(err));
 
@@ -33,8 +33,13 @@ var local_objects = require('./routes/local_objects');
 var materials = require('./routes/materials');
 var machine_types = require('./routes/machine_types');
 
+const swaggerUi = require('swagger-ui-express');
+const YAML = require('yamljs');
+const swaggerDocument = YAML.load('./interface.yaml');
+
 var app = express();
 
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
