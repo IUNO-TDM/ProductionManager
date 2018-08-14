@@ -27,14 +27,16 @@ self.getMachineForHsmId = function (hsmId, callback) {
         console.log("Alle Maschinen:")
         console.log(machines)
         machines.forEach(machine => {
-            machine.hsmIds.forEach(id => {
-                if (id == hsmId) {
-                    selectedMachine = machine
-                    console.log("HIT!")
-                }
-                console.log(" - " + id)
-            })
-        })
+            if (machine.hsmIds) {
+                machine.hsmIds.forEach(id => {
+                    if (id == hsmId) {
+                        selectedMachine = machine
+                        console.log("HIT!")
+                    }
+                    console.log(" - " + id)
+                })
+            }
+        });
         console.log("selectedMachine")
         console.log(selectedMachine)
         callback(selectedMachine, null)
@@ -144,9 +146,9 @@ self.getLicenseInformationForProductCodeOnHsm = function (productCode, hsmId, ca
     })
 };
 
-self.getLicenses = function (hostname, hsmId, callback) {
-    var optionns = {};
-    if(hsmId){
+self.getLicenses = function (hostname, hsmId, productCode, callback) {
+    var options = {};
+    if (hsmId) {
         options = buildOptionsForRequest(
             'GET',
             CONFIG.HOST_SETTINGS.LICENSE_MANAGER.PROTOCOL,
@@ -155,7 +157,7 @@ self.getLicenses = function (hostname, hsmId, callback) {
             '/cmdongles/' + hsmId + '/licenses',
             {}
         );
-    }else{
+    } else {
         options = buildOptionsForRequest(
             'GET',
             CONFIG.HOST_SETTINGS.LICENSE_MANAGER.PROTOCOL,
@@ -168,7 +170,21 @@ self.getLicenses = function (hostname, hsmId, callback) {
     request(options, function (e, r, data) {
         const err = logger.logRequestAndResponse(e, options, r, data);
 
-        callback(err, data);
+        if (productCode) {
+            let count = 0;
+            if (data) {
+                const dj = JSON.parse(data);
+                for (var i = 0; i < dj.length; i++) {
+                    if (dj[i].product === ('' + productCode)) {
+                        count = dj[i].count;
+                        break;
+                    }
+                }
+            }
+            callback(err, '' + count);
+        } else {
+            callback(err, data);
+        }
     });
 };
 

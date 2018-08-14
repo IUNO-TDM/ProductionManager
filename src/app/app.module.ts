@@ -42,6 +42,7 @@ import {LocalObjectDetailsComponent} from './tabs/own-objects/local-object-detai
 import {LocalObjectBrowserComponent} from './tabs/own-objects/local-object-browser/local-object-browser.component';
 import {PublishDialogComponent} from './publish-dialog/publish-dialog.component';
 import {MatFormFieldModule, MatSelectModule} from '@angular/material';
+import {PrintDialogComponent} from './print-dialog/print-dialog.component';
 
 // import { TdmCommonModule } from 'tdm-common'
 
@@ -62,7 +63,8 @@ import {MatFormFieldModule, MatSelectModule} from '@angular/material';
         ConfirmationDialogComponent,
         OrderComponent,
         MachineComponent,
-        PublishDialogComponent
+        PublishDialogComponent,
+        PrintDialogComponent
     ],
     imports: [
         // Angular Core
@@ -101,7 +103,8 @@ import {MatFormFieldModule, MatSelectModule} from '@angular/material';
     ],
     entryComponents: [
         ConfirmationDialogComponent,
-        PublishDialogComponent
+        PublishDialogComponent,
+        PrintDialogComponent
     ],
     providers: [],
     bootstrap: [AppComponent]

@@ -6,6 +6,7 @@ import {MaterialDefinition} from '../../../models/materialDefinition';
 import {MachineType} from '../../../models/machineType';
 import {MatDialog, MatDialogRef} from '@angular/material';
 import {PublishDialogComponent} from '../../../publish-dialog/publish-dialog.component';
+import {PrintDialogComponent} from '../../../print-dialog/print-dialog.component';
 
 @Component({
     selector: 'app-local-object-details',
@@ -19,21 +20,8 @@ export class LocalObjectDetailsComponent implements OnInit {
     machineTypes = new Array<MachineType>();
 
     publishDialogRef: MatDialogRef<PublishDialogComponent> | null;
-    // publishDialogConfig = {
-    //     disableClose: false,
-    //     panelClass: 'custom-overlay-pane-class',
-    //     hasBackdrop: true,
-    //     backdropClass: '',
-    //     width: '',
-    //     height: '',
-    //     position: {
-    //         top: '',
-    //         bottom: '',
-    //         left: '',
-    //         right: ''
-    //     },
-    //     data: {}
-    // };
+    printDialogRef: MatDialogRef<PrintDialogComponent> | null;
+
 
     constructor(private materialService: MaterialService, private machineService: MachineService, private dialog: MatDialog) {
     }
@@ -74,10 +62,17 @@ export class LocalObjectDetailsComponent implements OnInit {
     }
 
     publishObject() {
-        // this.publishDialogConfig.data = this.object;
         this.publishDialogRef = this.dialog.open(PublishDialogComponent, {data: this.object});
         this.publishDialogRef.afterClosed().subscribe((result: string) => {
             this.publishDialogRef = null;
+        });
+
+    }
+
+    printObject() {
+        this.printDialogRef = this.dialog.open(PrintDialogComponent, {data: {localObject: this.object}});
+        this.printDialogRef.afterClosed().subscribe((result: string) => {
+            this.printDialogRef = null;
         });
 
     }

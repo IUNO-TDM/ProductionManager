@@ -142,7 +142,7 @@ router.get('/:id/hsm/all/licenses', function (req, res, next) {
         if (!machine || !machine.hostname) {
             return res.sendStatus(404);
         }
-        licenseManager.getLicenses(machine.hostname, null, (err, results) => {
+        licenseManager.getLicenses(machine.hostname, null,null, (err, results) => {
             if (err) {
                 res.status(500);
                 res.send(err.message);
@@ -159,7 +159,25 @@ router.get('/:id/hsm/:hsmId/licenses', function (req, res, next) {
         if (!machine || !machine.hostname) {
             return res.sendStatus(404);
         }
-        licenseManager.getLicenses(machine.hostname, req.params.hsmId, (err, results) => {
+        licenseManager.getLicenses(machine.hostname, req.params.hsmId,null, (err, results) => {
+            if (err) {
+                res.status(500);
+                res.send(err.message);
+            } else {
+                res.send(results);
+            }
+        });
+
+    });
+});
+
+
+router.get('/:id/hsm/:hsmId/productcodes/:productCode', function (req, res, next) {
+    Machine.findById(req.params.id, function (err, machine) {
+        if (!machine || !machine.hostname) {
+            return res.sendStatus(404);
+        }
+        licenseManager.getLicenses(machine.hostname, req.params.hsmId,req.params.productCode, (err, results) => {
             if (err) {
                 res.status(500);
                 res.send(err.message);

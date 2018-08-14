@@ -87,4 +87,16 @@ export class MachineService {
 
     }
 
+    getStatus(machineId: string) {
+
+        const url = this.apiUrl + 'machines/' + machineId + '/status';
+        return this.http.get(url, {responseType: 'text'});
+    }
+
+    getLicenseCount(machineId: string, productCode: string) {
+        const url = this.apiUrl + 'machines/' + machineId + '/hsm/all/productcodes/' + productCode;
+
+        return this.http.get(url, {responseType: 'text'});
+    }
+
 }
