@@ -4,6 +4,8 @@ import {MaterialService} from '../../../services/material.service';
 import {MachineService} from '../../../services/machine.service';
 import {MaterialDefinition} from '../../../models/materialDefinition';
 import {MachineType} from '../../../models/machineType';
+import {MatDialog, MatDialogRef} from '@angular/material';
+import {PublishDialogComponent} from '../../../publish-dialog/publish-dialog.component';
 
 @Component({
     selector: 'app-local-object-details',
@@ -16,7 +18,24 @@ export class LocalObjectDetailsComponent implements OnInit {
     materialDefinitions = new Array<MaterialDefinition>();
     machineTypes = new Array<MachineType>();
 
-    constructor(private materialService: MaterialService, private machineService: MachineService) {
+    publishDialogRef: MatDialogRef<PublishDialogComponent> | null;
+    // publishDialogConfig = {
+    //     disableClose: false,
+    //     panelClass: 'custom-overlay-pane-class',
+    //     hasBackdrop: true,
+    //     backdropClass: '',
+    //     width: '',
+    //     height: '',
+    //     position: {
+    //         top: '',
+    //         bottom: '',
+    //         left: '',
+    //         right: ''
+    //     },
+    //     data: {}
+    // };
+
+    constructor(private materialService: MaterialService, private machineService: MachineService, private dialog: MatDialog) {
     }
 
     ngOnInit() {
@@ -52,6 +71,15 @@ export class LocalObjectDetailsComponent implements OnInit {
             }
         }
         return guid;
+    }
+
+    publishObject() {
+        // this.publishDialogConfig.data = this.object;
+        this.publishDialogRef = this.dialog.open(PublishDialogComponent, {data: this.object});
+        this.publishDialogRef.afterClosed().subscribe((result: string) => {
+            this.publishDialogRef = null;
+        });
+
     }
 
 }

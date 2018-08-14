@@ -3,7 +3,7 @@ import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {FlexModule} from '@angular/flex-layout';
+import {FlexLayoutModule, FlexModule} from '@angular/flex-layout';
 import {CommonModule} from '@angular/common';
 import {HttpClientModule} from '@angular/common/http';
 import {NgxQRCodeModule} from 'ngx-qrcode2';
@@ -40,6 +40,8 @@ import {OrderComponent} from './tabs/marketplace/order/order.component';
 import {MachineComponent} from './tabs/machines/machine/machine.component';
 import {LocalObjectDetailsComponent} from './tabs/own-objects/local-object-details/local-object-details.component';
 import {LocalObjectBrowserComponent} from './tabs/own-objects/local-object-browser/local-object-browser.component';
+import {PublishDialogComponent} from './publish-dialog/publish-dialog.component';
+import {MatFormFieldModule, MatSelectModule} from '@angular/material';
 
 // import { TdmCommonModule } from 'tdm-common'
 
@@ -60,6 +62,7 @@ import {LocalObjectBrowserComponent} from './tabs/own-objects/local-object-brows
         ConfirmationDialogComponent,
         OrderComponent,
         MachineComponent,
+        PublishDialogComponent
     ],
     imports: [
         // Angular Core
@@ -68,7 +71,7 @@ import {LocalObjectBrowserComponent} from './tabs/own-objects/local-object-brows
         CommonModule,
         FormsModule,
         ReactiveFormsModule,
-        FlexModule,
+        FlexLayoutModule,
         HttpClientModule,
         NgxQRCodeModule,
 
@@ -87,6 +90,9 @@ import {LocalObjectBrowserComponent} from './tabs/own-objects/local-object-brows
         MatRadioModule,
         MatProgressSpinnerModule,
         MatDialogModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatSelectModule,
 
         // Product Manager Modules
         AppRoutingModule,
@@ -94,7 +100,8 @@ import {LocalObjectBrowserComponent} from './tabs/own-objects/local-object-brows
 
     ],
     entryComponents: [
-        ConfirmationDialogComponent
+        ConfirmationDialogComponent,
+        PublishDialogComponent
     ],
     providers: [],
     bootstrap: [AppComponent]

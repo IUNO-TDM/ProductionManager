@@ -8,6 +8,7 @@ var LocalObjectSchema = new mongoose.Schema({
     description: String,
     createdAt: Date,
     machines: [String],
-    materials: [String]
+    materials: [String],
+    marketplaceObjectId: String
 });
 module.exports = mongoose.model('LocalObject', LocalObjectSchema);
