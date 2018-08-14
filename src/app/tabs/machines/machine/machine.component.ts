@@ -2,7 +2,9 @@ import {Component, OnInit, Input} from '@angular/core';
 import {Machine} from '../../../models/machine';
 import {MachineService} from '../../../services/machine.service';
 import {Material} from '../../../models/material';
-
+import {MaterialService} from '../../../services/material.service';
+import {MaterialDefinition} from '../../../models/materialDefinition';
+import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
 
 enum AuthenticationStatusEnum {
     No_Information = 0,
@@ -27,13 +29,20 @@ export class MachineComponent implements OnInit {
     authenticationStatus = this.AuthEnum.Unknown;
     authenticationRequested = false;
     materials = Array<Material>();
+    materialDefinitions = Array<MaterialDefinition>();
+    cameraSrc: SafeResourceUrl;
 
-    constructor(private machineService: MachineService) {
+    constructor(private machineService: MachineService, private materialService: MaterialService, private sanitizer: DomSanitizer) {
     }
 
     ngOnInit() {
         this.checkAuthenticated();
         this.updateMaterials();
+        this.materialService.getAllMaterials().subscribe((materials) => {
+            this.materialDefinitions = materials;
+        });
+        this.cameraSrc = this.sanitizer.bypassSecurityTrustResourceUrl( 'api/machines/' + this.machine.id + '/camera/stream');
+
     }
 
     checkAuthenticated() {
@@ -75,6 +84,32 @@ export class MachineComponent implements OnInit {
             this.materials = materials;
         });
     }
+
+
+    materialNameForGuid(guid: string) {
+        if (!guid) {
+            return 'no material';
+        }
+        for (const material of this.materialDefinitions) {
+            if (material.id === guid) {
+                return material.name;
+            }
+        }
+        return guid;
+    }
+
+    materialColorForGuid(guid: string) {
+        if (!guid) {
+            return '#ffffff';
+        }
+        for (const material of this.materialDefinitions) {
+            if (material.id === guid) {
+                return material.displayColor;
+            }
+        }
+        return '#ffffff';
+    }
+
 
 
 }

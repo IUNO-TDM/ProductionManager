@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
 import {MachineService} from '../../services/machine.service';
 import {Machine} from '../../models/machine';
 import {TitleService} from '../../services/title.service';
@@ -8,7 +8,7 @@ import {TitleService} from '../../services/title.service';
     templateUrl: './machines.component.html',
     styleUrls: ['./machines.component.css']
 })
-export class MachinesComponent implements OnInit, OnDestroy {
+export class MachinesComponent implements OnInit, OnDestroy, AfterViewInit {
     private updateCameraSnapshotsInterval = 1000;
     private updateCameraSnapshotsErrorInterval = 10000;
     private updateCameraSnapshots = true;
@@ -23,6 +23,8 @@ export class MachinesComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
+
+        this.machineService.updateMachines(null);
         this.machineService.machines.subscribe(machines => {
             this.machines = machines;
             this.machines.forEach(machine => {
@@ -49,6 +51,7 @@ export class MachinesComponent implements OnInit, OnDestroy {
 
     deselectMachine() {
         this.selectedMachine = null;
+        this.machineService.updateMachines(null);
     }
 
     private startUpdatingCameraSnapshot(machine) {
