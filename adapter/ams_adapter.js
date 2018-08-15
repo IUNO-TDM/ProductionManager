@@ -407,7 +407,7 @@ self.getImageForUser = function (userId, callback) {
 
 };
 
-self.uploadFile = function(uuid, fileBuffer, callback) {
+self.uploadFile = function(uuid, fileStream, callback) {
 
     buildOptionsForRequest(
         'POST',
@@ -419,7 +419,7 @@ self.uploadFile = function(uuid, fileBuffer, callback) {
         function (err, options) {
             options.formData = {
                 file: {
-                    value: fileBuffer,
+                    value: fileStream,
                     options: {
                         filename: `${uuid}.iunoum3`
                     }
