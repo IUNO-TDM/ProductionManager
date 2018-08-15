@@ -431,7 +431,10 @@ self.getImageForUser = function (userId, callback) {
 
 };
 
-self.uploadFile = function(uuid, fileStream, callback) {
+self.uploadFile = function(uuid, filePath, callback) {
+
+    const fileStream = fs.createReadStream(filePath);
+    const fileSize = fs.statSync(filePath).size;
 
     buildOptionsForRequest(
         'POST',
@@ -452,7 +455,7 @@ self.uploadFile = function(uuid, fileStream, callback) {
 
             logger.debug(`[ams_adapter] uploading file for ${uuid}`);
 
-            request(options, function optionalCallback(e, r, body) {
+            const req = request(options, function optionalCallback(e, r, body) {
                 const err = logger.logRequestAndResponse(e, options, r, body);
 
                 if (err) {
@@ -461,6 +464,12 @@ self.uploadFile = function(uuid, fileStream, callback) {
 
                 callback(err);
             });
+
+
+            req.on('drain', () => {
+                const progress = 100.0 / fileSize * req.req.connection.bytesWritten;
+                logger.debug(`Progress: ${progress.toFixed(2)}%`);
+            })
         }
     );
 };

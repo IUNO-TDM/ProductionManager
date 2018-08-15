@@ -40,7 +40,7 @@ self.TestCreateObject = new Promise(function (fulfill, reject) {
                 iunoEncryption.getEncryptionStream().pipe(writeStream);
 
                 writeStream.on('close', () => {
-                    ams.uploadFile(objectId, fs.createReadStream(tmpPath), (err) => {
+                    ams.uploadFile(objectId, tmpPath, (err) => {
                         if (err) {
                             return reject(err);
                         }
