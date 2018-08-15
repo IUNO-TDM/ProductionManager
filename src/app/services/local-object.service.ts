@@ -7,7 +7,7 @@ import {Observable} from 'rxjs';
     providedIn: 'root'
 })
 export class LocalObjectService {
-    apiUrl = '/api/localobjects';
+    private apiUrl = '/api/localobjects';
 
     constructor(
         private http: HttpClient,
@@ -24,6 +24,12 @@ export class LocalObjectService {
         const url = this.apiUrl + '/' + objectId;
 
         return this.http.delete(url,{responseType: 'text'});
+    }
+
+    publishObject(objectId: string, data: {}) {
+        const url = this.apiUrl + '/' + objectId + '/publish';
+        const body = data
+        return this.http.post(url, body, {responseType: 'text'})
     }
 
 }

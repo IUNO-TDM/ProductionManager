@@ -149,31 +149,6 @@ self.downloadBinaryForObjectWithId = function (objectId, callback) {
         {},
         function (err, options) {
             DownloadService.downloadObjectBinary(objectId, options)
-            // var outStream = fs.createWriteStream(path);
-            // let req = request(options, function (err, r, binary) {
-            //     var key = null
-            //     if (err) {
-            //         logger.crit(err)
-            //     }
-            //     callback(err, binary, key)
-            // })
-            // req.on('response', data => {
-            //     var key = data.headers['key']
-            //     outStream.write(key)
-            //     console.log("key: " + key)
-            // })
-            // req.pipe(outStream)
-
-            // console.log("-------------------")
-            // console.log(DownloadService)
-            // console.log("-------------------")
-            // DownloadService.observeDownloadRequest(objectId, req)
-            // req.on('data', chunk => {
-            //     // console.log("data received!")
-            // })
-            // req.on('end', chunk => {
-            //     console.log("done!")
-            // })
         }
     )
 }

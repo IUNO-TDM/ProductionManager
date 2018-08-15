@@ -67,7 +67,11 @@ export class LocalObjectDetailsComponent implements OnInit {
 
     publishObject() {
         this.publishDialogRef = this.dialog.open(PublishDialogComponent, {data: this.object});
-        this.publishDialogRef.afterClosed().subscribe((result: string) => {
+        this.publishDialogRef.afterClosed().subscribe((result: any) => {
+            if (result) {
+                this.localObjectService.publishObject(this.object.id, result).subscribe(result => {
+                })
+            }
             this.publishDialogRef = null;
         });
 
