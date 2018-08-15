@@ -6,7 +6,7 @@
             </div>
             <app-object-details [object]="selectedObject">
                 <app-object-details-actions>
-                    <button *ngIf="downloadStates[selectedObject.id] && downloadStates[selectedObject.id].state == 'download_required'" mat-raised-button color="primary" (click)="onDownloadClicked()">Herunterladen</button>
+                    <button *ngIf="isDownloadRequired(selectedObject.id)" mat-raised-button color="primary" (click)="onDownloadClicked()">Herunterladen</button>
                 </app-object-details-actions>
             </app-object-details>
         </div>

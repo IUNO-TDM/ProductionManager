@@ -33,7 +33,7 @@ DownloadService.prototype.getPath = function (downloadId) {
         throw "Not a valid objectid"
     }
 
-    let path = CONFIG.FILE_DIR + '/' + downloadId + '.dat'
+    let path = CONFIG.FILE_DIR + '/' + downloadId + '.iunoum3'
     return path
 }
 
@@ -84,7 +84,6 @@ DownloadService.prototype.downloadObjectBinary = function (objectId, options) {
 
     var outStream = fs.createWriteStream(downloadingPath);
     let req = request(options, function (err, r, binary) {
-        var key = null
         if (err) {
             logger.crit(err)
         }
@@ -121,15 +120,15 @@ DownloadService.prototype.observeDownloadRequest = function (downloadId, req) {
         let state = downloadService.getDownloadState(downloadId)
         downloadService.emit('state_change', state)
 
-        var now = new Date().getTime();
-        while(new Date().getTime() < now + 25){ /* do nothing */ }
+        // var now = new Date().getTime();
+        // while(new Date().getTime() < now + 25){ /* do nothing */ }
         // console.log("data received!")
     })
     req.on('end', chunk => {
-        download.state = 'ready'
+        // download.state = 'ready'
         delete this.downloads[downloadId]
-        let state = downloadService.getDownloadState(downloadId)
-        downloadService.emit('state_change', state)
+        // let state = downloadService.getDownloadState(downloadId)
+        // downloadService.emit('state_change', state)
     })
 }
 

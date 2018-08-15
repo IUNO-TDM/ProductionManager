@@ -40,7 +40,7 @@
       <div class="action">
         <ng-content select="app-object-details-actions"></ng-content>
       </div>
-      <div *ngIf="downloadState.state == 'downloading'" fxLayout="column" fxLayoutAlign="center" fxLayoutGap="5px">
+      <div *ngIf="downloadState.isDownloadingState()" fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="5px">
       <mat-progress-bar  mode="determinate" [value]="progress"></mat-progress-bar>
       <div>Wird heruntergeladen</div>
       </div>

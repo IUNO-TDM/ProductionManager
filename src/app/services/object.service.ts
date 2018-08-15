@@ -1,14 +1,18 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http'
-import { OrderService } from './order.service';
-import { map, filter } from 'rxjs/operators';
+import { LOCALE_ID } from '@angular/core';
+import { map } from 'rxjs/operators';
 import { TdmObject } from '../models/object';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { DownloadSocketService } from './download-socket.service';
-// import { TdmObjectPrinterObject } from 'tdm-common';
 
 export class DownloadState {
-  state: string = 'unknown'
+  UNKNOWN_STATE = 'unknown'
+  DOWNLOAD_REQUIRED_STATE = 'download_required'
+  DOWNLOADING_STATE = 'downloading'
+  READY_STATE = 'ready'
+  
+  state: string = this.UNKNOWN_STATE
   bytesTotal: number = -1
   bytesDownloaded: number = -1
 
@@ -23,20 +27,46 @@ export class DownloadState {
       this.bytesDownloaded = downloadState.bytesDownloaded
     }
   }
+
+  isUnknownState() {
+    return this.state === this.UNKNOWN_STATE
+  }
+
+  isDownloadRequiredState() {
+    return this.state === this.DOWNLOAD_REQUIRED_STATE
+  }
+
+  isDownloadingState() {
+    return this.state === this.DOWNLOADING_STATE
+  }
+
+  isReadyState() {
+    return this.state === this.READY_STATE
+  }
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class ObjectService {
-  apiUrl = "/api/"
-  downloadStates = {}
+  private apiUrl = "/api/"
+  private downloadStates = {}
+  private locale = 'en'
 
   constructor(
+    @Inject(LOCALE_ID) locale: string,
     private http: HttpClient,
-    private orderService: OrderService,
     private downloadSocketService: DownloadSocketService
-  ) { }
+  ) {
+    this.locale = locale
+    console.log("Locale: " + locale)
+    this.downloadSocketService.getUpdates('state_change').subscribe(state => {
+      var downloadState = this.downloadStates[state.id]
+      if (downloadState) {
+        downloadState.next(new DownloadState(state))
+      }
+    })
+  }
 
   /**
    * Returns all objects of the marketplace matching at least one of the machineTypes or materials.
@@ -51,6 +81,7 @@ export class ObjectService {
     var params = {}
 
     // add language to query parameters
+    //FIXME: set correct language. But be careful, LOCALE_ID is now like 'en-US' instead of 'en'
     params['lang'] = 'de'
 
     // add machine types to query parameters
@@ -80,6 +111,7 @@ export class ObjectService {
     var params = {}
 
     // add language to query parameters
+    //FIXME: set correct language. But be careful, LOCALE_ID is now like 'en-US' instead of 'en'
     params['lang'] = 'de'
 
     return this.http.get<TdmObject[]>(url, {
@@ -91,13 +123,18 @@ export class ObjectService {
     )
   }
 
+  getImage(id: string) {
+    const url = this.apiUrl + "objects/" + id + "/image";
+    return this.http.get(url, {responseType: 'blob'});
+  }
+
   /**
    * Tells the backend to start downloading the binary file for the provided object id.
    * @param id object id of the object for which the binary should be downloaded
    * @returns an observable containing the request.
    */
   startDownloadingBinary(id: string) {
-    const url = this.apiUrl + "objects/"+id+"/binary";
+    const url = this.apiUrl + "objects/" + id + "/binary";
     return this.http.get(url)
   }
 
@@ -110,16 +147,10 @@ export class ObjectService {
   getDownloadState(id: string): BehaviorSubject<DownloadState> {
     var downloadState: BehaviorSubject<DownloadState> = this.downloadStates[id]
     if (!downloadState) {
-      // No download state available. Create a new BehaviorSubject and join
+      // No download state exists. Create a new BehaviorSubject and join
       // the socket.id room for state change events of the provided object id.
       downloadState = new BehaviorSubject<DownloadState>(null)
       this.downloadStates[id] = downloadState
-      //FIXME: move this to constructor to only subscribe once?
-      this.downloadSocketService.getUpdates('state_change').subscribe(state => {
-        if (state.id === id) {
-          downloadState.next(new DownloadState(state))
-        }
-      })
       this.downloadSocketService.joinRoom(id)
     }
     return downloadState
