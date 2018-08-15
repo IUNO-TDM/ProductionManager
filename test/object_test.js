@@ -45,6 +45,9 @@ self.TestCreateObject = new Promise(function (fulfill, reject) {
                             return reject(err);
                         }
                         logger.info('[object_test] retrieving object');
+
+                        fs.unlink(tmpPath);
+
                         ams.getObjectWithId(objectId, 'en', (err, printerObject) => {
                             if (err) {
                                 return reject(err);

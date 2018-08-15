@@ -9,12 +9,20 @@ const Readable = require('stream').Readable;
 const CombinedStream = require('combined-stream');
 
 
+/**
+ * Encryption class to hold streaming algorithms for encrypt gcode into iunom3
+ */
 const self = function () {
     let _keyBundleB64 = undefined;
     let _aesKey = undefined;
     let _header = undefined;
     let _gCodePath = undefined;
 
+    /**
+     * Initialing the encryption class by parsing the header and creating the key bundle
+     * @param gCodePath
+     * @return {Promise<void>}
+     */
     this.init = async function (gCodePath) {
         // parse only header into memory
         _header = await parseHeader(gCodePath);
@@ -22,15 +30,24 @@ const self = function () {
         const keys = createKeyBundleB64();
         _keyBundleB64 = keys.keyBundleB64;
         _aesKey = keys.aesKey;
-
-
     };
 
-
+    /**
+     * Gets the base64 encoded key bundle. Only accessible after init was called.
+     * @return {undefined}
+     */
     this.getKeyBundleB64 = function () {
+        if (!_keyBundleB64) {
+            throw new Error('Class was not initialized: Please call init() first');
+        }
         return _keyBundleB64;
     };
+
     this.getEncryptionStream = function () {
+        if (!_keyBundleB64) {
+            throw new Error('Class was not initialized: Please call init() first');
+        }
+
         // create content stream starting after header
         const contentStream = fs.createReadStream(
             path.resolve(_gCodePath),
@@ -50,6 +67,7 @@ const self = function () {
         // create a cipher stream for aes 256 cbc
         const cipher = crypto.createCipher('aes-256-cbc', _aesKey);
 
+        // create readable header stream including header length and header buffer
         const headerStream = new Readable({
             objectMode: false,
             read(size) {
@@ -59,6 +77,7 @@ const self = function () {
             }
         });
 
+        // combine header and cipher stream into a single stream
         const combinedStream = CombinedStream.create();
         combinedStream.append(headerStream);
         combinedStream.append(contentStream.pipe(cipher));
@@ -104,6 +123,7 @@ async function parseHeader(gCodePath) {
 
     return new Promise(function (fulfill, reject) {
         try {
+            // create a read stream for the file
             const stream = fs.createReadStream(
                 path.resolve(gCodePath),
                 {
