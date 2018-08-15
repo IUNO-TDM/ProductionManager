@@ -7,7 +7,7 @@ import {Observable} from 'rxjs';
     providedIn: 'root'
 })
 export class LocalObjectService {
-    apiUrl = '/api/';
+    apiUrl = '/api/localobjects';
 
     constructor(
         private http: HttpClient,
@@ -15,9 +15,15 @@ export class LocalObjectService {
     }
 
     getObjects(): Observable<Array<LocalObject>> {
-        const url = this.apiUrl + 'localobjects';
+        const url = this.apiUrl;
 
         return this.http.get<Array<LocalObject>>(url);
+    }
+
+    deleteObject(objectId: string) {
+        const url = this.apiUrl + '/' + objectId;
+
+        return this.http.delete(url,{responseType: 'text'});
     }
 
 }

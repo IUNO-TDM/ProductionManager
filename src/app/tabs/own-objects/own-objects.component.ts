@@ -4,6 +4,7 @@ import {MachineService} from '../../services/machine.service';
 import {Router} from '@angular/router';
 import {LocalObjectService} from '../../services/local-object.service';
 import {LocalObject} from '../../models/localObject';
+import {Subscription} from 'rxjs';
 
 @Component({
     selector: 'app-own-objects',
@@ -16,6 +17,7 @@ export class OwnObjectsComponent implements OnInit, AfterViewInit {
     // machineTypes = [];s
     selectedObject: any = null;
     loading = true;
+    objectSubscription: Subscription;
 
     constructor(
         private router: Router,
@@ -31,10 +33,7 @@ export class OwnObjectsComponent implements OnInit, AfterViewInit {
 
     ngOnInit() {
 
-        this.objectService.getObjects().subscribe(objects => {
-            this.objects = objects;
-            this.loading = false;
-        });
+        this.updateObjects();
     }
 
     ngAfterViewInit() {
@@ -54,6 +53,15 @@ export class OwnObjectsComponent implements OnInit, AfterViewInit {
     }
 
     updateObjects() {
+        this.objectSubscription = this.objectService.getObjects().subscribe(objects => {
+            this.objects = objects;
+            this.loading = false;
+            this.objectSubscription.unsubscribe();
+        });
+    }
 
+    objectDeleted() {
+        this.selectedObject = null;
+        this.updateObjects();
     }
 }

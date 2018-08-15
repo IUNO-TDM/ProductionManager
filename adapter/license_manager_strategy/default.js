@@ -173,13 +173,19 @@ self.getLicenses = function (hostname, hsmId, productCode, callback) {
         if (productCode) {
             let count = 0;
             if (data) {
-                const dj = JSON.parse(data);
-                for (var i = 0; i < dj.length; i++) {
-                    if (dj[i].product === ('' + productCode)) {
-                        count = dj[i].count;
-                        break;
+                try{
+                    const dj = JSON.parse(data);
+                    for (var i = 0; i < dj.length; i++) {
+                        if (dj[i].product === ('' + productCode)) {
+                            count = dj[i].count;
+                            break;
+                        }
                     }
+                }catch(err){
+                    return callback(err, data);
                 }
+
+
             }
             callback(err, '' + count);
         } else {

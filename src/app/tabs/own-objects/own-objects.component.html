@@ -13,7 +13,7 @@
                     <div>
                         <button mat-button (click)="deselectObject()">← Zurück</button>
                     </div>
-                    <app-local-object-details [object]="selectedObject"></app-local-object-details>
+                    <app-local-object-details [object]="selectedObject" (deleted)="objectDeleted()"></app-local-object-details>
                 </div>
             </ng-container>
             <ng-container *ngIf="loading">

@@ -7,6 +7,8 @@ import {MachineType} from '../../../models/machineType';
 import {MatDialog, MatDialogRef} from '@angular/material';
 import {PublishDialogComponent} from '../../../publish-dialog/publish-dialog.component';
 import {PrintDialogComponent} from '../../../print-dialog/print-dialog.component';
+import {ConfirmationDialogComponent} from '../../../confirmation-dialog/confirmation-dialog.component';
+import {LocalObjectService} from '../../../services/local-object.service';
 
 @Component({
     selector: 'app-local-object-details',
@@ -15,15 +17,17 @@ import {PrintDialogComponent} from '../../../print-dialog/print-dialog.component
 })
 export class LocalObjectDetailsComponent implements OnInit {
     @Input() object: LocalObject;
+    @Output() deleted = new EventEmitter();
 
     materialDefinitions = new Array<MaterialDefinition>();
     machineTypes = new Array<MachineType>();
 
     publishDialogRef: MatDialogRef<PublishDialogComponent> | null;
     printDialogRef: MatDialogRef<PrintDialogComponent> | null;
+    confirmationDialogRef: MatDialogRef<ConfirmationDialogComponent>;
 
-
-    constructor(private materialService: MaterialService, private machineService: MachineService, private dialog: MatDialog) {
+    constructor(private materialService: MaterialService, private machineService: MachineService, private dialog: MatDialog,
+                private localObjectService: LocalObjectService) {
     }
 
     ngOnInit() {
@@ -75,6 +79,30 @@ export class LocalObjectDetailsComponent implements OnInit {
             this.printDialogRef = null;
         });
 
+    }
+
+    deleteObject() {
+        this.confirmationDialogRef = this.dialog.open(ConfirmationDialogComponent, {
+            // height: '400px',
+            // width: '600px',
+        });
+        this.confirmationDialogRef.componentInstance.title = 'Lokales 3D-Objekt löschen?';
+        this.confirmationDialogRef.componentInstance.message =
+            'Möchten sie das 3D-Objekt mit dem Namen \"'
+            + this.object.name + '\" wirklich löschen?';
+        this.confirmationDialogRef.componentInstance.leftButtonText = 'abbrechen';
+        this.confirmationDialogRef.componentInstance.rightButtonText = 'löschen';
+
+        this.confirmationDialogRef.afterClosed().subscribe(result => {
+            if (result) {
+                this.localObjectService.deleteObject(this.object.id).subscribe(() => {
+                    this.deleted.emit();
+                }, (err) => {
+                    console.log('Problem on deleting local object', err);
+                });
+            }
+            this.confirmationDialogRef = null;
+        });
     }
 
 }
