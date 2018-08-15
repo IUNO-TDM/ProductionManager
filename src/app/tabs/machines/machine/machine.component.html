@@ -1,7 +1,29 @@
 <div fxLayout="column" fxLayoutGap="15px">
     <h1>{{machine.displayName}}</h1>
-    <h2>Installed Hardware Secure Modules</h2>
+    <h2>Lizenzdongles in der Maschinen:</h2>
     <mat-list>
         <mat-list-item *ngFor="let hsm of machine.hsmIds">{{hsm}}</mat-list-item>
     </mat-list>
+    <h2>Authorisationsstatus</h2>
+    <ng-container *ngIf="authenticationStatus == AuthEnum.Unknown">
+        Bitte die Anfrage an der Maschine bestätigen. (Es ist dazu notwendig sich zu erheben und zur Maschine zu laufen 🚶)
+        <button class="mat-button" (click)="requestAuthentication()">Erneut Autorisation anfragen</button>
+    </ng-container>
+    <ng-container *ngIf="authenticationStatus == AuthEnum.Not_Requested">
+        Der ProductionManager wurde noch nicht mit dieser Maschine gekoppelt
+        <button class="mat-button" (click)="requestAuthentication()">Autorisation anfragen</button>
+    </ng-container>
+    <ng-container *ngIf="authenticationStatus == AuthEnum.Unauthorized">
+        Die Anfrage zur Autorisation wurde an der Maschine abgelehnt... 😒
+        <button class="mat-button" (click)="requestAuthentication()">Autorisation anfragen</button>
+    </ng-container>
+    <ng-container *ngIf="authenticationStatus == AuthEnum.Authorized">
+        Erfolgreich mit der Maschine gekoppelt 😀
+    </ng-container>
+    <h2>Installierte Materialien</h2>
+    <mat-list>
+        <mat-list-item *ngFor="let material of materials; let i = index"><mat-icon  [ngStyle]="{'color': materialColorForGuid(material.guid)}">radio_button_checked</mat-icon>Material {{i+1}}: {{materialNameForGuid(material.guid)}}, {{(material.length_remaining / 1000| number:'1.2-2') }}m verbleibend</mat-list-item>
+    </mat-list>
+    <h2>Videostream</h2>
+    <iframe [src]="cameraSrc"></iframe>
 </div>

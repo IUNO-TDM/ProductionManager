@@ -7,6 +7,7 @@ var async = require('async');
 var parseString = require('xml2js').parseString;
 var _ = require('lodash');
 var request = require('request');
+const logger = require('../global/logger');
 
 _.mapPick = function (objs, keys) {
     return _.map(objs, function (obj) {
@@ -83,9 +84,22 @@ router.get('/:id/authentication', function (req, res, next) {
         }
         if (!machine.auth_id || !machine.auth_key) {
             res.status(200);
-            return res.send({ "message": "not authenticated" });
+            return res.send({"message": "not requested"});
         }
         printer_adapter.checkAuthentication(machine.hostname, machine.auth_id, function (err, data) {
+            var authenticated = false;
+            if (data.message === "authorized") {
+                authenticated = true;
+            }
+            if (!machine.isAuthenticated || machine.isAuthenticated !== authenticated) {
+                machine.isAuthenticated = authenticated;
+                Machine.findByIdAndUpdate(machine._id, machine, function (err, doc) {
+                    if (err) {
+                        logger.warn("could not update machine authentication status in db", e);
+                    }
+                })
+            }
+
             res.send(data);
         });
     });
@@ -98,7 +112,7 @@ router.get('/:id/authentication/verify', function (req, res, next) {
         }
         if (!machine.auth_id || !machine.auth_key) {
             res.status(200);
-            return res.send({ "message": "not authenticated" });
+            return res.send({"message": "not authenticated"});
         }
         printer_adapter.verifyAuthentication(machine.hostname, machine.auth_id, machine.auth_key, function (err, data) {
             res.send(data);
@@ -106,12 +120,73 @@ router.get('/:id/authentication/verify', function (req, res, next) {
     });
 });
 
-router.get('/:id/licenses', function (req, res, next){
+router.get('/:id/hsm', function (req, res, next) {
+    Machine.findById(req.params.id, function (err, machine) {
+        if (!machine || !machine.hostname) {
+            return res.sendStatus(404);
+        }
+        licenseManager.getHsmIds(machine.hostname, (err, results) => {
+            if (err) {
+                res.status(500);
+                res.send(err.message);
+            } else {
+                res.send(results);
+            }
+        });
 
+    });
 });
 
-router.get('/:id/licenses/:hsmId', function (req, res, next){
+router.get('/:id/hsm/all/licenses', function (req, res, next) {
+    Machine.findById(req.params.id, function (err, machine) {
+        if (!machine || !machine.hostname) {
+            return res.sendStatus(404);
+        }
+        licenseManager.getLicenses(machine.hostname, null,null, (err, results) => {
+            if (err) {
+                res.status(500);
+                res.send(err.message);
+            } else {
+                res.send(results);
+            }
+        });
 
+    });
+});
+
+router.get('/:id/hsm/:hsmId/licenses', function (req, res, next) {
+    Machine.findById(req.params.id, function (err, machine) {
+        if (!machine || !machine.hostname) {
+            return res.sendStatus(404);
+        }
+        licenseManager.getLicenses(machine.hostname, req.params.hsmId,null, (err, results) => {
+            if (err) {
+                res.status(500);
+                res.send(err.message);
+            } else {
+                res.send(results);
+            }
+        });
+
+    });
+});
+
+
+router.get('/:id/hsm/:hsmId/productcodes/:productCode', function (req, res, next) {
+    Machine.findById(req.params.id, function (err, machine) {
+        if (!machine || !machine.hostname) {
+            return res.sendStatus(404);
+        }
+        licenseManager.getLicenses(machine.hostname, req.params.hsmId,req.params.productCode, (err, results) => {
+            if (err) {
+                res.status(500);
+                res.send(err.message);
+            } else {
+                res.send(results);
+            }
+        });
+
+    });
 });
 
 router.get('/:id/materials/active', function (req, res, next) {
@@ -121,12 +196,12 @@ router.get('/:id/materials/active', function (req, res, next) {
         }
 
         async.series([
-            function (callback) {
-                printer_adapter.getActiveMaterial(machine.hostname, 0, callback)
-            },
-            function (callback) {
-                printer_adapter.getActiveMaterial(machine.hostname, 1, callback)
-            }], function (err, results) {
+                function (callback) {
+                    printer_adapter.getActiveMaterial(machine.hostname, 0, callback)
+                },
+                function (callback) {
+                    printer_adapter.getActiveMaterial(machine.hostname, 1, callback)
+                }], function (err, results) {
                 if (err) {
                     res.status(500);
                     res.send(err.message);
@@ -194,7 +269,7 @@ router.get('/:id/materials/:materialid/short', function (req, res, next) {
                         const material = name.material[0];
                         const color = name.color[0];
 
-                        res.send({ 'brand': brand, 'material': material, 'color': color });
+                        res.send({'brand': brand, 'material': material, 'color': color});
                     }
                 })
 
@@ -364,7 +439,7 @@ router.get('/:id/camera/stream', function (req, res, next) {
         if (!machine || !machine.hostname) {
             return res.sendStatus(404);
         }
-        request('http://' + machine.hostname + ':8080/?action=stream').on('error', function(error) {
+        request('http://' + machine.hostname + ':8080/?action=stream').on('error', function (error) {
             return res.sendStatus(404);
         }).pipe(res);
     });
@@ -375,7 +450,7 @@ router.get('/:id/camera/snapshot', function (req, res, next) {
         if (!machine || !machine.hostname) {
             return res.sendStatus(404);
         }
-        request('http://' + machine.hostname + ':8080/?action=snapshot').on('error', function(error) {
+        request('http://' + machine.hostname + ':8080/?action=snapshot').on('error', function (error) {
             return res.sendStatus(404);
         }).pipe(res);
     });

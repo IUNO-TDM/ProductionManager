@@ -27,14 +27,16 @@ self.getMachineForHsmId = function (hsmId, callback) {
         console.log("Alle Maschinen:")
         console.log(machines)
         machines.forEach(machine => {
-            machine.hsmIds.forEach(id => {
-                if (id == hsmId) {
-                    selectedMachine = machine
-                    console.log("HIT!")
-                }
-                console.log(" - " + id)
-            })
-        })
+            if (machine.hsmIds) {
+                machine.hsmIds.forEach(id => {
+                    if (id == hsmId) {
+                        selectedMachine = machine
+                        console.log("HIT!")
+                    }
+                    console.log(" - " + id)
+                })
+            }
+        });
         console.log("selectedMachine")
         console.log(selectedMachine)
         callback(selectedMachine, null)
@@ -144,7 +146,53 @@ self.getLicenseInformationForProductCodeOnHsm = function (productCode, hsmId, ca
     })
 };
 
-// self.getLicenses(hostname, )
+self.getLicenses = function (hostname, hsmId, productCode, callback) {
+    var options = {};
+    if (hsmId) {
+        options = buildOptionsForRequest(
+            'GET',
+            CONFIG.HOST_SETTINGS.LICENSE_MANAGER.PROTOCOL,
+            hostname,
+            CONFIG.HOST_SETTINGS.LICENSE_MANAGER.PORT,
+            '/cmdongles/' + hsmId + '/licenses',
+            {}
+        );
+    } else {
+        options = buildOptionsForRequest(
+            'GET',
+            CONFIG.HOST_SETTINGS.LICENSE_MANAGER.PROTOCOL,
+            hostname,
+            CONFIG.HOST_SETTINGS.LICENSE_MANAGER.PORT,
+            '/cmdongles/all/licenses',
+            {}
+        );
+    }
+    request(options, function (e, r, data) {
+        const err = logger.logRequestAndResponse(e, options, r, data);
+
+        if (productCode) {
+            let count = 0;
+            if (data) {
+                try{
+                    const dj = JSON.parse(data);
+                    for (var i = 0; i < dj.length; i++) {
+                        if (dj[i].product === ('' + productCode)) {
+                            count = dj[i].count;
+                            break;
+                        }
+                    }
+                }catch(err){
+                    return callback(err, data);
+                }
+
+
+            }
+            callback(err, '' + count);
+        } else {
+            callback(err, data);
+        }
+    });
+};
 
 
 self.updateCMDongle = function (hsmId, callback) {
@@ -249,5 +297,6 @@ self.getHsmIds = function (hostname, callback) {
         callback(err, data);
     });
 };
+
 
 module.exports = self;

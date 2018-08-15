@@ -1,0 +1,45 @@
+<div fxLayout="column" fxLayoutGap="15px">
+    <div class="creator" fxLayout="row" fxLayoutGap="15px" fxLayoutAlign="start center">
+        <div fxLayout="column">
+            <div class="object-name">{{object.name}}</div>
+        </div>
+    </div>
+    <div class="details" fxLayout="row" fxLayoutGap="15px">
+        <div class="images" fxLayout="column" fxLayoutGap="15px">
+            <img class="preview-image-big" [src]="'api/localobjects/' + object.id + '/image'">
+        </div>
+        <div class="description" fxLayout="column">
+            <div class="section">
+                <div class="section-title">Beschreibung</div>
+                <div class="section-text">{{object.description}}</div>
+            </div>
+            <div *ngIf="materialDefinitions" class="section">
+                <div class="section-title">Designed für</div>
+                <div class="section-text">
+                    <mat-list>
+                        <mat-list-item *ngFor="let material of object.materials">{{materialNameForGuid(material)}}
+                        </mat-list-item>
+                    </mat-list>
+                </div>
+            </div>
+            <div class="section">
+                <div class="section-title">Kompatibel mit</div>
+                <div class="section-text">
+                    <mat-list>
+                        <mat-list-item *ngFor="let machine of object.machines">{{machineNameForId(machine)}}
+                        </mat-list-item>
+                    </mat-list>
+                </div>
+            </div>
+            <div class="section">
+                <div class="section-title">Erstelldatum</div>
+                <div class="section-text">{{object.createdAt}}</div>
+            </div>
+            <div class="action">
+                <button class="mat-button" (click)="printObject()">Drucken</button>
+                <button class="mat-button" (click)="publishObject()">Objekt zum Marktplatz hochladen</button>
+                <button class="mat-button" (click)="deleteObject()">Objekt löschen</button>
+            </div>
+        </div>
+    </div>
+</div>

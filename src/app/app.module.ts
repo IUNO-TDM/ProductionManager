@@ -3,15 +3,15 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { FlexModule } from '@angular/flex-layout';
-import { CommonModule } from "@angular/common";
-import { HttpClientModule } from '@angular/common/http'
-import { NgxQRCodeModule } from 'ngx-qrcode2'
+import { FlexLayoutModule, FlexModule } from '@angular/flex-layout';
+import { CommonModule } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
+import { NgxQRCodeModule } from 'ngx-qrcode2';
 
 // Angular Material imports
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTabsModule } from '@angular/material/tabs';
-import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatSidenavModule  } from '@angular/material/sidenav';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
@@ -22,6 +22,7 @@ import { MatNativeDateModule, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatProgressBarModule } from '@angular/material/progress-bar'
 import { MatDialogModule } from '@angular/material/dialog';
 
 // Production Manager imports
@@ -38,6 +39,12 @@ import { CreateObjectComponent } from './tabs/own-objects/create-object/create-o
 import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
 import { OrderComponent } from './tabs/marketplace/order/order.component';
 import { MachineComponent } from './tabs/machines/machine/machine.component';
+import { LocalObjectDetailsComponent } from './tabs/own-objects/local-object-details/local-object-details.component';
+import { LocalObjectBrowserComponent } from './tabs/own-objects/local-object-browser/local-object-browser.component';
+import { PublishDialogComponent } from './publish-dialog/publish-dialog.component';
+import { MatFormFieldModule, MatSelectModule } from '@angular/material';
+import { PrintDialogComponent } from './print-dialog/print-dialog.component';
+
 // import { TdmCommonModule } from 'tdm-common'
 
 @NgModule({
@@ -49,12 +56,16 @@ import { MachineComponent } from './tabs/machines/machine/machine.component';
     PurchasedObjectsComponent,
     ObjectBrowserComponent,
     ObjectDetailsComponent,
+    LocalObjectDetailsComponent,
+    LocalObjectBrowserComponent,
     ObjectDetailsActionsComponent,
     ShoppingCartComponent,
     CreateObjectComponent,
     ConfirmationDialogComponent,
     OrderComponent,
     MachineComponent,
+    PublishDialogComponent,
+    PrintDialogComponent
   ],
   imports: [
     // Angular Core
@@ -63,7 +74,7 @@ import { MachineComponent } from './tabs/machines/machine/machine.component';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    FlexModule,
+    FlexLayoutModule,
     HttpClientModule,
     NgxQRCodeModule,
 
@@ -81,17 +92,24 @@ import { MachineComponent } from './tabs/machines/machine/machine.component';
     MatCheckboxModule,
     MatRadioModule,
     MatProgressSpinnerModule,
+    MatProgressBarModule,
     MatDialogModule,
-
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    
     // Product Manager Modules
     AppRoutingModule,
     // TdmCommonModule,
 
   ],
   entryComponents: [
-    ConfirmationDialogComponent
+    ConfirmationDialogComponent,
+    PublishDialogComponent,
+    PrintDialogComponent
   ],
   providers: [],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+}

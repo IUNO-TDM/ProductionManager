@@ -1,6 +1,6 @@
 export class Machine {
     id: string;
-    displayName: string;
+    displayname: string;
     variant: string;
     hostname: string;
     hsmIds: string[];

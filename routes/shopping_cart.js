@@ -58,7 +58,8 @@ router.post('/order',  function (req, res, next) {
 
         ams_adapter.createOfferForRequest(offerRequest, function(err, offer) {
             if (err) {
-                console.log(err)
+                console.log(err);
+                return res.status(500).send(err);
             }
 
             // offer created, save as order
@@ -116,7 +117,7 @@ router.post('/items', function (req, res, next) {
         if (item) {
             item.amount += 1;
             item.updated = Date.now();
-            Item.findByIdAndUpdate(item.id, item, {new: true}, function (err, item2) {
+            Item.findOneAndUpdate({dataId: req.body.dataId}, item, {new: true}, function (err, item2) {
                 if (err) return next(err);
                 res.json(_.pick(item2, ['id', 'dataId', 'amount', 'updated']));
             });
@@ -133,7 +134,7 @@ router.post('/items', function (req, res, next) {
 });
 
 router.get('/items/:id', function (req, res, next) {
-    Item.findById(req.params.id, function (err, item) {
+    Item.findOne({dataId: req.params.id}, function (err, item) {
         if (err) {
             return next(err);
         }
@@ -143,7 +144,7 @@ router.get('/items/:id', function (req, res, next) {
 });
 
 router.delete('/items/:id', function (req, res, next) {
-    Item.findByIdAndRemove(req.params.id, function (err, item) {
+    Item.findOneAndRemove({dataId: req.params.id}, function (err, item) {
         if (err) {
             return next(err);
         }
@@ -153,7 +154,7 @@ router.delete('/items/:id', function (req, res, next) {
 });
 
 router.delete('/items/:id', function (req, res, next) {
-    Item.findByIdAndRemove(req.params.id, function (err, item) {
+    Item.findOneAndRemove({dataId: req.params.id}, function (err, item) {
         if (err) {
             return next(err);
         }
@@ -163,7 +164,7 @@ router.delete('/items/:id', function (req, res, next) {
 });
 
 router.put('/items/:id', function (req, res, next) {
-    Item.findByIdAndUpdate(req.params.id, _.pick(req.body, ['id']), {new: true}, function (err, item) {
+    Item.findOneAndUpdate({dataId: req.params.id}, _.pick(req.body, ['dataId']), {new: true}, function (err, item) {
         if (err) {
             return next(err);
         }

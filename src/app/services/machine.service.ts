@@ -5,6 +5,7 @@ import {BehaviorSubject} from 'rxjs';
 import {Observable} from 'rxjs';
 import {of} from 'rxjs';
 import {MachineType} from '../models/machineType';
+import {Material} from '../models/material';
 
 @Injectable({
     providedIn: 'root'
@@ -18,7 +19,7 @@ export class MachineService {
     constructor(
         private http: HttpClient,
     ) {
-        this.updateMachines( null);
+        this.updateMachines(null);
     }
 
     updateMachines(callback) {
@@ -69,4 +70,33 @@ export class MachineService {
 
     updateMachineType() {
     }
+
+    getAuthenticated(machineId: string) {
+        const url = this.apiUrl + 'machines/' + machineId + '/authentication';
+        return this.http.get(url);
+    }
+
+    requestAuthentication(machineId: string) {
+        const url = this.apiUrl + 'machines/' + machineId + '/authentication';
+        return this.http.post(url, '');
+    }
+
+    getMaterials(machineId: string): Observable<Array<Material>> {
+        const url = this.apiUrl + 'machines/' + machineId + '/materials/active';
+        return this.http.get<Array<Material>>(url);
+
+    }
+
+    getStatus(machineId: string) {
+
+        const url = this.apiUrl + 'machines/' + machineId + '/status';
+        return this.http.get(url, {responseType: 'text'});
+    }
+
+    getLicenseCount(machineId: string, productCode: string) {
+        const url = this.apiUrl + 'machines/' + machineId + '/hsm/all/productcodes/' + productCode;
+
+        return this.http.get(url, {responseType: 'text'});
+    }
+
 }

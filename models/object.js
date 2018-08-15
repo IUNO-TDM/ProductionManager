@@ -1,8 +1,9 @@
 var mongoose = require('mongoose');
 
-var ObjectSchema = new mongoose.Schema({
-    id: String,
+var PurchasedObjectSchema = new mongoose.Schema({
+    dataId: String,
     name: String,
+    state: String,
     filepath: String,
 });
-module.exports = mongoose.model('Object', ObjectSchema);
+module.exports = mongoose.model('PurchasedObject', PurchasedObjectSchema);

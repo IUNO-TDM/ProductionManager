@@ -6,7 +6,7 @@
           <!-- <mat-card-subtitle>{{machine.hostname}}</mat-card-subtitle> -->
         </mat-card-header>
         <mat-card-content fxLayoutAlign="center">
-          <img src="/api/objects/{{object.id}}/image" class="object-image">
+          <img [src]="'api/localobjects/' + object.id + '/image'" class="object-image">
           <!-- <div *ngIf="licensesChart"> -->
           <!-- </div> -->
         </mat-card-content>

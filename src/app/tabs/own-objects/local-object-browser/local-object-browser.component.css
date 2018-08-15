@@ -1,0 +1,25 @@
+.object-card {
+    min-width: 310px;
+    max-width: 310px;
+    height: 200px;
+    position: relative;
+    margin-bottom: 15px;
+}
+
+.object-card:hover {
+    background-color: #efefef;
+}
+
+.object-card:active {
+    background-color: #eaeaea;
+}
+
+.object-image {
+    width: 150px;
+    height: 150px;
+}
+
+.object-image-na {
+    width: 150px;
+    height: 150px;
+}

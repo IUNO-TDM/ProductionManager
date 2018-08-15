@@ -8,13 +8,13 @@
   </div>
   <div class="details" fxLayout="row" fxLayoutGap="15px">
     <div class="images" fxLayout="column" fxLayoutGap="15px">
-      <img class="preview-image-big">
-        <div class="previews-small" fxLayout="row" fxLayoutGap="15px">
+      <img class="preview-image-big" src="/api/objects/{{object.id}}/image">
+        <!-- <div class="previews-small" fxLayout="row" fxLayoutGap="15px">
             <img class="preview-image-small">
             <img class="preview-image-small">
             <img class="preview-image-small">
             <img class="preview-image-small">
-        </div>
+        </div> -->
     </div>
     <div class="description" fxLayout="column">
       <div class="section">
@@ -39,6 +39,10 @@
       </div>
       <div class="action">
         <ng-content select="app-object-details-actions"></ng-content>
+      </div>
+      <div *ngIf="downloadState.isDownloadingState()" fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="5px">
+      <mat-progress-bar  mode="determinate" [value]="progress"></mat-progress-bar>
+      <div>Wird heruntergeladen</div>
       </div>
     </div>
   </div>
