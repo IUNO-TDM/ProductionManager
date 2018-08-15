@@ -1,10 +1,17 @@
 <h1 mat-dialog-title>Drucken von "{{localObject?localObject.name: tdmObject.name}}"</h1>
 <div mat-dialog-content>
+    <h2>Benötigte Materialien</h2>
+    <mat-list *ngIf="tdmObject">
+        <mat-list-item *ngFor="let material of tdmObject.materials">{{material.name}}</mat-list-item>
+    </mat-list>
+    <mat-list *ngIf="localObject">
+        <mat-list-item *ngFor="let material of tdmObject.materials">{{materialNameForGuid(material)}}</mat-list-item>
+    </mat-list>
+    <h2>Auswahl der Maschine</h2>
     <div fxLayoutAlign="column" fxLayoutGap="20px">
         <mat-radio-group fxLayout="column" [(ngModel)]="selectedMachine" (change)="machineSelectionChanged($event)">
             <mat-radio-button *ngFor="let machine of machines" [value]="machine">
                 <div fxLayout="row" fxLayoutAlign="center center">
-                    <mat-icon>help_outline</mat-icon>
                     <h4>{{machine.displayname}}</h4></div>
             </mat-radio-button>
         </mat-radio-group>
@@ -12,17 +19,19 @@
         <mat-card class="machineinfo" fxFlex="50" [fxShow]="selectedMachine?true:false">
             <mat-card-content *ngIf="selectedMachine">
                 <p>Status: {{selectedMachine.isOnline?stati[selectedMachine.id]:'machine is offline'}}</p>
-                <p *ngIf="selectedMachine.isOnline && materials[selectedMachine.id]">Material1: {{materialNameForGuid(materials[selectedMachine.id][0].guid)}}</p>
-                <p *ngIf="selectedMachine.isOnline && materials[selectedMachine.id]">Material2: {{materialNameForGuid(materials[selectedMachine.id][1].guid)}}</p>
+                <p *ngIf="selectedMachine.isOnline">Autorisiert: {{selectedMachine.isAuthenticated}}</p>
+                <p *ngIf="selectedMachine.isOnline && materials[selectedMachine.id]">Material1:
+                    {{materialNameForGuid(materials[selectedMachine.id][0].guid)}}</p>
+                <p *ngIf="selectedMachine.isOnline && materials[selectedMachine.id]">Material2:
+                    {{materialNameForGuid(materials[selectedMachine.id][1].guid)}}</p>
                 <p *ngIf="selectedMachine.isOnline && tdmObject">Lizenzen: {{licenseCounts[selectedMachine.id]}} </p>
             </mat-card-content>
         </mat-card>
     </div>
 
 
-
 </div>
 <div mat-dialog-actions>
-    <button mat-button (click)="dialogRef.close(false)">Feuer!</button>
+    <button mat-button color="primary" (click)="dialogRef.close(false)">Feuer!</button>
     <button mat-raised-button color="primary" (click)="dialogRef.close(true)">abbrechen</button>
 </div>
