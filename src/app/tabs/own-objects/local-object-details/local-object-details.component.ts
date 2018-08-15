@@ -69,7 +69,10 @@ export class LocalObjectDetailsComponent implements OnInit {
         this.publishDialogRef = this.dialog.open(PublishDialogComponent, {data: this.object});
         this.publishDialogRef.afterClosed().subscribe((result: any) => {
             if (result) {
-                this.localObjectService.publishObject(this.object.id, result).subscribe(result => {
+                this.localObjectService.publishObject(this.object.id, result).subscribe(marketPlaceObjectId => {
+                    this.localObjectService.getUploadState(marketPlaceObjectId).subscribe(state => {
+                        console.log(state)
+                    })
                 })
             }
             this.publishDialogRef = null;

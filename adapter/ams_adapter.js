@@ -11,6 +11,7 @@ const helper = require('../services/helper_service');
 const common = require('tdm-common');
 const authServer = require('./auth_service_adapter');
 const DownloadService = require('../services/download_service')
+const UploadService = require('../services/upload_service')
 const fs = require('fs');
 
 
@@ -406,37 +407,43 @@ self.getImageForUser = function (userId, callback) {
 
 };
 
-self.uploadFile = function(uuid, fileStream, callback) {
+self.uploadFile = function(objectId, path, callback) {
 
     buildOptionsForRequest(
         'POST',
         CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.PROTOCOL,
         CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.HOST,
         CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.PORT,
-        `/objects/${uuid}/binary`,
+        `/objects/${objectId}/binary`,
         {},
         function (err, options) {
-            options.formData = {
-                file: {
-                    value: fileStream,
-                    options: {
-                        filename: `${uuid}.iunoum3`
-                    }
-                }
-            };
-
-            logger.debug(`[ams_adapter] uploading file for ${uuid}`);
-
-            request(options, function optionalCallback(e, r, body) {
-                const err = logger.logRequestAndResponse(e, options, r, body);
-
-                if (err) {
-                    logger.warn('[ams_adapter] error while uploading file to ams');
-                }
-
-                callback(err);
-            });
+            // options.formData = {
+            //     file: {
+            //         value: fileStream,
+            //         options: {
+            //             filename: `${uuid}.iunoum3`
+            //         }
+            //     }
+            // };
+            UploadService.uploadObjectBinary(objectId, path, options)
         }
+
+        // function (err, options) {
+
+            
+
+        //     logger.debug(`[ams_adapter] uploading file for ${uuid}`);
+
+        //     request(options, function optionalCallback(e, r, body) {
+        //         const err = logger.logRequestAndResponse(e, options, r, body);
+
+        //         if (err) {
+        //             logger.warn('[ams_adapter] error while uploading file to ams');
+        //         }
+
+        //         callback(err);
+        //     });
+        // }
     );
 };
 

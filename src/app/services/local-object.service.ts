@@ -1,17 +1,62 @@
-import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {LocalObject} from '../models/localObject';
-import {Observable} from 'rxjs';
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { LocalObject } from '../models/localObject';
+import { Observable } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
+import { UploadSocketService } from './upload-socket.service';
+
+export class UploadState {
+    UNKNOWN_STATE = 'unknown'
+    UPLOADING_STATE = 'uploading'
+    READY_STATE = 'ready'
+
+    state: string = this.UNKNOWN_STATE
+    bytesTotal: number = -1
+    bytesUploaded: number = -1
+
+    /**
+     * Constructor of UploadState
+     * @param uploadState dictionary with state and uploading stats. Can be null.
+     */
+    constructor(uploadState) {
+        if (uploadState) {
+            this.state = uploadState.state
+            this.bytesTotal = uploadState.bytesTotal
+            this.bytesUploaded = uploadState.bytesUploaded
+        }
+    }
+
+    isUnknownState() {
+        return this.state === this.UNKNOWN_STATE
+    }
+
+    isUploadingState() {
+        return this.state === this.UPLOADING_STATE
+    }
+
+    isReadyState() {
+        return this.state === this.READY_STATE
+    }
+}
+
 
 @Injectable({
     providedIn: 'root'
 })
 export class LocalObjectService {
     private apiUrl = '/api/localobjects';
+    private uploadStates = {}
 
     constructor(
         private http: HttpClient,
+        private uploadSocketService: UploadSocketService
     ) {
+        this.uploadSocketService.getUpdates('state_change').subscribe(state => {
+            var uploadState = this.uploadStates[state.id]
+            if (uploadState) {
+                uploadState.next(new UploadState(state))
+            }
+        })
     }
 
     getObjects(): Observable<Array<LocalObject>> {
@@ -23,13 +68,31 @@ export class LocalObjectService {
     deleteObject(objectId: string) {
         const url = this.apiUrl + '/' + objectId;
 
-        return this.http.delete(url,{responseType: 'text'});
+        return this.http.delete(url, { responseType: 'text' });
     }
 
     publishObject(objectId: string, data: {}) {
         const url = this.apiUrl + '/' + objectId + '/publish';
         const body = data
-        return this.http.post(url, body, {responseType: 'text'})
+        return this.http.post(url, body, { responseType: 'text' })
     }
 
+
+    /**
+     * Returns a BehaviorSubject for the download state of the provided object id.
+     * The value of the subject is updated when the download state changes (e.g. while downloading).
+     * @param id object id 
+     * @returns a BehaviorSubject for the download state of the provided object id. The initial value of the subject is null.
+     */
+    getUploadState(id: string): BehaviorSubject<UploadState> {
+        var uploadState: BehaviorSubject<UploadState> = this.uploadStates[id]
+        if (!uploadState) {
+            // No upload state exists. Create a new BehaviorSubject and join
+            // the socket.id room for state change events of the provided object id.
+            uploadState = new BehaviorSubject<UploadState>(null)
+            this.uploadStates[id] = uploadState
+            this.uploadSocketService.joinRoom(id)
+        }
+        return uploadState
+    }
 }

@@ -129,7 +129,7 @@ router.post('/:id/publish', function (req, res, next) {
                     }
                     logger.info('encrypting file...');
 
-                    const tmpPath = path.resolve(`test/test_files/${objectId}.tmp`);
+                    const tmpPath = path.resolve(`tmp/${objectId}.tmp`);
                     const writeStream = fs.createWriteStream(tmpPath);
                     iunoEncryption.getEncryptionStream().pipe(writeStream);
     
@@ -137,6 +137,9 @@ router.post('/:id/publish', function (req, res, next) {
                         logger.info('file encrypted.');
 
                         logger.info('start uploading...');
+                        ams_adapter.uploadFile(objectId, tmpPath, (err) => {
+                        })
+                        res.send(objectId)
                         // ams.uploadFile(objectId, fs.createReadStream(tmpPath), (err) => {
                         //     if (err) {
                         //         return reject(err);
@@ -161,7 +164,6 @@ router.post('/:id/publish', function (req, res, next) {
                         //         fulfill(false);
                         //     });
                         // });
-                        res.send(objectId)
                     });    
                     // res.send(objectId)
                 }) 
