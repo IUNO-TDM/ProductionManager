@@ -14,6 +14,11 @@ if (app.get('env') === 'development') {
     console.warn(' -- RUNNING DEVELOPMENT MODE --');
 }
 
+/**
+ * Cleanup download folder
+ */
+const DownloadService = require('../services/download_service')
+DownloadService.purgeDownloadFiles()
 
 /**
  * Get port from environment and store in Express.

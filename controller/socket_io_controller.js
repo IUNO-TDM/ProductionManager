@@ -5,6 +5,7 @@
 const Order = require('../models/order')
 var logger = require('../global/logger');
 var orderStateMachine = require('../models/order_state_machine');
+const downloadService = require('../services/download_service')
 //
 function onOrderNamespaceConnect(socket) {
     logger.info('[socket_io_controller] a user connected: ' + socket.id);
@@ -61,11 +62,49 @@ function registerOrderStateEvents(orderNamespace) {
     });
 }
 
+// Download Namespace
+
+function onDownloadNamespaceConnect(socket) {
+    logger.info('[socket_io_controller/downloadservice] a user connected to namespace: ' + socket.id);
+
+    socket.on('room', function (downloadId) {
+        logger.info('[socket_io_controller/downloadservice] a user joined to room: ' + downloadId);
+        socket.join(downloadId);
+        let state = downloadService.getDownloadState(downloadId)
+        socket.emit('state_change', state)
+    });
+
+    socket.on('leave', function (downloadId) {
+        logger.info('[socket_io_controller/downloadservice] a user leaves room: ' + downloadId);
+        socket.leave(downloadId);
+    });
+
+
+    socket.on('disconnect', function () {
+        logger.info('[socket_io_controller/downloadservice] a user disconnected: ' + socket.id);
+    });
+}
+
+function registerDownloadEvents(downloadNamespace) {
+    downloadService.on('state_change', download => {
+        downloadNamespace.to(download.id).emit('state_change', {
+            id: download.id,
+            state: download.state,
+            bytesDownloaded: download.bytesDownloaded,
+            bytesTotal: download.bytesTotal,
+        });
+    })
+}
 
 
 module.exports = function (io) {
     logger.info("[socket_io_controller] Installing socket_io_controller.")
+
     var orderNamespace = io.of('/orders');
     orderNamespace.on('connection', onOrderNamespaceConnect);
     registerOrderStateEvents(orderNamespace);
+
+    var downloadNamespace = io.of('/downloadservice')
+    downloadNamespace.on('connection', onDownloadNamespaceConnect)
+    registerDownloadEvents(downloadNamespace)
 };

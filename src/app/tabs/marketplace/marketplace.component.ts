@@ -169,7 +169,7 @@ export class MarketplaceComponent implements OnInit {
       }
       
       // perform query
-      this.objectService.getObjects(machineTypeIds, materialIds).subscribe(objects => {
+      this.objectService.getObjects(machineTypeIds, materialIds, false).subscribe(objects => {
         if (this.searchQuery.length > 0) {
           this.objects = objects.filter(object => {
             var include = false

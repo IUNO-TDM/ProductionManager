@@ -34,7 +34,11 @@ self.Object_Query = {
             },
             additionalItems: false
         },
-        lang: languageProperty
+        lang: languageProperty,
+        purchased: {
+            type: 'string',
+            enum: ['true', 'false']
+        }
     },
     required: [ 'lang'],
     additionalProperties: false
@@ -43,12 +47,8 @@ self.Object_Query = {
 self.GetBinary_Query = {
     type: 'object',
     properties: {
-        offerId: {
-            type: 'string',
-            format: 'uuid'
-        }
     },
-    required: ['offerId'],
+    required: [],
     additionalProperties: false
 };
 
