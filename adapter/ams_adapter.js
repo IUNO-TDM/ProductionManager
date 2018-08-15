@@ -468,7 +468,7 @@ self.uploadFile = function(uuid, filePath, callback) {
 
             req.on('drain', () => {
                 const progress = 100.0 / fileSize * req.req.connection.bytesWritten;
-                logger.debug(`Progress: ${progress.toFixed(2)}%`);
+                logger.debug(`[ams_adapter] upload progress: ${progress.toFixed(2)}%`);
             })
         }
     );
