@@ -22,6 +22,7 @@ import { MatNativeDateModule, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatProgressBarModule } from '@angular/material/progress-bar'
 import { MatDialogModule } from '@angular/material/dialog';
 
 // Production Manager imports
@@ -81,6 +82,7 @@ import { MachineComponent } from './tabs/machines/machine/machine.component';
     MatCheckboxModule,
     MatRadioModule,
     MatProgressSpinnerModule,
+    MatProgressBarModule,
     MatDialogModule,
 
     // Product Manager Modules

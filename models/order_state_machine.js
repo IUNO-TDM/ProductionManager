@@ -5,6 +5,7 @@
 const machina = require('machina')
 const logger = require('../global/logger')
 const Order = require('../models/order')
+const TdmObject = require('../models/object')
 
 const stateMachine = new machina.BehavioralFsm({
 
@@ -80,12 +81,27 @@ const stateMachine = new machina.BehavioralFsm({
         },
 
         licenseUpdated: {
-            _onEnter: function(order) {
+            _onEnter: function (order) {
+                // write purchased object information to database if it doesn't
+                // exist from a previous order.
+                order.items.forEach(item => {
+                    TdmObject.findOne({ dataId: item.dataId }, function (err, object) {
+                        if (!object) {
+                            TdmObject.create({
+                                dataId: item.dataId
+                            }, (err, object) => {
+                                //TODO: check error
+                            })
+                        }
+                    })
+                })
                 this.transition(order, "completed")
             }
         },
 
         completed: {
+            _onEnter: function(order) {
+            }
         }
 
         // orderCreated:

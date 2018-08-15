@@ -7,6 +7,7 @@ import { OwnObjectsComponent } from './tabs/own-objects/own-objects.component';
 import { ShoppingCartComponent } from './tabs/marketplace/shopping-cart/shopping-cart.component';
 import { CreateObjectComponent } from './tabs/own-objects/create-object/create-object.component';
 import { OrderComponent } from './tabs/marketplace/order/order.component';
+import { ObjectDetailsComponent } from './object-details/object-details.component';
 
 const routes: Routes = [
     {path: '', redirectTo: 'marketplace', pathMatch: 'full'},
@@ -15,6 +16,7 @@ const routes: Routes = [
     {path: 'marketplace/order', component: OrderComponent},
     {path: 'machines', component: MachinesComponent},
     {path: 'purchased-objects', component: PurchasedObjectsComponent},
+    {path: 'purchased-objects/:id', component: ObjectDetailsComponent},
     {path: 'own-objects', component: OwnObjectsComponent},
     {path: 'own-objects/create', component: CreateObjectComponent},
 ];

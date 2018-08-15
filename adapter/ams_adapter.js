@@ -10,6 +10,8 @@ const CONFIG = require('../config/config_loader');
 const helper = require('../services/helper_service');
 const common = require('tdm-common');
 const authServer = require('./auth_service_adapter');
+const DownloadService = require('../services/download_service')
+const fs = require('fs');
 
 
 function buildOptionsForRequest(method, protocol, host, port, path, qs, callback) {
@@ -33,6 +35,7 @@ function buildOptionsForRequest(method, protocol, host, port, path, qs, callback
     })
 }
 
+// self.downloads = []
 
 self.getAllMachines = function (language, callback) {
 
@@ -92,42 +95,48 @@ self.getAllMaterials = function (language, callback) {
 
 };
 
-self.getAllObjects = function (language, machines, materials, callback) {
-
-
+/**
+ * Asynchronously requests object information from marketplace matching one of the filter criteria. Calls the callback function after information was received or an error has occured.
+ * @param language target language for information like materials etc.
+ * @param machines array of machine identifiers. Objects matching at least one of the machines are returned.
+ * @param materials array of material identifiers. Objects matching at least one of the materials are returned.
+ * @param purchased boolean value. If true, only purchased objects are returned.
+ * @param callback function called after object information is retrived from marketplace. The callback must be of type (error, objects).
+ * @returns void
+ */
+self.getObjects = function (language, machines, materials, purchased, callback) {
     if (typeof(callback) !== 'function') {
-
         callback = function () {
-            logger.info('Callback not registered');
+            logger.info('Callback not registered')
         }
     }
+
+    var queryParams = {}
+    queryParams['machines'] = machines
+    queryParams['materials'] = materials
+    queryParams['purchased'] = purchased
+    queryParams['lang'] = language
 
     buildOptionsForRequest(
         'GET',
         CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.PROTOCOL,
         CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.HOST,
         CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.PORT,
-        '/objects',
-        {
-            machines: machines,
-            materials: materials,
-            lang: language,
-        }, function (err, options) {
+        '/objects', 
+        queryParams,
+        function (err, options) {
             request(options, function (e, r, jsonData) {
                 const err = logger.logRequestAndResponse(e, options, r, jsonData);
                 callback(err, jsonData);
             });
         }
     );
-
-
 };
 
-self.getBinaryForObjectWithId = function (objectId, offerId, callback) {
+self.downloadBinaryForObjectWithId = function (objectId, callback) {
     if (typeof(callback) !== 'function') {
-
         callback = function () {
-            logger.info('Callback not registered');
+            logger.info('Callback not registered')
         }
     }
 
@@ -137,25 +146,42 @@ self.getBinaryForObjectWithId = function (objectId, offerId, callback) {
         CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.HOST,
         CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.PORT,
         `/objects/${objectId}/binary`,
-        {
-            offerId: offerId
-        }, function (err, options) {
-            request(options, function (e, r, binary) {
+        {},
+        function (err, options) {
+            DownloadService.downloadObjectBinary(objectId, options)
+            // var outStream = fs.createWriteStream(path);
+            // let req = request(options, function (err, r, binary) {
+            //     var key = null
+            //     if (err) {
+            //         logger.crit(err)
+            //     }
+            //     callback(err, binary, key)
+            // })
+            // req.on('response', data => {
+            //     var key = data.headers['key']
+            //     outStream.write(key)
+            //     console.log("key: " + key)
+            // })
+            // req.pipe(outStream)
 
-                const err = logger.logRequestAndResponse(e, options, r, binary);
-
-                callback(err, binary);
-            });
+            // console.log("-------------------")
+            // console.log(DownloadService)
+            // console.log("-------------------")
+            // DownloadService.observeDownloadRequest(objectId, req)
+            // req.on('data', chunk => {
+            //     // console.log("data received!")
+            // })
+            // req.on('end', chunk => {
+            //     console.log("done!")
+            // })
         }
-    );
-
-};
+    )
+}
 
 self.saveObject = function (objectData, callback) {
     if (typeof(callback) !== 'function') {
-
         callback = function () {
-            logger.info('Callback not registered');
+            logger.info('Callback not registered')
         }
     }
 
@@ -169,23 +195,21 @@ self.saveObject = function (objectData, callback) {
             options.body = objectData;
 
             request(options, function (e, r, jsonData) {
-                const err = logger.logRequestAndResponse(e, options, r, jsonData);
+                const err = logger.logRequestAndResponse(e, options, r, jsonData)
 
                 if (err) {
-                    return callback(err);
+                    return callback(err)
                 }
-                let objectId = null;
+                let objectId = null
 
                 if (r.headers['location']) {
                     objectId = r.headers['location'].substr(r.headers['location'].lastIndexOf('/') + 1)
                 }
-
-                callback(err, objectId);
-            });
+                callback(err, objectId)
+            })
         }
-    );
-
-};
+    )
+}
 
 self.getImageForObject = function (objectid, callback) {
     if (typeof(callback) !== 'function') {

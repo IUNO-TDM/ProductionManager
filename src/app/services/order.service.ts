@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Order } from '../models/order';
-import { forEach } from '../../../node_modules/@angular/router/src/utils/collection';
+import { forEach } from '@angular/router/src/utils/collection';
 
 @Injectable({
   providedIn: 'root'

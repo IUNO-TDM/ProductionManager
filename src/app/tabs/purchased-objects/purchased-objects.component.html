@@ -6,7 +6,7 @@
             </div>
             <app-object-details [object]="selectedObject">
                 <app-object-details-actions>
-                    <button mat-raised-button color="primary" (click)="onDownloadClicked()">Herunterladen</button>
+                    <button *ngIf="downloadStates[selectedObject.id] && downloadStates[selectedObject.id].state == 'download_required'" mat-raised-button color="primary" (click)="onDownloadClicked()">Herunterladen</button>
                 </app-object-details-actions>
             </app-object-details>
         </div>
@@ -17,7 +17,7 @@
         </div>
     </ng-container>
     <ng-container *ngIf="!loading">
-        <ng-container *ngIf="!selectedObject">
+        <ng-container *ngIf="selectedObject == null">
             <ng-container *ngIf="objects.length > 0">
                 <app-object-browser [objects]="objects" (onObjectSelected)="onObjectSelected($event)"></app-object-browser>
             </ng-container>
