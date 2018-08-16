@@ -6,6 +6,7 @@ const Order = require('../models/order')
 var logger = require('../global/logger');
 var orderStateMachine = require('../models/order_state_machine');
 const downloadService = require('../services/download_service')
+const uploadService = require('../services/upload_service')
 //
 function onOrderNamespaceConnect(socket) {
     logger.info('[socket_io_controller] a user connected: ' + socket.id);
@@ -96,6 +97,40 @@ function registerDownloadEvents(downloadNamespace) {
     })
 }
 
+// Upload Namespace
+
+function onUploadNamespaceConnect(socket) {
+    logger.info('[socket_io_controller/uploadservice] a user connected to namespace: ' + socket.id);
+
+    socket.on('room', function (uploadId) {
+        logger.info('[socket_io_controller/uploadservice] a user joined to room: ' + uploadId);
+        socket.join(uploadId);
+        let state = uploadService.getUploadState(uploadId)
+        socket.emit('state_change', state)
+    });
+
+    socket.on('leave', function (uploadId) {
+        logger.info('[socket_io_controller/uploadservice] a user leaves room: ' + uploadId);
+        socket.leave(uploadId);
+    });
+
+
+    socket.on('disconnect', function () {
+        logger.info('[socket_io_controller/uploadservice] a user disconnected: ' + socket.id);
+    });
+}
+
+function registerUploadEvents(uploadNamespace) {
+    uploadService.on('state_change', upload => {
+        uploadNamespace.to(upload.id).emit('state_change', {
+            id: upload.id,
+            state: upload.state,
+            bytesUploaded: upload.bytesUploaded,
+            bytesTotal: upload.bytesTotal,
+        });
+    })
+}
+
 
 module.exports = function (io) {
     logger.info("[socket_io_controller] Installing socket_io_controller.")
@@ -107,4 +142,8 @@ module.exports = function (io) {
     var downloadNamespace = io.of('/downloadservice')
     downloadNamespace.on('connection', onDownloadNamespaceConnect)
     registerDownloadEvents(downloadNamespace)
+
+    var uploadNamespace = io.of('/uploadservice')
+    uploadNamespace.on('connection', onUploadNamespaceConnect)
+    registerUploadEvents(uploadNamespace)
 };

@@ -25,4 +25,11 @@ export class PublishDialogComponent implements OnInit {
     ngOnInit() {
     }
 
+    onPublishClicked() {
+        this.dialogRef.close(this.publishInfos.value)
+    }
+
+    onCancelClicked() {
+        this.dialogRef.close(null)
+    }
 }

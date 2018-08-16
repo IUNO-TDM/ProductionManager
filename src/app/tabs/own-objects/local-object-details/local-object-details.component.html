@@ -40,6 +40,9 @@
                 <button class="mat-button" (click)="publishObject()">Objekt zum Marktplatz hochladen</button>
                 <button class="mat-button" (click)="deleteObject()">Objekt löschen</button>
             </div>
+            <div *ngIf="uploadState && uploadState.isUploadingState()">
+                <mat-progress-bar mode="determinate" [value]="progress"></mat-progress-bar>
+            </div>
         </div>
     </div>
 </div>

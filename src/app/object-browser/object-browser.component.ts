@@ -8,6 +8,8 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 export class ObjectBrowserComponent implements OnInit {
   @Input() objects: any[]
   @Output() onObjectSelected = new EventEmitter();
+
+  images = {}
   
   constructor() { }
 
