@@ -79,7 +79,7 @@ DownloadService.prototype.download = function (options, targetPath) {
 
 }
 
-DownloadService.prototype.downloadObjectBinary = function (objectId, options) {
+DownloadService.prototype.downloadObjectBinary = function (objectId, productCode, options) {
     let downloadingPath = downloadService.getDownloadingPath(objectId)
 
     var outStream = fs.createWriteStream(downloadingPath);
@@ -94,8 +94,16 @@ DownloadService.prototype.downloadObjectBinary = function (objectId, options) {
     })
     req.on('response', data => {
         var key = data.headers['key']
-        outStream.write(key)
-        console.log("key: " + key)
+        // decode base64 string into buffer
+        const encryptedKeyBuffer = Buffer.from(key, 'base64');
+
+        const productCodeBuffer = Buffer.alloc(4);
+        productCodeBuffer.writeUInt32LE(productCode, 0);
+
+
+        outStream.write(productCodeBuffer);
+        outStream.write(encryptedKeyBuffer)
+        // console.log("key: " + key)
     })
     req.pipe(outStream)
     downloadService.observeDownloadRequest(objectId, req)

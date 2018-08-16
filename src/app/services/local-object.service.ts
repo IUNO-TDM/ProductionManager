@@ -95,4 +95,14 @@ export class LocalObjectService {
         }
         return uploadState
     }
+
+
+    printObject(objectId: string, machineId: string) {
+
+        const url = this.apiUrl + '/' + objectId + '/print';
+        const body = {
+            'machineId': machineId
+        };
+        return this.http.post(url, body);
+    }
 }

@@ -98,5 +98,13 @@ self.SaveObject_Body = {
     additionalProperties: false
 };
 
+self.PrintObject_Body = {
+    machineId: {
+        type: 'string',
+        minLength: 1,
+        maxLength: 50
+    }
+};
+
 
 module.exports = self;

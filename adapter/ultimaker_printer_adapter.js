@@ -99,7 +99,6 @@ self.verifyAuthentication = function (hostname, id, key, callback) {
     };
 
 
-
     request(options, function (e, r, data) {
         const err = logger.logRequestAndResponse(e, options, r, data);
         callback(err, data);
@@ -137,12 +136,11 @@ self.uploadPrintjob = function (hostname, id, key, jobname, filepath, callback) 
     };
 
 
-request(options, function (e, r, data) {
-    const err = logger.logRequestAndResponse(e, options, r, data);
-    callback(err, data);
-})
-}
-;
+    request(options, function (e, r, data) {
+        const err = logger.logRequestAndResponse(e, options, r, data);
+        callback(err, data);
+    })
+};
 
 self.getActiveMaterial = function (hostname, extruder, callback) {
     const options = buildOptionsForRequest(

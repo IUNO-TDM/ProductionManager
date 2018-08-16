@@ -10,8 +10,8 @@ const CONFIG = require('../config/config_loader');
 const helper = require('../services/helper_service');
 const common = require('tdm-common');
 const authServer = require('./auth_service_adapter');
-const DownloadService = require('../services/download_service')
-const UploadService = require('../services/upload_service')
+const DownloadService = require('../services/download_service');
+const UploadService = require('../services/upload_service');
 const fs = require('fs');
 
 
@@ -112,18 +112,18 @@ self.getObjects = function (language, machines, materials, purchased, callback) 
         }
     }
 
-    var queryParams = {}
-    queryParams['machines'] = machines
-    queryParams['materials'] = materials
-    queryParams['purchased'] = purchased
-    queryParams['lang'] = language
+    var queryParams = {};
+    queryParams['machines'] = machines;
+    queryParams['materials'] = materials;
+    queryParams['purchased'] = purchased;
+    queryParams['lang'] = language;
 
     buildOptionsForRequest(
         'GET',
         CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.PROTOCOL,
         CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.HOST,
         CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.PORT,
-        '/objects', 
+        '/objects',
         queryParams,
         function (err, options) {
             request(options, function (e, r, jsonData) {
@@ -141,18 +141,25 @@ self.downloadBinaryForObjectWithId = function (objectId, callback) {
         }
     }
 
-    buildOptionsForRequest(
-        'GET',
-        CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.PROTOCOL,
-        CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.HOST,
-        CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.PORT,
-        `/objects/${objectId}/binary`,
-        {},
-        function (err, options) {
-            DownloadService.downloadObjectBinary(objectId, options)
+    self.getObjectWithId(objectId, 'de', (err, data) => {
+        if (err) {
+            callback(err, data);
+        } else {
+            buildOptionsForRequest(
+                'GET',
+                CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.PROTOCOL,
+                CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.HOST,
+                CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.PORT,
+                `/objects/${objectId}/binary`,
+                {},
+                function (err, options) {
+                    DownloadService.downloadObjectBinary(objectId, data.productCode, options);
+                    callback(null,null);
+                }
+            )
         }
-    )
-}
+    })
+};
 
 self.saveObject = function (objectData, callback) {
     if (typeof(callback) !== 'function') {
@@ -171,12 +178,12 @@ self.saveObject = function (objectData, callback) {
             options.body = objectData;
 
             request(options, function (e, r, jsonData) {
-                const err = logger.logRequestAndResponse(e, options, r, jsonData)
+                const err = logger.logRequestAndResponse(e, options, r, jsonData);
 
                 if (err) {
                     return callback(err)
                 }
-                let objectId = null
+                let objectId = null;
 
                 if (r.headers['location']) {
                     objectId = r.headers['location'].substr(r.headers['location'].lastIndexOf('/') + 1)
@@ -185,7 +192,7 @@ self.saveObject = function (objectData, callback) {
             })
         }
     )
-}
+};
 
 self.getImageForObject = function (objectid, callback) {
     if (typeof(callback) !== 'function') {
@@ -248,7 +255,7 @@ self.createOfferForRequest = function (offerRequest, callback) {
 
 };
 
-self.requestLicenseUpdate = function(order, callback) {
+self.requestLicenseUpdate = function (order, callback) {
     if (typeof(callback) !== 'function') {
         return logger.info('[ADDITIVE_MACHINE_SERVICE_adapter] Callback not registered');
     }
@@ -273,7 +280,7 @@ self.requestLicenseUpdate = function(order, callback) {
             });
         }
     );
-}
+};
 
 self.getLicenseUpdate = function (hsmId, context, callback) {
     if (typeof(callback) !== 'function') {
@@ -407,7 +414,7 @@ self.getImageForUser = function (userId, callback) {
 
 };
 
-self.uploadFile = function(objectId, path, callback) {
+self.uploadFile = function (objectId, path, callback) {
 
     buildOptionsForRequest(
         'POST',
