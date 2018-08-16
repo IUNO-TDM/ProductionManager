@@ -24,6 +24,7 @@ const self = function () {
      * @return {Promise<void>}
      */
     this.init = async function (gCodePath) {
+        logger.debug('[iuno_m3_encryption] initializing object');
         // parse only header into memory
         _header = await parseHeader(gCodePath);
         _gCodePath = gCodePath;
@@ -38,16 +39,17 @@ const self = function () {
      */
     this.getKeyBundleB64 = function () {
         if (!_keyBundleB64) {
-            throw new Error('Class was not initialized: Please call init() first');
+            throw new Error('Class was not initialized: Please call init() first and wait until the async function returned');
         }
         return _keyBundleB64;
     };
 
     this.getEncryptionStream = function () {
         if (!_keyBundleB64) {
-            throw new Error('Class was not initialized: Please call init() first');
+            throw new Error('Class was not initialized: Please call init() first and wait until the async function returned');
         }
 
+        logger.debug('[iuno_m3_encryption] generate encryption stream for object');
         // create content stream starting after header
         const contentStream = fs.createReadStream(
             path.resolve(_gCodePath),
@@ -87,6 +89,8 @@ const self = function () {
 };
 
 function createKeyBundleB64() {
+    logger.debug('[iuno_m3_encryption] creating base64 encoded key bundle for object');
+
     // generate random key with 256 bit length
     const aesKey = CryptoJS.lib.WordArray.random(256 / 8);
     // generate random IV with 128 bit length
@@ -119,6 +123,7 @@ function createKeyBundleB64() {
 
 
 async function parseHeader(gCodePath) {
+    logger.debug('[iuno_m3_encryption] parsing header');
     const separator = ';END_OF_HEADER\n';
 
     return new Promise(function (fulfill, reject) {
