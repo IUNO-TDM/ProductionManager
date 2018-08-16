@@ -159,7 +159,7 @@ async function parseHeader(gCodePath) {
 
             stream.addListener('data', listener);
         } catch (err) {
-            console.error(err);
+            logger.error(err);
             reject(err);
         }
 
