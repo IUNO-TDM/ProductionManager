@@ -78,7 +78,7 @@ export class MachineService {
 
     requestAuthentication(machineId: string) {
         const url = this.apiUrl + 'machines/' + machineId + '/authentication';
-        return this.http.post(url, '');
+        return this.http.post(url, '', {responseType: 'text'});
     }
 
     getMaterials(machineId: string): Observable<Array<Material>> {

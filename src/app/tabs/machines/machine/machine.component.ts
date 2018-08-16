@@ -64,7 +64,7 @@ export class MachineComponent implements OnInit {
                         this.authenticationStatus = this.AuthEnum.No_Information;
                         break;
                 }
-                if (this.authenticationStatus === this.AuthEnum.Unknown && this.authenticationRequested) {
+                if (this.authenticationStatus === this.AuthEnum.Unknown) {
                     setTimeout(() => this.checkAuthenticated(), 5000);
                 } else {
                     this.authenticationRequested = false;

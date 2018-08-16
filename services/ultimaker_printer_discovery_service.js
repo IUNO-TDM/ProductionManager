@@ -35,7 +35,7 @@ const updateMachine = function (machine, callback) {
             if (machine.auth_id && machine.auth_key) {
                 ultimakerAdapter.verifyAuthentication(machine.hostname, machine.auth_id, machine.auth_key, cb);
             } else {
-                cb(null, false)
+                cb(null, null)
             }
         }
     ], function (err, results) {
@@ -46,7 +46,12 @@ const updateMachine = function (machine, callback) {
             machine.displayname = results[1];
             machine.variant = results[2];
             machine.hsmIds = results[3];
-            machine.isAuthenticated = results[4];
+            if (results[4] && results[4].message === "ok"){
+                machine.isAuthenticated = true;
+            }else{
+                machine.isAuthenticated = false;
+            }
+
             machine.isOnline = true;
             if (machine.hsmIds && machine.hsmIds.length > 0) {
                 for (var i = 0; i < machine.hsmIds.length; i++) {
