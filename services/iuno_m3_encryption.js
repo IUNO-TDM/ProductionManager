@@ -15,6 +15,7 @@ const CombinedStream = require('combined-stream');
 const self = function () {
     let _keyBundleB64 = undefined;
     let _aesKey = undefined;
+    let _iv = undefined;
     let _header = undefined;
     let _gCodePath = undefined;
 
@@ -31,6 +32,7 @@ const self = function () {
         const keys = createKeyBundleB64();
         _keyBundleB64 = keys.keyBundleB64;
         _aesKey = keys.aesKey;
+        _iv = keys.iv;
     };
 
     /**
@@ -67,7 +69,7 @@ const self = function () {
         headerLengthBuffer.writeUInt32LE(headerBuffer.length, 0);
 
         // create a cipher stream for aes 256 cbc
-        const cipher = crypto.createCipher('aes-256-cbc', _aesKey);
+        const cipher = crypto.createCipheriv('aes-256-cbc', _aesKey, _iv);
 
         // create readable header stream including header length and header buffer
         const headerStream = new Readable({
@@ -96,8 +98,9 @@ function createKeyBundleB64() {
     // generate random IV with 128 bit length
     const iv = CryptoJS.lib.WordArray.random(128 / 8);
 
-    // convert aes key into binary data
+    // convert aes key and iv into binary data
     const passwordBuffer = new Buffer(convertWordArrayToUint8Array(aesKey));
+    const ivBuffer = new Buffer(convertWordArrayToUint8Array(iv));
 
     // read public key from file
     const publicKeyPath = path.resolve(CONFIG.PUBLIC_KEY_FILE_FOR_ENCRYPTION);
@@ -117,6 +120,7 @@ function createKeyBundleB64() {
 
     return {
         aesKey: passwordBuffer,
+        iv: ivBuffer,
         keyBundleB64: keyBundle.toString('base64')
     };
 }
