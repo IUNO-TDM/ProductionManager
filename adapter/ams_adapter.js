@@ -11,6 +11,7 @@ const helper = require('../services/helper_service');
 const common = require('tdm-common');
 const authServer = require('./auth_service_adapter');
 const DownloadService = require('../services/download_service')
+const UploadService = require('../services/upload_service')
 const fs = require('fs');
 
 
@@ -149,31 +150,6 @@ self.downloadBinaryForObjectWithId = function (objectId, callback) {
         {},
         function (err, options) {
             DownloadService.downloadObjectBinary(objectId, options)
-            // var outStream = fs.createWriteStream(path);
-            // let req = request(options, function (err, r, binary) {
-            //     var key = null
-            //     if (err) {
-            //         logger.crit(err)
-            //     }
-            //     callback(err, binary, key)
-            // })
-            // req.on('response', data => {
-            //     var key = data.headers['key']
-            //     outStream.write(key)
-            //     console.log("key: " + key)
-            // })
-            // req.pipe(outStream)
-
-            // console.log("-------------------")
-            // console.log(DownloadService)
-            // console.log("-------------------")
-            // DownloadService.observeDownloadRequest(objectId, req)
-            // req.on('data', chunk => {
-            //     // console.log("data received!")
-            // })
-            // req.on('end', chunk => {
-            //     console.log("done!")
-            // })
         }
     )
 }
@@ -431,45 +407,17 @@ self.getImageForUser = function (userId, callback) {
 
 };
 
-self.uploadFile = function(uuid, filePath, callback) {
-
-    const fileStream = fs.createReadStream(filePath);
-    const fileSize = fs.statSync(filePath).size;
+self.uploadFile = function(objectId, path, callback) {
 
     buildOptionsForRequest(
         'POST',
         CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.PROTOCOL,
         CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.HOST,
         CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.PORT,
-        `/objects/${uuid}/binary`,
+        `/objects/${objectId}/binary`,
         {},
         function (err, options) {
-            options.formData = {
-                file: {
-                    value: fileStream,
-                    options: {
-                        filename: `${uuid}.iunoum3`
-                    }
-                }
-            };
-
-            logger.debug(`[ams_adapter] uploading file for ${uuid}`);
-
-            const req = request(options, function optionalCallback(e, r, body) {
-                const err = logger.logRequestAndResponse(e, options, r, body);
-
-                if (err) {
-                    logger.warn('[ams_adapter] error while uploading file to ams');
-                }
-
-                callback(err);
-            });
-
-
-            req.on('drain', () => {
-                const progress = 100.0 / fileSize * req.req.connection.bytesWritten;
-                logger.debug(`[ams_adapter] upload progress: ${progress.toFixed(2)}%`);
-            })
+            UploadService.uploadObjectBinary(objectId, path, options)
         }
     );
 };

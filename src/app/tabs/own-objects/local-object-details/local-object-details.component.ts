@@ -1,14 +1,14 @@
-import {Component, OnInit, Input, Output, EventEmitter} from '@angular/core';
-import {LocalObject} from '../../../models/localObject';
-import {MaterialService} from '../../../services/material.service';
-import {MachineService} from '../../../services/machine.service';
-import {MaterialDefinition} from '../../../models/materialDefinition';
-import {MachineType} from '../../../models/machineType';
-import {MatDialog, MatDialogRef} from '@angular/material';
-import {PublishDialogComponent} from '../../../publish-dialog/publish-dialog.component';
-import {PrintDialogComponent} from '../../../print-dialog/print-dialog.component';
-import {ConfirmationDialogComponent} from '../../../confirmation-dialog/confirmation-dialog.component';
-import {LocalObjectService} from '../../../services/local-object.service';
+import { Component, OnInit, Input, Output, EventEmitter, NgZone } from '@angular/core';
+import { LocalObject } from '../../../models/localObject';
+import { MaterialService } from '../../../services/material.service';
+import { MachineService } from '../../../services/machine.service';
+import { MaterialDefinition } from '../../../models/materialDefinition';
+import { MachineType } from '../../../models/machineType';
+import { MatDialog, MatDialogRef } from '@angular/material';
+import { PublishDialogComponent } from '../../../publish-dialog/publish-dialog.component';
+import { PrintDialogComponent } from '../../../print-dialog/print-dialog.component';
+import { ConfirmationDialogComponent } from '../../../confirmation-dialog/confirmation-dialog.component';
+import { LocalObjectService, UploadState } from '../../../services/local-object.service';
 
 @Component({
     selector: 'app-local-object-details',
@@ -19,6 +19,9 @@ export class LocalObjectDetailsComponent implements OnInit {
     @Input() object: LocalObject;
     @Output() deleted = new EventEmitter();
 
+    uploadState: UploadState = null
+    progress = 0
+
     materialDefinitions = new Array<MaterialDefinition>();
     machineTypes = new Array<MachineType>();
 
@@ -26,8 +29,10 @@ export class LocalObjectDetailsComponent implements OnInit {
     printDialogRef: MatDialogRef<PrintDialogComponent> | null;
     confirmationDialogRef: MatDialogRef<ConfirmationDialogComponent>;
 
-    constructor(private materialService: MaterialService, private machineService: MachineService, private dialog: MatDialog,
-                private localObjectService: LocalObjectService) {
+    constructor(
+        private zone: NgZone,
+        private materialService: MaterialService, private machineService: MachineService, private dialog: MatDialog,
+        private localObjectService: LocalObjectService) {
     }
 
     ngOnInit() {
@@ -66,15 +71,33 @@ export class LocalObjectDetailsComponent implements OnInit {
     }
 
     publishObject() {
-        this.publishDialogRef = this.dialog.open(PublishDialogComponent, {data: this.object});
-        this.publishDialogRef.afterClosed().subscribe((result: string) => {
+        this.publishDialogRef = this.dialog.open(PublishDialogComponent, { data: this.object });
+        this.publishDialogRef.afterClosed().subscribe((result: any) => {
+            if (result) {
+                this.uploadState = new UploadState(null)
+                this.localObjectService.publishObject(this.object.id, result).subscribe(marketPlaceObjectId => {
+                    this.localObjectService.getUploadState(marketPlaceObjectId).subscribe(state => {
+                        this.zone.run(() => {
+                            if (state) {
+                                console.log(state)
+                                this.uploadState = state
+                                if (state.bytesTotal > 0) {
+                                    this.progress = 100 * +state.bytesUploaded / +state.bytesTotal
+                                } else {
+                                    this.progress = 1
+                                }
+                            }
+                        });
+                    })
+                })
+            }
             this.publishDialogRef = null;
         });
 
     }
 
     printObject() {
-        this.printDialogRef = this.dialog.open(PrintDialogComponent, {data: {localObject: this.object}});
+        this.printDialogRef = this.dialog.open(PrintDialogComponent, { data: { localObject: this.object } });
         this.printDialogRef.afterClosed().subscribe((result: string) => {
             this.printDialogRef = null;
         });
