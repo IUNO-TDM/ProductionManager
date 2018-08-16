@@ -46,7 +46,7 @@
     "ng6-socket-io": "^1.0.3",
     "ngx-qrcode2": "0.0.5",
     "promise": "^8.0.1",
-    "request": "^2.87.0",
+    "request": "iuno-tdm/request",
     "rxjs": "^6.2.1",
     "serve-favicon": "^2.5.0",
     "socket.io": "^2.1.1",

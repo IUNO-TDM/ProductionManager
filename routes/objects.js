@@ -10,6 +10,9 @@ const validator = new Validator({allErrors: true});
 const validate = validator.validate;
 const validation_schema = require('../schema/object_schema');
 const encryption = require('../services/encryption_service');
+const printerAdapter = require('../adapter/ultimaker_printer_adapter');
+const Machine = require('../models/machine');
+const downloadService = require('../services/download_service');
 
 // function getBinaryState(objectId) {
 //     if (/^[0-9a-zA-Z\-]+$/.test(objectId)) {
@@ -119,6 +122,35 @@ router.get('/:id/image', validate({
         res.send(data.imageBuffer);
     });
 });
+
+router.post('/:id/print', validate({
+        query: validation_schema.Empty,
+        body: validation_schema.PrintObject_Body
+    }),
+    (req, res, next) => {
+        Machine.findById(req.body.machineId, (err, machine) => {
+            if (err) {
+                res.status(500).send(err);
+            } else if (!machine) {
+                res.sendStatus(404);
+            } else if (!machine.auth_id || !machine.auth_key) {
+                res.sendStatus(401);
+            } else {
+                if (downloadService.getDownloadState(req.params.id).state !== 'ready') {
+                    res.status(403).send({message: 'the object is not yet downloaded'});
+                } else {
+                    const filepath = downloadService.getPath(req.params.id);
+                    printerAdapter.uploadPrintjob(machine.hostname, machine.auth_id, machine.auth_key, req.params.id, filepath, (err, data) => {
+                        if (err) {
+                            res.status(500).send(err);
+                        } else {
+                            res.status(200).send(data);
+                        }
+                    })
+                }
+            }
+        })
+    });
 
 
 module.exports = router;

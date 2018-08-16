@@ -105,11 +105,11 @@ router.post('/:id/publish', function (req, res, next) {
         if (!localObject) {
             return res.sendStatus(404);
         }
-        const iunoEncryption = new IUNOm3Encryption()
-        const filePath = localObject.gcode_filepath
+        const iunoEncryption = new IUNOm3Encryption();
+        const filePath = localObject.gcode_filepath;
 
         iunoEncryption.init(filePath).then(() => {
-            const components = localObject.machines
+            const components = localObject.machines;
             const objectData = {
                 components: components,
                 description: req.body.description,
@@ -117,12 +117,12 @@ router.post('/:id/publish', function (req, res, next) {
                 title: req.body.title,
                 backgroundColor: '#FFFFFF',
                 encryptedKey: iunoEncryption.getKeyBundleB64()
-            }
+            };
             ams_adapter.saveObject(objectData, (err, objectId) => {
                 if (err) {
                     return res.sendStatus(404);
                 }
-                localObject.marketplaceObjectId = objectId
+                localObject.marketplaceObjectId = objectId;
                 localObject.save((error, savedObject) => {
                     if (error) {
                         return res.sendStatus(404);
@@ -132,45 +132,20 @@ router.post('/:id/publish', function (req, res, next) {
                     const tmpPath = path.resolve(`tmp/${objectId}.tmp`);
                     const writeStream = fs.createWriteStream(tmpPath);
                     iunoEncryption.getEncryptionStream().pipe(writeStream);
-    
+
                     writeStream.on('close', () => {
                         logger.info('file encrypted.');
 
                         logger.info('start uploading...');
                         ams_adapter.uploadFile(objectId, tmpPath, (err) => {
-                        })
+                        });
                         res.send(objectId)
-                        // ams.uploadFile(objectId, fs.createReadStream(tmpPath), (err) => {
-                        //     if (err) {
-                        //         return reject(err);
-                        //     }
-                        //     logger.info('[object_test] retrieving object');
-                        //     ams.getObjectWithId(objectId, 'en', (err, printerObject) => {
-                        //         if (err) {
-                        //             return reject(err);
-                        //         }
-                        //         logger.info(printerObject);
-    
-                        //         if (
-                        //             printerObject.id === objectId &&
-                        //             printerObject.name === objectData.title &&
-                        //             printerObject.description === objectData.description &&
-                        //             printerObject.lib === objectData.licenseFee &&
-                        //             printerObject.backgroundColor === objectData.backgroundColor
-                        //         ) {
-                        //             fulfill(true);
-                        //         }
-    
-                        //         fulfill(false);
-                        //     });
-                        // });
-                    });    
-                    // res.send(objectId)
-                }) 
+                    });
+                })
             })
         })
     })
-})
+});
 
 router.post('/', require('../services/file_upload_handler'), function (req, res, next) {
 
@@ -227,22 +202,22 @@ router.post('/', require('../services/file_upload_handler'), function (req, res,
             deleteFile(req.file.path);
             locObj.gcode_filepath = gcode_filepath;
             locObj.image_filepath = image_filepath;
-            LocalObject.findByIdAndUpdate(locObj._id, locObj, { new: true }, function (err, data) {
-                if (err) {
-                    logger.fatal("Could not update local object", err);
-                } else {
-                    gcode_helper.extractMaterials(data.gcode_filepath, function (err, materials) {
-                        data.materials = materials;
-                        LocalObject.findByIdAndUpdate(data._id, data, { new: true }, function (err, data2) {
-                            if (err) {
-                                logger.fatal("Could not update local object", err);
-                            }
+            LocalObject.findByIdAndUpdate(locObj._id, locObj, {new: true}, function (err, data) {
+                    if (err) {
+                        logger.fatal("Could not update local object", err);
+                    } else {
+                        gcode_helper.extractMaterials(data.gcode_filepath, function (err, materials) {
+                            data.materials = materials;
+                            LocalObject.findByIdAndUpdate(data._id, data, {new: true}, function (err, data2) {
+                                if (err) {
+                                    logger.fatal("Could not update local object", err);
+                                }
+                            });
                         });
-                    });
+                    }
                 }
-            }
             )
-                ;
+            ;
         });
     });
 });
@@ -257,7 +232,7 @@ router.post('/:id/print', function (req, res, next) {
             return res.status(404), res.send("No local object with this id");
         }
 
-        Machine.findById(req.body, function (err, machine) {
+        Machine.findById(req.body.machineId, function (err, machine) {
             if (err) {
                 return res.next(err);
             }

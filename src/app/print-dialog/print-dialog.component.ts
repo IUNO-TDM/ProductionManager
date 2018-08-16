@@ -7,6 +7,8 @@ import {MachineService} from '../services/machine.service';
 import {Machine} from '../models/machine';
 import {MaterialDefinition} from '../models/materialDefinition';
 import {MaterialService} from '../services/material.service';
+import {ObjectService} from '../services/object.service';
+import {LocalObjectService} from '../services/local-object.service';
 
 @Component({
     selector: 'app-print-dialog',
@@ -28,7 +30,8 @@ export class PrintDialogComponent implements OnInit {
 
     constructor(public dialogRef: MatDialogRef<PrintDialogComponent>,
                 @Inject(MAT_DIALOG_DATA) public data: any, formBuilder: FormBuilder, private machineService: MachineService,
-                private materialService: MaterialService) {
+                private materialService: MaterialService, private objectService: ObjectService,
+                private localObjectService: LocalObjectService) {
 
         if (data.localObject) {
             this.localObject = data.localObject;
@@ -80,5 +83,20 @@ export class PrintDialogComponent implements OnInit {
             }
         }
         return guid;
+    }
+
+    printObject() {
+        if (!this.selectedMachine) {
+            return;
+        }
+        if (this.localObject) {
+            this.localObjectService.printObject(this.localObject.id, this.selectedMachine.id).subscribe(() => {
+                this.dialogRef.close();
+            });
+        } else {
+            this.objectService.printObject(this.tdmObject.id, this.selectedMachine.id).subscribe(() => {
+                this.dialogRef.close();
+            });
+        }
     }
 }
