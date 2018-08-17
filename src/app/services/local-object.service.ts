@@ -139,4 +139,18 @@ export class LocalObjectService {
         };
         return this.http.post(url, body);
     }
+
+    updateObject(objectId: string, title: string, description: string): Observable<LocalObject> {
+        const url = this.apiUrl + '/' + objectId;
+        const body = {};
+        if (title) {
+            body['name'] = title;
+        }
+        if (description) {
+            body['description'] = description;
+        }
+
+        return this.http.patch(url, body);
+    }
+
 }

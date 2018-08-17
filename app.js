@@ -35,7 +35,7 @@ var machine_types = require('./routes/machine_types');
 
 const swaggerUi = require('swagger-ui-express');
 const YAML = require('yamljs');
-const swaggerDocument = YAML.load('./interface.yaml');
+const swaggerDocument = YAML.load('./swagger.yaml');
 
 var app = express();
 

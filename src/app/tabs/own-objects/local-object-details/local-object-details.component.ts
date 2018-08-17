@@ -33,6 +33,10 @@ export class LocalObjectDetailsComponent implements OnInit {
     printDialogRef: MatDialogRef<PrintDialogComponent> | null;
     confirmationDialogRef: MatDialogRef<ConfirmationDialogComponent>;
 
+    editing = '';
+
+    editedName: string;
+    editedDescription: string;
 
     constructor(
         private zone: NgZone,
@@ -41,6 +45,8 @@ export class LocalObjectDetailsComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.editedName = this.object.name;
+        this.editedDescription = this.object.description;
         this.materialService.getAllMaterials().subscribe((materialDefinitions) => {
             this.materialDefinitions = materialDefinitions;
         });
@@ -152,4 +158,24 @@ export class LocalObjectDetailsComponent implements OnInit {
         });
     }
 
+    updateTitle() {
+        this.localObjectService.updateObject(this.object.id, this.editedName, null).subscribe((data) =>{
+            this.object = data;
+        });
+        this.editing = '';
+    }
+    startUpdateTitle() {
+        this.editing = 'title';
+        this.editedName = this.object.name;
+    }
+    updateDescription() {
+        this.localObjectService.updateObject(this.object.id, null, this.editedDescription).subscribe((data) =>{
+            this.object = data;
+        });;
+        this.editing = '';
+    }
+    startUpdateDescription() {
+        this.editing = 'description';
+        this.editedDescription = this.object.description;
+    }
 }

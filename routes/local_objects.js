@@ -65,84 +65,6 @@ router.get('/:id/image', function (req, res, next) {
     })
 });
 
-router.delete('/:id', function (req, res, next) {
-    LocalObject.findById(req.params.id, function (err, item) {
-        if (err) {
-            return next(err);
-        }
-        if (!item) {
-            return res.sendStatus(404);
-        }
-        deleteFile(item.image_filepath);
-        deleteFile(item.gcode_filepath);
-        LocalObject.findByIdAndRemove(req.params.id, function (err, item) {
-            if (err) {
-                next(err);
-            } else {
-                res.sendStatus(200);
-            }
-        });
-    })
-});
-
-/**
- * Route to publish object on the marketplace. This does just upload the metadata and not the binary.
- * The body of the request must contain a json of following structure:
- * {
- *   title: string
- *   description: string
- *   licenseFee: number
- * }
- * @returns json containing the marketplace object id
- */
-router.post('/:id/publish', function (req, res, next) {
-    // find the object in the local database
-    LocalObject.findById(req.params.id, function (err, localObject) {
-        if (err) {
-            return next(err);
-        }
-        if (!localObject) {
-            return res.sendStatus(404);
-        }
-        if (localObject.state !== 'notPublished') {
-            return res.status(405).send("The localobject is already in state " + localObject.state);
-        }
-        localObject.description = req.body.description;
-        localObject.licenseFee = +req.body.licenseFee;
-        localObject.name = req.body.title;
-        localObject.save((err) => {
-            if (!err) {
-                publishStateMachine.publish(localObject);
-                res.sendStatus(201);
-            } else {
-                res.status(500).send(err);
-            }
-        });
-    })
-});
-
-router.post('/:id/publish/retry', function (req, res, next) {
-    LocalObject.findById(req.params.id, function (err, localObject) {
-        if (err) {
-            return next(err);
-        }
-        if (!localObject) {
-            return res.sendStatus(404);
-        }
-        publishStateMachine.retry(localObject);
-    })
-});
-router.post('/:id/publish/reset', function (req, res, next) {
-    LocalObject.findById(req.params.id, function (err, localObject) {
-        if (err) {
-            return next(err);
-        }
-        if (!localObject) {
-            return res.sendStatus(404);
-        }
-        publishStateMachine.reset(localObject);
-    })
-});
 
 router.post('/', require('../services/file_upload_handler'), function (req, res, next) {
 
@@ -221,6 +143,113 @@ router.post('/', require('../services/file_upload_handler'), function (req, res,
             ;
         });
     });
+});
+
+
+router.patch('/:id', function(req, res, next){
+    LocalObject.findById(req.params.id, (err, localObject)=>{
+        if(err){
+            return res.status(500).send(err);
+        }else if(!localObject){
+            return res.sendStatus(404);
+        }
+        for(let key in req.body){
+            if(key === 'name'){
+                localObject.name = req.body[key]
+            }
+            else if(key === 'description'){
+                localObject.description = req.body[key]
+            }
+        }
+        localObject.save((err)=>{
+            if(err){
+                res.status(500).send(err);
+            }else{
+
+                res.json(_.pick(localObject, ['id', 'name', 'description', 'createdAt', 'materials', 'machines']));
+            }
+        })
+
+    })
+});
+
+router.delete('/:id', function (req, res, next) {
+    LocalObject.findById(req.params.id, function (err, item) {
+        if (err) {
+            return next(err);
+        }
+        if (!item) {
+            return res.sendStatus(404);
+        }
+        deleteFile(item.image_filepath);
+        deleteFile(item.gcode_filepath);
+        LocalObject.findByIdAndRemove(req.params.id, function (err, item) {
+            if (err) {
+                next(err);
+            } else {
+                res.sendStatus(200);
+            }
+        });
+    })
+});
+
+/**
+ * Route to publish object on the marketplace. This does just upload the metadata and not the binary.
+ * The body of the request must contain a json of following structure:
+ * {
+ *   title: string
+ *   description: string
+ *   licenseFee: number
+ * }
+ * @returns json containing the marketplace object id
+ */
+router.post('/:id/publish', function (req, res, next) {
+    // find the object in the local database
+    LocalObject.findById(req.params.id, function (err, localObject) {
+        if (err) {
+            return next(err);
+        }
+        if (!localObject) {
+            return res.sendStatus(404);
+        }
+        if (localObject.state !== 'notPublished') {
+            return res.status(405).send("The localobject is already in state " + localObject.state);
+        }
+        localObject.description = req.body.description;
+        localObject.licenseFee = +req.body.licenseFee;
+        localObject.name = req.body.title;
+        localObject.save((err) => {
+            if (!err) {
+                publishStateMachine.publish(localObject);
+                res.sendStatus(201);
+            } else {
+                res.status(500).send(err);
+            }
+        });
+    })
+});
+
+router.post('/:id/publish/retry', function (req, res, next) {
+    LocalObject.findById(req.params.id, function (err, localObject) {
+        if (err) {
+            return next(err);
+        }
+        if (!localObject) {
+            return res.sendStatus(404);
+        }
+        publishStateMachine.retry(localObject);
+    })
+});
+router.post('/:id/publish/reset', function (req, res, next) {
+    LocalObject.findById(req.params.id, function (err, localObject) {
+        if (err) {
+            return next(err);
+        }
+        if (!localObject) {
+            return res.sendStatus(404);
+        }
+        publishStateMachine.reset(localObject);
+    })
 });
 
 
