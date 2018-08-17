@@ -2,35 +2,37 @@
  * Created by beuttlerma on 08.02.17.
  */
 
-const Order = require('../models/order')
+const Order = require('../models/order');
+const LocalObject = require('../models/local_object');
 var logger = require('../global/logger');
 var orderStateMachine = require('../models/order_state_machine');
-const downloadService = require('../services/download_service')
-const uploadService = require('../services/upload_service')
+const downloadService = require('../services/download_service');
+const uploadService = require('../services/upload_service');
+
 //
 function onOrderNamespaceConnect(socket) {
     logger.info('[socket_io_controller] a user connected: ' + socket.id);
 
     socket.on('room', function (orderId) {
-        logger.info('[socket_io_controller] a user joins order ' + orderId + ' on socket ' + socket.id)
-        socket.join(orderId)
+        logger.info('[socket_io_controller] a user joins order ' + orderId + ' on socket ' + socket.id);
+        socket.join(orderId);
 
         if (orderId == 'allOrders') {
-            Order.find(function(error, orders) {
+            Order.find(function (error, orders) {
                 if (!orders || error) {
                     return
                 }
                 orders.forEach(order => {
-                    var state = order.state
+                    var state = order.state;
                     socket.emit("state", {"orderNumber": order.id, "toState": state})
                 })
             })
         } else {
-            Order.findOne({'id': orderId}, function(error, order) {
+            Order.findOne({'id': orderId}, function (error, order) {
                 if (!order || error) {
                     return
                 }
-                var state = order.state
+                var state = order.state;
                 socket.emit("state", {"orderNumber": order.id, "toState": state})
             })
         }
@@ -48,7 +50,7 @@ function onOrderNamespaceConnect(socket) {
 
 function registerOrderStateEvents(orderNamespace) {
     orderStateMachine.on("transition", function (data) {
-        let order = data.client
+        let order = data.client;
         logger.info("[socket_io_controller] sent statechange " + data.toState + " for OrderNumber " + order.id);
         orderNamespace.to(order.id).emit("state", {
             "orderNumber": order.id,
@@ -71,7 +73,7 @@ function onDownloadNamespaceConnect(socket) {
     socket.on('room', function (downloadId) {
         logger.info('[socket_io_controller/downloadservice] a user joined to room: ' + downloadId);
         socket.join(downloadId);
-        let state = downloadService.getDownloadState(downloadId)
+        let state = downloadService.getDownloadState(downloadId);
         socket.emit('state_change', state)
     });
 
@@ -105,7 +107,7 @@ function onUploadNamespaceConnect(socket) {
     socket.on('room', function (uploadId) {
         logger.info('[socket_io_controller/uploadservice] a user joined to room: ' + uploadId);
         socket.join(uploadId);
-        let state = uploadService.getUploadState(uploadId)
+        let state = uploadService.getUploadState(uploadId);
         socket.emit('state_change', state)
     });
 
@@ -131,19 +133,78 @@ function registerUploadEvents(uploadNamespace) {
     })
 }
 
+function onPublishNamespaceConnect(socket) {
+    logger.info('[socket_io_controller] a user connected: ' + socket.id);
+
+    socket.on('room', function (localObjectId) {
+        logger.info('[socket_io_controller] a user joins publish for  ' + localObjectId + ' on socket ' + socket.id);
+        socket.join(orderId);
+
+        if (localObjectId == 'allObjects') {
+            LocalObject.find(function (error, objects) {
+                if (!orders || error) {
+                    return
+                }
+                objects.forEach(object => {
+                    var state = object.state;
+                    socket.emit("state", {"localObjectId": object.id, "toState": state})
+                })
+            })
+        } else {
+            LocalObject.findOne({'id': localObjectId}, function (error, object) {
+                if (!object || error) {
+                    return
+                }
+                var state = object.state;
+                socket.emit("state", {"localObjectId": object.id, "toState": state})
+            })
+        }
+    });
+
+    socket.on('leave', function (orderId) {
+        logger.info('[socket_io_controller] a user leaves publish for ' + orderId + ' on socket ' + socket.id);
+        socket.leave(orderId);
+    });
+
+    socket.on('disconnect', function () {
+        logger.info('[socket_io_controller] a user disconnected: ' + socket.id);
+    });
+}
+
+function registerPublishStateEvents(orderNamespace) {
+    orderStateMachine.on("transition", function (data) {
+        let object = data.client;
+        logger.info("[socket_io_controller] sent statechange " + data.toState + " for LocalObject " + object.id);
+        orderNamespace.to(object.id).emit("state", {
+            "localObjectId": object.id,
+            "fromState": data.fromState,
+            "toState": data.toState
+        });
+        orderNamespace.to('allObjects').emit("state", {
+            "localObjectId": object.id,
+            "fromState": data.fromState,
+            "toState": data.toState
+        });
+    });
+}
+
 
 module.exports = function (io) {
-    logger.info("[socket_io_controller] Installing socket_io_controller.")
+    logger.info("[socket_io_controller] Installing socket_io_controller.");
 
     var orderNamespace = io.of('/orders');
     orderNamespace.on('connection', onOrderNamespaceConnect);
     registerOrderStateEvents(orderNamespace);
 
-    var downloadNamespace = io.of('/downloadservice')
-    downloadNamespace.on('connection', onDownloadNamespaceConnect)
-    registerDownloadEvents(downloadNamespace)
+    var downloadNamespace = io.of('/downloadservice');
+    downloadNamespace.on('connection', onDownloadNamespaceConnect);
+    registerDownloadEvents(downloadNamespace);
 
-    var uploadNamespace = io.of('/uploadservice')
-    uploadNamespace.on('connection', onUploadNamespaceConnect)
-    registerUploadEvents(uploadNamespace)
+    var uploadNamespace = io.of('/uploadservice');
+    uploadNamespace.on('connection', onUploadNamespaceConnect);
+    registerUploadEvents(uploadNamespace);
+
+    var publishNamespace = io.of('/publish');
+    uploadNamespace.on('connection', onPublishNamespaceConnect);
+    registerPublishStateEvents(publishNamespace);
 };

@@ -6,10 +6,10 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
   styleUrls: ['./object-browser.component.css']
 })
 export class ObjectBrowserComponent implements OnInit {
-  @Input() objects: any[]
+  @Input() objects: any[];
   @Output() onObjectSelected = new EventEmitter();
 
-  images = {}
+  images = {};
   
   constructor() { }
 

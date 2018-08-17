@@ -14,15 +14,15 @@ import { OrderService } from '../../services/order.service';
   styleUrls: ['./marketplace.component.css']
 })
 export class MarketplaceComponent implements OnInit {
-  objects: any[] = []
+  objects: any[] = [];
   selectedObject: any = null;
-  machineTypes: MachineType[] = []
-  machineTypesSelected = []
-  materials = []
-  materialsSelected = []
-  searchQuery = ""
-  shoppingCartItemCount = 0
-  loading = true
+  machineTypes: MachineType[] = [];
+  machineTypesSelected = [];
+  materials = [];
+  materialsSelected = [];
+  searchQuery = "";
+  shoppingCartItemCount = 0;
+  loading = true;
 
   constructor(
     private router: Router,
@@ -46,15 +46,15 @@ export class MarketplaceComponent implements OnInit {
 
   private initMarketplaceComponent() {
     this.machineService.getMachineTypes().subscribe(machineTypes => {
-      this.machineTypesSelected = machineTypes.map(machineType => machineType.id)
-      this.machineTypes = machineTypes
+      this.machineTypesSelected = machineTypes.map(machineType => machineType.id);
+      this.machineTypes = machineTypes;
       this.updateObjects()
-    })
+    });
     this.machineService.getMaterialTypes().subscribe(materials => {
-      this.materialsSelected = materials.map(material => material.id)
-      this.materials = materials
+      this.materialsSelected = materials.map(material => material.id);
+      this.materials = materials;
       this.updateObjects()
-    })
+    });
     this.shoppingCartService.items.subscribe(items => {
       this.shoppingCartItemCount = items.map(item => item.amount).reduce((sum, itemCount) => sum + itemCount, 0)
     })
@@ -157,13 +157,13 @@ export class MarketplaceComponent implements OnInit {
     if (this.machineTypes.length > 0 && this.materials.length > 0) {
 
       // setup machine type array
-      var machineTypeIds = this.machineTypesSelected
+      var machineTypeIds = this.machineTypesSelected;
       if (machineTypeIds.length == 0) {
         machineTypeIds = this.machineTypes.map(machineType => machineType.id)
       }
       
       // setup material type array
-      var materialIds = this.materialsSelected
+      var materialIds = this.materialsSelected;
       if (materialIds.length == 0) {
         materialIds = this.materials.map(material => material.id)
       }
@@ -172,9 +172,9 @@ export class MarketplaceComponent implements OnInit {
       this.objectService.getObjects(machineTypeIds, materialIds, false).subscribe(objects => {
         if (this.searchQuery.length > 0) {
           this.objects = objects.filter(object => {
-            var include = false
-            include = include || object.name.toUpperCase().indexOf(this.searchQuery.toUpperCase()) != -1
-            include = include || object.description.toUpperCase().indexOf(this.searchQuery.toUpperCase()) != -1
+            var include = false;
+            include = include || object.name.toUpperCase().indexOf(this.searchQuery.toUpperCase()) != -1;
+            include = include || object.description.toUpperCase().indexOf(this.searchQuery.toUpperCase()) != -1;
             return include
           })
         } else {

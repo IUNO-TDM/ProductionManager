@@ -12,10 +12,10 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./order.component.css']
 })
 export class OrderComponent implements OnInit {
-  order: Order = null
-  bip21: String = null
-  amount: Number = null
-  orderStateConnection: Subscription = null
+  order: Order = null;
+  bip21: String = null;
+  amount: Number = null;
+  orderStateConnection: Subscription = null;
 
   constructor(
     private router: Router,
@@ -27,9 +27,9 @@ export class OrderComponent implements OnInit {
   ) {
     orderService.getOpenOrders().subscribe(orders => {
       if (orders.length > 0) {
-        this.order = orders[0]
-        this.bip21 = this.order.offer.bip21
-        const amount = this.bip21.match("[\\?\\&]amount=(\\d+\\.?\\d+)")
+        this.order = orders[0];
+        this.bip21 = this.order.offer.bip21;
+        const amount = this.bip21.match("[\\?\\&]amount=(\\d+\\.?\\d+)");
         if (amount.length == 2) {
           this.amount = +amount[1] // + does convert the string into a number.
         }
@@ -76,9 +76,9 @@ export class OrderComponent implements OnInit {
     this.orderStateConnection =
       this.ordersSocketService.getUpdates('state')
         .subscribe(state => {
-          console.log("--- status update ---")
-          console.log("this.order.id = " + this.order.id)
-          console.log(state)
+          console.log("--- status update ---");
+          console.log("this.order.id = " + this.order.id);
+          console.log(state);
           if (state.orderNumber === this.order.id) {
             this.zone.run(() => {
               this.order.state = state.toState

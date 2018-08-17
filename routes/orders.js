@@ -6,7 +6,7 @@ var async = require('async');
 var parseString = require('xml2js').parseString;
 var _ = require('lodash');
 var request = require('request');
-const orderStateMachine = require('../models/order_state_machine')
+const orderStateMachine = require('../models/order_state_machine');
 
 _.mapPick = function (objs, keys) {
     return _.map(objs, function (obj) {
@@ -16,7 +16,7 @@ _.mapPick = function (objs, keys) {
 
 _.mapReturnValues = function(elements) {
     return _.mapPick(elements, ['id', 'orderNumber', 'createdAt', 'offer', 'items', 'state'])
-}
+};
 
 router.get('/', function (req, res, next) {
     Order.find(function (err, orders) {

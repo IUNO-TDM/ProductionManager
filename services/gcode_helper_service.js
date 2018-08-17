@@ -1,6 +1,6 @@
 
 const logger = require('../global/logger');
-const LineByLineReader = require('line-by-line')
+const LineByLineReader = require('line-by-line');
 
 var self = {};
 

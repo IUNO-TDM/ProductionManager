@@ -1,13 +1,13 @@
 export class Order {
-    id: string
+    id: string;
     offer: {
         id: String,
         bip21: String
-    }
+    };
     items: [{
         dataId: String,
         amount: Number
-    }]
-    state: String
+    }];
+    state: String;
     createdAt: string
 }

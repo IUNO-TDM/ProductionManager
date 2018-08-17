@@ -11,13 +11,13 @@ import { PrintDialogComponent } from '../../print-dialog/print-dialog.component'
   styleUrls: ['./purchased-objects.component.css']
 })
 export class PurchasedObjectsComponent implements OnInit {
-  objects: TdmObject[] = []
-  downloadStates = {}
-  materials = []
-  machineTypes = []
-  selectedObject: any = null
-  loading = true
-  orders = []
+  objects: TdmObject[] = [];
+  downloadStates = {};
+  materials = [];
+  machineTypes = [];
+  selectedObject: any = null;
+  loading = true;
+  orders = [];
   printDialogRef: MatDialogRef<PrintDialogComponent> | null;
 
   constructor(
@@ -29,12 +29,12 @@ export class PurchasedObjectsComponent implements OnInit {
 
   ngOnInit() {
     this.objectService.getObjects(this.machineTypes, this.materials, true).subscribe(objects => {
-      this.objects = objects
+      this.objects = objects;
       this.objects.forEach(object => {
         this.objectService.getDownloadState(object.id).subscribe(downloadState => {
           this.downloadStates[object.id] = downloadState
         })
-      })
+      });
       this.loading = false
     })
   }
@@ -68,12 +68,12 @@ export class PurchasedObjectsComponent implements OnInit {
   }
 
   isDownloadRequired(objectId) {
-    let downloadRequired = this.downloadStates[objectId] && this.downloadStates[objectId].isDownloadRequiredState()
+    let downloadRequired = this.downloadStates[objectId] && this.downloadStates[objectId].isDownloadRequiredState();
     return downloadRequired
   }
 
   isPrintable(objectId) {
-    let printable = this.downloadStates[objectId] && this.downloadStates[objectId].isReadyState()
+    let printable = this.downloadStates[objectId] && this.downloadStates[objectId].isReadyState();
     return printable
   }
 }

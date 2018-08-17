@@ -15,9 +15,9 @@ export class ObjectDetailsActionsComponent {
   styleUrls: ['./object-details.component.css']
 })
 export class ObjectDetailsComponent implements OnInit {
-  @Input() object: any
-  progress = 0
-  downloadState = new DownloadState(null)
+  @Input() object: any;
+  progress = 0;
+  downloadState = new DownloadState(null);
 
   constructor(
     private zone: NgZone,
@@ -28,7 +28,7 @@ export class ObjectDetailsComponent implements OnInit {
   ngOnInit() {
     this.objectService.getDownloadState(this.object.id).subscribe(downloadState => {
       this.zone.run(() => {
-        this.downloadState = downloadState
+        this.downloadState = downloadState;
         if (downloadState.bytesTotal > 0) {
           this.progress = 100 * +downloadState.bytesDownloaded / +downloadState.bytesTotal
         } else {

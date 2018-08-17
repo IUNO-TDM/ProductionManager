@@ -12,7 +12,7 @@ import {Subscription} from 'rxjs';
     styleUrls: ['./own-objects.component.css']
 })
 export class OwnObjectsComponent implements OnInit, AfterViewInit {
-    objects = new Array<LocalObject>();
+    objects = [];
     // materials = ['763c926e-a5f7-4ba0-927d-b4e038ea2735'];
     // machineTypes = [];s
     selectedObject: any = null;

@@ -6,8 +6,8 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class TitleService {
-  private _title: BehaviorSubject<string> = new BehaviorSubject("")
-  public readonly title: Observable<string> = this._title.asObservable()
+  private _title: BehaviorSubject<string> = new BehaviorSubject("");
+  public readonly title: Observable<string> = this._title.asObservable();
 
   constructor() { }
 

@@ -3,16 +3,15 @@ var router = express.Router();
 var mongoose = require('mongoose');
 var LocalObject = require('../models/local_object');
 var unzipper = require('unzipper');
-const ams_adapter = require('../adapter/ams_adapter');
 const fs = require('fs');
 const helper = require('../services/helper_service');
-const path = require('path');
 const CONFIG = require('../config/config_loader');
 const logger = require('../global/logger');
 const gcode_helper = require('../services/gcode_helper_service');
 const ultimaker_printer_adapter = require('../adapter/ultimaker_printer_adapter');
 const Machine = require('../models/machine');
-const IUNOm3Encryption = require('../services/iuno_m3_encryption');
+const publishStateMachine = require('../models/publish_state_machine');
+const path = require('path');
 
 var _ = require('lodash');
 _.mapPick = function (objs, keys) {
@@ -105,45 +104,39 @@ router.post('/:id/publish', function (req, res, next) {
         if (!localObject) {
             return res.sendStatus(404);
         }
-        const iunoEncryption = new IUNOm3Encryption();
-        const filePath = localObject.gcode_filepath;
+        if (localObject.state !== 'notPublished') {
+            return res.status(405).send("The localobject is already in state " + localObject.state);
+        }
+        localObject.description = req.body.description;
+        localObject.licenseFee = +req.body.licenseFee;
+        localObject.name = req.body.title;
+        localObject.save((err)=>{
+            if(!err){
+                publishStateMachine.publish(localObject);
+                res.sendStatus(201);
+            }else{
+                res.status(500).send(err);
+            }
+        });
 
-        iunoEncryption.init(filePath).then(() => {
-            const components = localObject.machines;
-            const objectData = {
-                components: components,
-                description: req.body.description,
-                licenseFee: +req.body.licenseFee,
-                title: req.body.title,
-                backgroundColor: '#FFFFFF',
-                encryptedKey: iunoEncryption.getKeyBundleB64()
-            };
-            ams_adapter.saveObject(objectData, (err, objectId) => {
-                if (err) {
-                    return res.sendStatus(404);
-                }
-                localObject.marketplaceObjectId = objectId;
-                localObject.save((error, savedObject) => {
-                    if (error) {
-                        return res.sendStatus(404);
-                    }
-                    logger.info('encrypting file...');
-
-                    const tmpPath = path.resolve(`tmp/${objectId}.tmp`);
-                    const writeStream = fs.createWriteStream(tmpPath);
-                    iunoEncryption.getEncryptionStream().pipe(writeStream);
-
-                    writeStream.on('close', () => {
-                        logger.info('file encrypted.');
-
-                        logger.info('start uploading...');
-                        ams_adapter.uploadFile(objectId, tmpPath, (err) => {
-                        });
-                        res.send(objectId)
-                    });
-                })
-            })
-        })
+        //
+        // iunoEncryption.init(filePath).then(() => {
+        //     const components = localObject.machines;
+        //     const objectData = {
+        //         components: components,
+        //         description: req.body.description,
+        //         licenseFee: +req.body.licenseFee,
+        //         title: req.body.title,
+        //         backgroundColor: '#FFFFFF',
+        //         encryptedKey: iunoEncryption.getKeyBundleB64()
+        //     };
+        //
+        //     if (fs.existsSync(localObject.image_filepath)) {
+        //         objectData.image = fs.readFileSync(localObject.image_filepath, 'utf-8')
+        //     }
+        //
+        //
+        // })
     })
 });
 
@@ -160,7 +153,8 @@ router.post('/', require('../services/file_upload_handler'), function (req, res,
         machines: [
             "adb4c297-45bd-437e-ac90-a33d0f24de7e",
             "adb4c297-45bd-437e-ac90-d25bc3b27968"
-        ]
+        ],
+        state: "initial"
     };
 
     LocalObject.create(localObj, function (err, locObj) {
@@ -211,7 +205,10 @@ router.post('/', require('../services/file_upload_handler'), function (req, res,
                             LocalObject.findByIdAndUpdate(data._id, data, {new: true}, function (err, data2) {
                                 if (err) {
                                     logger.fatal("Could not update local object", err);
+                                } else {
+                                    publishStateMachine.localObjectCreated(data2);
                                 }
+
                             });
                         });
                     }

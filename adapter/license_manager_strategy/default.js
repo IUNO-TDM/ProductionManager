@@ -2,7 +2,7 @@ const logger = require('../../global/logger');
 const CONFIG = require('../../config/config_loader');
 const request = require('request');
 const Machine = require('../../models/machine');
-const additiveMachineService = require('../ams_adapter')
+const additiveMachineService = require('../ams_adapter');
 
 const self = {
     isUpdating: false
@@ -19,39 +19,29 @@ function buildOptionsForRequest(method, protocol, host, port, path, qs) {
 }
 
 self.getMachineForHsmId = function (hsmId, callback) {
-    logger.debug("[license_manager_adapter] getMachineForHsmId '" + hsmId + "'.")
+    logger.debug("[license_manager_adapter] getMachineForHsmId '" + hsmId + "'.");
 
     //FIXME! this is ugly! Do it with Machine.findOne
     var selectedMachine = null;
     Machine.find({}, function (err, machines) {
-        console.log("Alle Maschinen:")
-        console.log(machines)
+        console.log("Alle Maschinen:");
+        console.log(machines);
         machines.forEach(machine => {
             if (machine.hsmIds) {
                 machine.hsmIds.forEach(id => {
                     if (id == hsmId) {
-                        selectedMachine = machine
+                        selectedMachine = machine;
                         console.log("HIT!")
                     }
                     console.log(" - " + id)
                 })
             }
         });
-        console.log("selectedMachine")
-        console.log(selectedMachine)
+        console.log("selectedMachine");
+        console.log(selectedMachine);
         callback(selectedMachine, null)
     })
-    // Machine.findOne({ hsmIds: hsmId }, function (err, machines) {
-    //     console.log(err)
-    //     if (machines.length > 0 && !err) {
-    //         logger.debug("[license_manager_adapter] getMachineForHsmId '"+hsmId+"' - found "+machines.length+" machines.")
-    //         callback(machines[0], err)
-    //     } else {
-    //         logger.debug("[license_manager_adapter] getMachineForHsmId '"+hsmId+"' - found NONE!")
-    //         callback(null, err)
-    //     }
-    // })
-}
+};
 
 self.getContextForHsmId = function (hsmId, callback) {
     if (typeof (callback) !== 'function') {
@@ -63,9 +53,9 @@ self.getContextForHsmId = function (hsmId, callback) {
     }
 
     this.getMachineForHsmId(hsmId, function (machine, error) {
-        console.log(machine)
-        const hostname = machine.hostname
-        logger.debug("Machines hostname = '" + hostname + "'")
+        console.log(machine);
+        const hostname = machine.hostname;
+        logger.debug("Machines hostname = '" + hostname + "'");
         const options = buildOptionsForRequest(
             'GET',
             CONFIG.HOST_SETTINGS.LICENSE_MANAGER.PROTOCOL,
@@ -93,7 +83,7 @@ self.updateHsm = function (hsmId, update, callback) {
     }
 
     this.getMachineForHsmId(hsmId, function (machine, error) {
-        const hostname = machine.hostname
+        const hostname = machine.hostname;
         const options = buildOptionsForRequest(
             'PUT',
             CONFIG.HOST_SETTINGS.LICENSE_MANAGER.PROTOCOL,
@@ -102,15 +92,15 @@ self.updateHsm = function (hsmId, update, callback) {
             '/cmdongles/' + hsmId + '/update',
             {}
         );
-        console.log("OPTIONS:" + update.length)
-        console.log(options)
+        console.log("OPTIONS:" + update.length);
+        console.log(options);
         options.headers['content-type'] = 'text/plain';
         options.headers['content-transfer-encoding'] = 'base64';
         options.body = update;
 
-        console.log("EXEC REQUEST")
+        console.log("EXEC REQUEST");
         request(options, function (e, r, data) {
-            console.log("DONE")
+            console.log("DONE");
             const err = logger.logRequestAndResponse(e, options, r, data);
 
             callback(err, data);

@@ -9,6 +9,10 @@ var LocalObjectSchema = new mongoose.Schema({
     createdAt: Date,
     machines: [String],
     materials: [String],
-    marketplaceObjectId: String
+    marketplaceObjectId: String,
+    publishState: String,
+    tempEncryptedFilePath: String,
+    keyBundleB64: String,
+    state: String
 });
 module.exports = mongoose.model('LocalObject', LocalObjectSchema);

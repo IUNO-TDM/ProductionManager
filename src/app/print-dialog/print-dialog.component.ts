@@ -24,7 +24,7 @@ export class PrintDialogComponent implements OnInit {
     private materials = {};
     private licenseCounts = {};
 
-    materialDefinitions = new Array<MaterialDefinition>();
+    materialDefinitions = [];
 
     // private publishInfos: FormGroup;
 

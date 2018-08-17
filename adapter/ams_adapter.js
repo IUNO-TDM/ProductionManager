@@ -424,7 +424,7 @@ self.uploadFile = function (objectId, path, callback) {
         `/objects/${objectId}/binary`,
         {},
         function (err, options) {
-            UploadService.uploadObjectBinary(objectId, path, options)
+            UploadService.uploadObjectBinary(objectId, path, options, callback)
         }
     );
 };

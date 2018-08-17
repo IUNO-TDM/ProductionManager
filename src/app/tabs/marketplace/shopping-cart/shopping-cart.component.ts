@@ -11,9 +11,9 @@ import { Router } from '@angular/router';
   styleUrls: ['./shopping-cart.component.css']
 })
 export class ShoppingCartComponent implements OnInit {
-  items: ShoppingCartItem[] = []
-  machines: Machine[] = []
-  selectedHsmId: string = null
+  items: ShoppingCartItem[] = [];
+  machines: Machine[] = [];
+  selectedHsmId: string = null;
 
   constructor(
     private router: Router,
@@ -25,12 +25,12 @@ export class ShoppingCartComponent implements OnInit {
   ngOnInit() {
     this.shoppingCartService.items.subscribe(items => {
       this.items = items;
-    })
+    });
 
     this.machineService.updateMachines( () => {
       this.machineService.machines.subscribe(machines => {
-        this.machines = machines
-        console.log(this.machines)
+        this.machines = machines;
+        console.log(this.machines);
         if (!this.selectedHsmId && machines.length > 0) {
           machines.forEach(machine => {
             if (!this.selectedHsmId) {

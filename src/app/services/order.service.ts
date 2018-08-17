@@ -9,7 +9,7 @@ import { forEach } from '@angular/router/src/utils/collection';
   providedIn: 'root'
 })
 export class OrderService {
-  apiUrl = "/api/"
+  apiUrl = "/api/";
 
   constructor(
     private http: HttpClient,
@@ -17,7 +17,7 @@ export class OrderService {
 
   private mapOrders(orders) {
     return orders.map(order => {
-      order.id = order['id']
+      order.id = order['id'];
       return order
     })
   }
@@ -28,14 +28,14 @@ export class OrderService {
    * @returns an observable with the http request
    */
   getOrders() {
-    const url = this.apiUrl + "orders"
+    const url = this.apiUrl + "orders";
     return this.http.get<Order[]>(url).pipe(
       map(orders => this.mapOrders(orders))
     )
   }
 
   getOpenOrders() {
-    const url = this.apiUrl + "orders"
+    const url = this.apiUrl + "orders";
     return this.http.get<Order[]>(url).pipe(
       map(orders => orders.filter(order => order.state !== "completed" && order.state !== "canceled")),
       map(orders => this.mapOrders(orders))
@@ -43,7 +43,7 @@ export class OrderService {
   }
 
   getCompletedOrders() {
-    const url = this.apiUrl + "orders"
+    const url = this.apiUrl + "orders";
     return this.http.get<Order[]>(url).pipe(
       map(orders => orders.filter(order => order.state === "completed")),
       map(orders => this.mapOrders(orders))
@@ -51,7 +51,7 @@ export class OrderService {
   }
 
   updateLicense(order) {
-    const url = this.apiUrl + "orders/"+order.id+"/licenseupdate"
+    const url = this.apiUrl + "orders/"+order.id+"/licenseupdate";
     return this.http.get<Order[]>(url)
     // .pipe(
     //   map(orders => this.mapOrders(orders))
@@ -59,7 +59,7 @@ export class OrderService {
   }
 
   cancelOrder(order) {
-    const url = this.apiUrl + "orders/"+order.id
+    const url = this.apiUrl + "orders/"+order.id;
     return this.http.delete<Order>(url)
   }
 

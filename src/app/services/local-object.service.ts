@@ -6,13 +6,13 @@ import { BehaviorSubject } from 'rxjs';
 import { UploadSocketService } from './upload-socket.service';
 
 export class UploadState {
-    UNKNOWN_STATE = 'unknown'
-    UPLOADING_STATE = 'uploading'
-    READY_STATE = 'ready'
+    UNKNOWN_STATE = 'unknown';
+    UPLOADING_STATE = 'uploading';
+    READY_STATE = 'ready';
 
-    state: string = this.UNKNOWN_STATE
-    bytesTotal: number = -1
-    bytesUploaded: number = -1
+    state: string = this.UNKNOWN_STATE;
+    bytesTotal: number = -1;
+    bytesUploaded: number = -1;
 
     /**
      * Constructor of UploadState
@@ -20,8 +20,8 @@ export class UploadState {
      */
     constructor(uploadState) {
         if (uploadState) {
-            this.state = uploadState.state
-            this.bytesTotal = uploadState.bytesTotal
+            this.state = uploadState.state;
+            this.bytesTotal = uploadState.bytesTotal;
             this.bytesUploaded = uploadState.bytesUploaded
         }
     }
@@ -45,14 +45,14 @@ export class UploadState {
 })
 export class LocalObjectService {
     private apiUrl = '/api/localobjects';
-    private uploadStates = {}
+    private uploadStates = {};
 
     constructor(
         private http: HttpClient,
         private uploadSocketService: UploadSocketService
     ) {
         this.uploadSocketService.getUpdates('state_change').subscribe(state => {
-            var uploadState = this.uploadStates[state.id]
+            var uploadState = this.uploadStates[state.id];
             if (uploadState) {
                 uploadState.next(new UploadState(state))
             }
@@ -73,7 +73,7 @@ export class LocalObjectService {
 
     publishObject(objectId: string, data: {}) {
         const url = this.apiUrl + '/' + objectId + '/publish';
-        const body = data
+        const body = data;
         return this.http.post(url, body, { responseType: 'text' })
     }
 
@@ -85,12 +85,12 @@ export class LocalObjectService {
      * @returns a BehaviorSubject for the download state of the provided object id. The initial value of the subject is null.
      */
     getUploadState(id: string): BehaviorSubject<UploadState> {
-        var uploadState: BehaviorSubject<UploadState> = this.uploadStates[id]
+        var uploadState: BehaviorSubject<UploadState> = this.uploadStates[id];
         if (!uploadState) {
             // No upload state exists. Create a new BehaviorSubject and join
             // the socket.id room for state change events of the provided object id.
-            uploadState = new BehaviorSubject<UploadState>(null)
-            this.uploadStates[id] = uploadState
+            uploadState = new BehaviorSubject<UploadState>(null);
+            this.uploadStates[id] = uploadState;
             this.uploadSocketService.joinRoom(id)
         }
         return uploadState

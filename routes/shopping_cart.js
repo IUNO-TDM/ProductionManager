@@ -6,7 +6,7 @@ var Order = require('../models/order');
 var _ = require('lodash');
 const ams_adapter = require('../adapter/ams_adapter');
 const common = require('tdm-common');
-const orderStateMachine = require('../models/order_state_machine')
+const orderStateMachine = require('../models/order_state_machine');
 
 
 
@@ -24,7 +24,7 @@ _.mapPick = function (objs, keys) {
  */
 router.post('/order',  function (req, res, next) {
     // check if there is an open order.
-    const orderCompletedStates = ["completed", "canceled"]
+    const orderCompletedStates = ["completed", "canceled"];
     Order.find({"state": {"$nin": orderCompletedStates}}, function (err, orders) {
         if (err) {
             return next(err);
@@ -34,7 +34,7 @@ router.post('/order',  function (req, res, next) {
         if (orders.length > 0) {
             return next("Error")
         }
-    })
+    });
 
     Item.find(function (err, items) {
         if (err) {
@@ -46,15 +46,15 @@ router.post('/order',  function (req, res, next) {
                 "dataId": item.dataId,
                 "amount": item.amount
             }
-        })
+        });
 
         let offerRequest = {
             hsmId: req.body.hsmId,
             items: orderItems
         };
-        console.log("-------------------------")
-        console.log(offerRequest)
-        console.log("-------------------------")
+        console.log("-------------------------");
+        console.log(offerRequest);
+        console.log("-------------------------");
 
         ams_adapter.createOfferForRequest(offerRequest, function(err, offer) {
             if (err) {
@@ -71,7 +71,7 @@ router.post('/order',  function (req, res, next) {
                 },
                 hsmId: offerRequest.hsmId,
                 state: "initial"
-            }
+            };
 
             Order.create(order, function(err, order) {
                 if (err) {

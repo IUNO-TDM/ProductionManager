@@ -23,7 +23,7 @@ var printer_adapter = require('../adapter/ultimaker_printer_adapter');
 var async = require('async');
 var parseString = require('xml2js').parseString;
 var _ = require('lodash');
-const licenseManager = require('../adapter/license_manager_adapter')
+const licenseManager = require('../adapter/license_manager_adapter');
 
 _.mapPick = function (objs, keys) {
     return _.map(objs, function (obj) {

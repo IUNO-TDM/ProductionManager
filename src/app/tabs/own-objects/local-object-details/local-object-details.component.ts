@@ -19,11 +19,11 @@ export class LocalObjectDetailsComponent implements OnInit {
     @Input() object: LocalObject;
     @Output() deleted = new EventEmitter();
 
-    uploadState: UploadState = null
-    progress = 0
+    uploadState: UploadState = null;
+    progress = 0;
 
-    materialDefinitions = new Array<MaterialDefinition>();
-    machineTypes = new Array<MachineType>();
+    materialDefinitions = [];
+    machineTypes = [];
 
     publishDialogRef: MatDialogRef<PublishDialogComponent> | null;
     printDialogRef: MatDialogRef<PrintDialogComponent> | null;
@@ -74,13 +74,13 @@ export class LocalObjectDetailsComponent implements OnInit {
         this.publishDialogRef = this.dialog.open(PublishDialogComponent, { data: this.object });
         this.publishDialogRef.afterClosed().subscribe((result: any) => {
             if (result) {
-                this.uploadState = new UploadState(null)
+                this.uploadState = new UploadState(null);
                 this.localObjectService.publishObject(this.object.id, result).subscribe(marketPlaceObjectId => {
                     this.localObjectService.getUploadState(marketPlaceObjectId).subscribe(state => {
                         this.zone.run(() => {
                             if (state) {
-                                console.log(state)
-                                this.uploadState = state
+                                console.log(state);
+                                this.uploadState = state;
                                 if (state.bytesTotal > 0) {
                                     this.progress = 100 * +state.bytesUploaded / +state.bytesTotal
                                 } else {

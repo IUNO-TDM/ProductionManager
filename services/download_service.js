@@ -11,7 +11,7 @@ function DownloadService() {
     this.downloads = {}
 }
 
-const downloadService = new DownloadService()
+const downloadService = new DownloadService();
 util.inherits(DownloadService, EventEmitter);
 
 /**
@@ -21,30 +21,30 @@ util.inherits(DownloadService, EventEmitter);
 DownloadService.prototype.purgeDownloadFiles = function() {
     var files = fs.readdirSync(CONFIG.FILE_DIR);
     for (var i = 0; i < files.length; i += 1) {
-        var filePath = CONFIG.FILE_DIR + '/' + files[i]
+        var filePath = CONFIG.FILE_DIR + '/' + files[i];
         if (fs.statSync(filePath).isFile() && filePath.endsWith(".download")) {
             fs.unlinkSync(filePath)
         }
     }
-}
+};
 
 DownloadService.prototype.getPath = function (downloadId) {
     if (!/^[0-9a-zA-Z\-]+$/.test(downloadId)) {
         throw "Not a valid objectid"
     }
 
-    let path = CONFIG.FILE_DIR + '/' + downloadId + '.iunoum3'
+    let path = CONFIG.FILE_DIR + '/' + downloadId + '.iunoum3';
     return path
-}
+};
 
 DownloadService.prototype.getDownloadingPath = function (downloadId) {
-    var path = this.getPath(downloadId)
-    path += ".download"
+    var path = this.getPath(downloadId);
+    path += ".download";
     return path
-}
+};
 
 DownloadService.prototype.getDownloadState = function (downloadId) {
-    let download = downloadService.downloads[downloadId]
+    let download = downloadService.downloads[downloadId];
     if (download) {
         return {
             id: download.id,
@@ -53,11 +53,11 @@ DownloadService.prototype.getDownloadState = function (downloadId) {
             bytesTotal: download.bytesTotal,
         }
     } else {
-        let path = this.getPath(downloadId)
-        let downloadingPath = this.getDownloadingPath(downloadId)
+        let path = this.getPath(downloadId);
+        let downloadingPath = this.getDownloadingPath(downloadId);
         if (fs.existsSync(path)) {
-            const stats = fs.statSync(path)
-            const fileSizeInBytes = stats.size
+            const stats = fs.statSync(path);
+            const fileSizeInBytes = stats.size;
             return {
                 id: downloadId,
                 state: 'ready',
@@ -73,27 +73,27 @@ DownloadService.prototype.getDownloadState = function (downloadId) {
             }
         }
     }
-}
+};
 
 DownloadService.prototype.download = function (options, targetPath) {
 
-}
+};
 
 DownloadService.prototype.downloadObjectBinary = function (objectId, productCode, options) {
-    let downloadingPath = downloadService.getDownloadingPath(objectId)
+    let downloadingPath = downloadService.getDownloadingPath(objectId);
 
     var outStream = fs.createWriteStream(downloadingPath);
     let req = request(options, function (err, r, binary) {
         if (err) {
             logger.crit(err)
         }
-        let path = downloadService.getPath(objectId)
-        fs.renameSync(downloadingPath, path)
-        let state = downloadService.getDownloadState(objectId)
+        let path = downloadService.getPath(objectId);
+        fs.renameSync(downloadingPath, path);
+        let state = downloadService.getDownloadState(objectId);
         downloadService.emit('state_change', state)
-    })
+    });
     req.on('response', data => {
-        var key = data.headers['key']
+        var key = data.headers['key'];
         // decode base64 string into buffer
         const encryptedKeyBuffer = Buffer.from(key, 'base64');
 
@@ -104,10 +104,10 @@ DownloadService.prototype.downloadObjectBinary = function (objectId, productCode
         outStream.write(productCodeBuffer);
         outStream.write(encryptedKeyBuffer)
         // console.log("key: " + key)
-    })
-    req.pipe(outStream)
+    });
+    req.pipe(outStream);
     downloadService.observeDownloadRequest(objectId, req)
-}
+};
 
 DownloadService.prototype.observeDownloadRequest = function (downloadId, req) {
     var download = {
@@ -116,33 +116,33 @@ DownloadService.prototype.observeDownloadRequest = function (downloadId, req) {
         bytesTotal: -1,
         bytesDownloaded: 0,
         state: 'downloading'
-    }
-    this.downloads[downloadId] = download
+    };
+    this.downloads[downloadId] = download;
     req.on('response', data => {
-        download.bytesTotal = +data.headers['content-length']
-        let state = downloadService.getDownloadState(downloadId)
+        download.bytesTotal = +data.headers['content-length'];
+        let state = downloadService.getDownloadState(downloadId);
         downloadService.emit('state_change', state)
-    })
+    });
     req.on('data', chunk => {
-        download.bytesDownloaded += chunk.length
-        let state = downloadService.getDownloadState(downloadId)
+        download.bytesDownloaded += chunk.length;
+        let state = downloadService.getDownloadState(downloadId);
         downloadService.emit('state_change', state)
 
         // var now = new Date().getTime();
         // while(new Date().getTime() < now + 25){ /* do nothing */ }
         // console.log("data received!")
-    })
+    });
     req.on('end', chunk => {
         // download.state = 'ready'
         delete this.downloads[downloadId]
         // let state = downloadService.getDownloadState(downloadId)
         // downloadService.emit('state_change', state)
     })
-}
+};
 
 DownloadService.prototype.cancelDownload = function (downloadId) {
     download.request.abort()
-}
+};
 
 // var self = {};
 // self.downloadRequests = []

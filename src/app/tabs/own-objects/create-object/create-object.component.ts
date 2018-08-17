@@ -24,10 +24,10 @@ export class CreateObjectComponent implements OnInit {
       // height: '400px',
       // width: '600px',
     });
-    this.confirmationDialogRef.componentInstance.title = "Entwurf löschen?"
-    this.confirmationDialogRef.componentInstance.message = "Möchten Sie die Bearbeitung wirklich abbrechen?"
-    this.confirmationDialogRef.componentInstance.leftButtonText = "Zurück"
-    this.confirmationDialogRef.componentInstance.rightButtonText = "Entwurf löschen"
+    this.confirmationDialogRef.componentInstance.title = "Entwurf löschen?";
+    this.confirmationDialogRef.componentInstance.message = "Möchten Sie die Bearbeitung wirklich abbrechen?";
+    this.confirmationDialogRef.componentInstance.leftButtonText = "Zurück";
+    this.confirmationDialogRef.componentInstance.rightButtonText = "Entwurf löschen";
 
     this.confirmationDialogRef.afterClosed().subscribe(result => {
       if (result) {

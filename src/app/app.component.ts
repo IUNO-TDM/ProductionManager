@@ -9,7 +9,7 @@ import { TitleService } from './services/title.service';
 })
 export class AppComponent {
   title = 'app';
-  navigationTitle = "t"
+  navigationTitle = "t";
 
   constructor(
     private router: Router,

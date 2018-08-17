@@ -4,9 +4,9 @@ import { BehaviorSubject, Observable} from 'rxjs'
 import { tap } from "rxjs/operators"
 
 export class ShoppingCartItem {
-  id: string
-  objectId: string
-  amount: number
+  id: string;
+  objectId: string;
+  amount: number;
   updated: string
 }
 
@@ -14,12 +14,12 @@ export class ShoppingCartItem {
   providedIn: 'root'
 })
 export class ShoppingCartService {
-  apiUrl = "/api/"
+  apiUrl = "/api/";
 
   // shopping cart items. The subject is updated by the updateItems function which
   // is called from the constructor and after each shopping cart manipulating action.
-  private _items: BehaviorSubject<ShoppingCartItem[]> = new BehaviorSubject([])
-  public readonly items: Observable<ShoppingCartItem[]> = this._items.asObservable()
+  private _items: BehaviorSubject<ShoppingCartItem[]> = new BehaviorSubject([]);
+  public readonly items: Observable<ShoppingCartItem[]> = this._items.asObservable();
 
   constructor(
     private http: HttpClient,
@@ -33,12 +33,12 @@ export class ShoppingCartService {
    * @returns an observable with the http request.
    */
   addToShoppingCart(object) {
-    const url = this.apiUrl + "shopping_cart/items"
+    const url = this.apiUrl + "shopping_cart/items";
     
     const body = {
       "dataId": object.id,
       "amount": 1
-    }
+    };
     return this.http.post(url, body).pipe(
       tap(val => this.updateItems())
     )
@@ -50,7 +50,7 @@ export class ShoppingCartService {
    * @returns an observable with the http request.
    */
   removeItem(item) {
-    const url = this.apiUrl + "shopping_cart/items/"+item.dataId
+    const url = this.apiUrl + "shopping_cart/items/"+item.dataId;
     return this.http.delete(url).pipe(
       tap(val => this.updateItems())
     )
@@ -63,11 +63,11 @@ export class ShoppingCartService {
    * @returns an observable with the http request.
    */
   order(hsmId) {
-    const url = this.apiUrl + "shopping_cart/order"
+    const url = this.apiUrl + "shopping_cart/order";
 
     const body = {
       hsmId: hsmId
-    }
+    };
     return this.http.post(url, body).pipe(
       tap(val => this.updateItems())
     )
@@ -79,7 +79,7 @@ export class ShoppingCartService {
    * @returns 
    */
   updateItems() {
-    const url = this.apiUrl + "shopping_cart/items"
+    const url = this.apiUrl + "shopping_cart/items";
     this.http.get<ShoppingCartItem[]>(url).subscribe(items => {
       this._items.next(items)
     })

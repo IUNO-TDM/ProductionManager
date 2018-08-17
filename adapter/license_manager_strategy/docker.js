@@ -7,9 +7,9 @@ logger.warn('[license_manager_adapter] RUNNING DOCKER (SIMULATION) MODE. License
 
 self.getMachineForHsmId = function (hsmId, callback) {
     Machine.find(function (err, machines) {
-        callback(machines[0], null)
-    })
-}
+        callback(machines[0], null);
+    });
+};
 
 self.getContextForHsmId = function (hsmId, callback) {
     callback(null, new Buffer('SIMULATION').toString('base64'));
@@ -23,10 +23,13 @@ self.getLicenseInformationForProductCodeOnHsm = function (productCode, hsmId, ca
     callback(null, 9999);
 };
 
+self.getLicenses = function (hostname, hsmId, productCode, callback) {
+    callback(null, '5');
+};
 
-self.updateCMDongle = function(hsmId, callback) {
-    callback(null)
-}
+self.updateCMDongle = function (hsmId, callback) {
+    callback(null);
+};
 
 self.getHsmIds = function (hostname, callback) {
     callback(null, '9-9999999');

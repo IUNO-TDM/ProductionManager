@@ -2,16 +2,16 @@
  * Created by goergch on 09.03.17.
  */
 
-const logger = require('../global/logger')
-const io = require('socket.io-client')
-const CONFIG = require('../config/config_loader')
+const logger = require('../global/logger');
+const io = require('socket.io-client');
+const CONFIG = require('../config/config_loader');
 // const orderDB = require('../database/orderDB')
-const EventEmitter = require('events').EventEmitter
-const util = require('util')
-const authServer = require('../adapter/auth_service_adapter')
-const Machine = require('../models/machine')
-const Order = require('../models/order')
-const orderStateMachine = require('../models/order_state_machine')
+const EventEmitter = require('events').EventEmitter;
+const util = require('util');
+const authServer = require('../adapter/auth_service_adapter');
+const Machine = require('../models/machine');
+const Order = require('../models/order');
+const orderStateMachine = require('../models/order_state_machine');
 const ams_adapter = require('../adapter/ams_adapter');
 
 const LicenseService = function () {
