@@ -17,8 +17,8 @@ export class PublishDialogComponent implements OnInit {
         this.localObject = data;
         this.publishInfos = formBuilder.group({
             licenseFee: ['', Validators.required],
-            title: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(200)]],
-            description: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(1000)]]
+            title: [this.localObject.name, [Validators.required, Validators.minLength(5), Validators.maxLength(200)]],
+            description: [this.localObject.description, [Validators.required, Validators.minLength(1), Validators.maxLength(1000)]]
         });
     }
 

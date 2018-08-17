@@ -18,7 +18,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatListModule } from '@angular/material/list';
 import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule, MAT_DATE_LOCALE } from '@angular/material/core';
+import { MatNativeDateModule } from '@angular/material/core';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -97,7 +97,6 @@ import { PrintDialogComponent } from './print-dialog/print-dialog.component';
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
-    
     // Product Manager Modules
     AppRoutingModule,
     // TdmCommonModule,

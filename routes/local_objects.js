@@ -110,33 +110,37 @@ router.post('/:id/publish', function (req, res, next) {
         localObject.description = req.body.description;
         localObject.licenseFee = +req.body.licenseFee;
         localObject.name = req.body.title;
-        localObject.save((err)=>{
-            if(!err){
+        localObject.save((err) => {
+            if (!err) {
                 publishStateMachine.publish(localObject);
                 res.sendStatus(201);
-            }else{
+            } else {
                 res.status(500).send(err);
             }
         });
+    })
+});
 
-        //
-        // iunoEncryption.init(filePath).then(() => {
-        //     const components = localObject.machines;
-        //     const objectData = {
-        //         components: components,
-        //         description: req.body.description,
-        //         licenseFee: +req.body.licenseFee,
-        //         title: req.body.title,
-        //         backgroundColor: '#FFFFFF',
-        //         encryptedKey: iunoEncryption.getKeyBundleB64()
-        //     };
-        //
-        //     if (fs.existsSync(localObject.image_filepath)) {
-        //         objectData.image = fs.readFileSync(localObject.image_filepath, 'utf-8')
-        //     }
-        //
-        //
-        // })
+router.post('/:id/publish/retry', function (req, res, next) {
+    LocalObject.findById(req.params.id, function (err, localObject) {
+        if (err) {
+            return next(err);
+        }
+        if (!localObject) {
+            return res.sendStatus(404);
+        }
+        publishStateMachine.retry(localObject);
+    })
+});
+router.post('/:id/publish/reset', function (req, res, next) {
+    LocalObject.findById(req.params.id, function (err, localObject) {
+        if (err) {
+            return next(err);
+        }
+        if (!localObject) {
+            return res.sendStatus(404);
+        }
+        publishStateMachine.reset(localObject);
     })
 });
 

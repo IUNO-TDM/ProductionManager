@@ -6,7 +6,7 @@ const AdvertisementService = function (servicename, port) {
 
     const ad = new dnssd.Advertisement(dnssd.tcp(servicename), parseInt(port), {name: "IUNO-ProductionManager"});
     ad.on('error', (err) => {
-        logger.warn('Error on advertising via MDNS', e);
+        logger.warn('Error on advertising via MDNS', err);
     });
     ad.start();
     process.on('exit', () => {

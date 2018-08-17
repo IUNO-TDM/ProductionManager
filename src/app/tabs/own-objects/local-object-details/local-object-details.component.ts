@@ -1,14 +1,15 @@
-import { Component, OnInit, Input, Output, EventEmitter, NgZone } from '@angular/core';
-import { LocalObject } from '../../../models/localObject';
-import { MaterialService } from '../../../services/material.service';
-import { MachineService } from '../../../services/machine.service';
-import { MaterialDefinition } from '../../../models/materialDefinition';
-import { MachineType } from '../../../models/machineType';
-import { MatDialog, MatDialogRef } from '@angular/material';
-import { PublishDialogComponent } from '../../../publish-dialog/publish-dialog.component';
-import { PrintDialogComponent } from '../../../print-dialog/print-dialog.component';
-import { ConfirmationDialogComponent } from '../../../confirmation-dialog/confirmation-dialog.component';
-import { LocalObjectService, UploadState } from '../../../services/local-object.service';
+import {Component, OnInit, Input, Output, EventEmitter, NgZone} from '@angular/core';
+import {LocalObject} from '../../../models/localObject';
+import {MaterialService} from '../../../services/material.service';
+import {MachineService} from '../../../services/machine.service';
+import {MaterialDefinition} from '../../../models/materialDefinition';
+import {MachineType} from '../../../models/machineType';
+import {MatDialog, MatDialogRef} from '@angular/material';
+import {PublishDialogComponent} from '../../../publish-dialog/publish-dialog.component';
+import {PrintDialogComponent} from '../../../print-dialog/print-dialog.component';
+import {ConfirmationDialogComponent} from '../../../confirmation-dialog/confirmation-dialog.component';
+import {LocalObjectService, PublishState, UploadState} from '../../../services/local-object.service';
+import {PublishSocket} from '../../../services/publish-socket.service';
 
 @Component({
     selector: 'app-local-object-details',
@@ -19,7 +20,10 @@ export class LocalObjectDetailsComponent implements OnInit {
     @Input() object: LocalObject;
     @Output() deleted = new EventEmitter();
 
-    uploadState: UploadState = null;
+    PublishStateEnum = PublishState;
+
+    uploadState: UploadState;
+    publishState: PublishState;
     progress = 0;
 
     materialDefinitions = [];
@@ -28,6 +32,7 @@ export class LocalObjectDetailsComponent implements OnInit {
     publishDialogRef: MatDialogRef<PublishDialogComponent> | null;
     printDialogRef: MatDialogRef<PrintDialogComponent> | null;
     confirmationDialogRef: MatDialogRef<ConfirmationDialogComponent>;
+
 
     constructor(
         private zone: NgZone,
@@ -42,6 +47,25 @@ export class LocalObjectDetailsComponent implements OnInit {
 
         this.machineService.getMachineTypes().subscribe((machineTypes) => {
             this.machineTypes = machineTypes;
+        });
+        this.localObjectService.getUploadState(this.object.id).subscribe(uploadState => {
+            // this.uploadState = uploadState;
+            this.zone.run(() => {
+                if (uploadState) {
+                    // console.log(uploadState);
+                    this.uploadState = uploadState;
+                    if (uploadState.bytesTotal > 0) {
+                        this.progress = 100 * +uploadState.bytesUploaded / +uploadState.bytesTotal;
+                    } else {
+                        this.progress = 1;
+                    }
+                }
+            });
+        });
+        this.localObjectService.getPublishState(this.object.id).subscribe(publishState => {
+            this.zone.run(() => {
+                this.publishState = publishState;
+            });
         });
     }
 
@@ -71,25 +95,25 @@ export class LocalObjectDetailsComponent implements OnInit {
     }
 
     publishObject() {
-        this.publishDialogRef = this.dialog.open(PublishDialogComponent, { data: this.object });
+        this.publishDialogRef = this.dialog.open(PublishDialogComponent, {data: this.object});
         this.publishDialogRef.afterClosed().subscribe((result: any) => {
             if (result) {
                 this.uploadState = new UploadState(null);
                 this.localObjectService.publishObject(this.object.id, result).subscribe(marketPlaceObjectId => {
-                    this.localObjectService.getUploadState(marketPlaceObjectId).subscribe(state => {
-                        this.zone.run(() => {
-                            if (state) {
-                                console.log(state);
-                                this.uploadState = state;
-                                if (state.bytesTotal > 0) {
-                                    this.progress = 100 * +state.bytesUploaded / +state.bytesTotal
-                                } else {
-                                    this.progress = 1
-                                }
-                            }
-                        });
-                    })
-                })
+                    // this.localObjectService.getUploadState(marketPlaceObjectId).subscribe(state => {
+                    //     this.zone.run(() => {
+                    //         if (state) {
+                    //             console.log(state);
+                    //             this.uploadState = state;
+                    //             if (state.bytesTotal > 0) {
+                    //                 this.progress = 100 * +state.bytesUploaded / +state.bytesTotal
+                    //             } else {
+                    //                 this.progress = 1
+                    //             }
+                    //         }
+                    //     });
+                    // })
+                });
             }
             this.publishDialogRef = null;
         });
@@ -97,7 +121,7 @@ export class LocalObjectDetailsComponent implements OnInit {
     }
 
     printObject() {
-        this.printDialogRef = this.dialog.open(PrintDialogComponent, { data: { localObject: this.object } });
+        this.printDialogRef = this.dialog.open(PrintDialogComponent, {data: {localObject: this.object}});
         this.printDialogRef.afterClosed().subscribe((result: string) => {
             this.printDialogRef = null;
         });

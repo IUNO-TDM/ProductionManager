@@ -6,6 +6,7 @@ const Order = require('../models/order');
 const LocalObject = require('../models/local_object');
 var logger = require('../global/logger');
 var orderStateMachine = require('../models/order_state_machine');
+var publishStateMachine = require('../models/publish_state_machine');
 const downloadService = require('../services/download_service');
 const uploadService = require('../services/upload_service');
 
@@ -138,11 +139,11 @@ function onPublishNamespaceConnect(socket) {
 
     socket.on('room', function (localObjectId) {
         logger.info('[socket_io_controller] a user joins publish for  ' + localObjectId + ' on socket ' + socket.id);
-        socket.join(orderId);
+        socket.join(localObjectId);
 
         if (localObjectId == 'allObjects') {
             LocalObject.find(function (error, objects) {
-                if (!orders || error) {
+                if (!objects || error) {
                     return
                 }
                 objects.forEach(object => {
@@ -151,7 +152,7 @@ function onPublishNamespaceConnect(socket) {
                 })
             })
         } else {
-            LocalObject.findOne({'id': localObjectId}, function (error, object) {
+            LocalObject.findById(localObjectId, function (error, object) {
                 if (!object || error) {
                     return
                 }
@@ -171,21 +172,35 @@ function onPublishNamespaceConnect(socket) {
     });
 }
 
-function registerPublishStateEvents(orderNamespace) {
-    orderStateMachine.on("transition", function (data) {
+function registerPublishStateEvents(publishNamespace) {
+    publishStateMachine.on("transition", function (data) {
         let object = data.client;
         logger.info("[socket_io_controller] sent statechange " + data.toState + " for LocalObject " + object.id);
-        orderNamespace.to(object.id).emit("state", {
+        publishNamespace.to(object.id).emit("state", {
             "localObjectId": object.id,
             "fromState": data.fromState,
             "toState": data.toState
         });
-        orderNamespace.to('allObjects').emit("state", {
+        publishNamespace.to('allObjects').emit("state", {
             "localObjectId": object.id,
             "fromState": data.fromState,
             "toState": data.toState
         });
     });
+    publishStateMachine.on('upload_state_change', function(data){
+        publishNamespace.to(data.localObjectId).emit("uploadState", {
+            localObjectId: data.localObjectId,
+            state: data.state,
+            bytesUploaded: data.bytesUploaded,
+            bytesTotal: data.bytesTotal
+        });
+        publishNamespace.to('allObjects').emit("uploadState", {
+            localObjectId: data.localObjectId,
+            state: data.state,
+            bytesUploaded: data.bytesUploaded,
+            bytesTotal: data.bytesTotal
+        });
+    })
 }
 
 
@@ -205,6 +220,6 @@ module.exports = function (io) {
     registerUploadEvents(uploadNamespace);
 
     var publishNamespace = io.of('/publish');
-    uploadNamespace.on('connection', onPublishNamespaceConnect);
+    publishNamespace.on('connection', onPublishNamespaceConnect);
     registerPublishStateEvents(publishNamespace);
 };

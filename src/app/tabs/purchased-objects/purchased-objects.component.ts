@@ -33,10 +33,10 @@ export class PurchasedObjectsComponent implements OnInit {
       this.objects.forEach(object => {
         this.objectService.getDownloadState(object.id).subscribe(downloadState => {
           this.downloadStates[object.id] = downloadState
-        })
+        });
       });
       this.loading = false
-    })
+    });
   }
 
   ngOnDestroy() {

@@ -2,7 +2,7 @@
 <div mat-dialog-content>
     <form [formGroup]="publishInfos" fxLayout="column">
         <mat-form-field>
-            <input matInput placeholder="Titel" formControlName="title">
+            <input matInput placeholder="Titel" formControlName="title" >
         </mat-form-field>
         <mat-form-field>
             <input matInput placeholder="Beschreibung" formControlName="description">
@@ -29,6 +29,6 @@
 
 </div>
 <div mat-dialog-actions>
-    <button mat-button (click)="onPublishClicked()">Feuer!</button>
+    <button mat-button [disabled]="!publishInfos.valid" (click)="onPublishClicked()">Feuer!</button>
     <button mat-raised-button color="primary" (click)="onCancelClicked()">abbrechen</button>
 </div>

@@ -5,11 +5,11 @@ import { Observable } from 'rxjs';
 @Injectable({
     providedIn: 'root'
 })
-export class UploadSocket extends Socket {
+export class PublishSocket extends Socket {
 
     constructor(ngZone: NgZone) {
         super({
-            url: window.location.protocol + '//' + window.location.hostname + ':' + window.location.port + '/uploadservice',
+            url: window.location.protocol + '//' + window.location.hostname + ':' + window.location.port + '/publish',
             options: {}
         }, ngZone);
     }
@@ -19,9 +19,9 @@ export class UploadSocket extends Socket {
 @Injectable({
     providedIn: 'root'
 })
-export class UploadSocketService {
+export class PublishSocketService {
 
-    constructor(private socket: UploadSocket) {
+    constructor(private socket: PublishSocket) {
     }
 
     joinRoom(room: string) {

@@ -12,6 +12,8 @@ const ams_adapter = require('../adapter/ams_adapter');
 const fs = require('fs');
 const path = require('path');
 
+const uploadService = require('../services/upload_service');
+
 const stateMachine = new machina.BehavioralFsm({
 
     initialize: function (options) {
@@ -70,15 +72,17 @@ const stateMachine = new machina.BehavioralFsm({
                         logger.info(tmpPath + " deleted!");
                     }
                     localObject.tempEncryptedFilePath = tmpPath;
-                    localObject.save();
+                    localObject.save((err) => {
+                        const writeStream = fs.createWriteStream(tmpPath);
+                        iunoEncryption.getEncryptionStream().pipe(writeStream);
+                        writeStream.on('close', () => {
 
-                    const writeStream = fs.createWriteStream(tmpPath);
-                    iunoEncryption.getEncryptionStream().pipe(writeStream);
-                    writeStream.on('close', () => {
-
-                        localObject.keyBundleB64 = iunoEncryption.getKeyBundleB64();
-                        this.transition(localObject, "encrypted");
+                            localObject.keyBundleB64 = iunoEncryption.getKeyBundleB64();
+                            this.transition(localObject, "encrypted");
+                        });
                     });
+
+
                 });
             },
             encryptionProblem: function (localObject) {
@@ -87,8 +91,8 @@ const stateMachine = new machina.BehavioralFsm({
         },
 
         encryptionError: {
-            encryptForUpload: function (localObject) {
-                this.transition(localObject, "encrypting");
+            reset: function (localObject) {
+                this.transition(localObject, "intial");
             }
         },
 
@@ -127,7 +131,7 @@ const stateMachine = new machina.BehavioralFsm({
             }
         },
         tdmObjectCreateError: {
-            retryObjectCreate: function (localObject) {
+            retry: function (localObject) {
                 this.transition(localObject, "creatingTdmObject");
             },
             reset: function (localObject) {
@@ -147,28 +151,51 @@ const stateMachine = new machina.BehavioralFsm({
 
         uploading: {
             _onEnter: function (localObject) {
+                const uploadCallback = function (upload) {
+                    if (upload.id === localObject.marketplaceObjectId) {
+                        stateMachine.emit('upload_state_change', {
+                            localObjectId: localObject.id,
+                            state: upload.state,
+                            bytesUploaded: upload.bytesUploaded,
+                            bytesTotal: upload.bytesTotal,
+                        })
+                    }
+                };
+                uploadService.on('state_change', uploadCallback);
                 ams_adapter.uploadFile(localObject.marketplaceObjectId, localObject.tempEncryptedFilePath, (err) => {
+
+                    uploadService.removeListener('state_change', uploadCallback);
                     if (err) {
                         logger.warn(err);
                         this.transition(localObject, "uploadError")
                     } else {
-                        this.transition(localObject, "uploaded");
+                        fs.unlinkSync(localObject.tempEncryptedFilePath);
+                        localObject.tempEncryptedFilePath = null;
+                        localObject.save((err) => {
+                            this.transition(localObject, "uploaded");
+                        });
+
                     }
                 });
             }
         },
         uploadError: {
-            startUpload: function (localObject) {
+            retry: function (localObject) {
                 this.transition(localObject, "uploading");
+            },
+            reset: function (localObject) {
+                fs.unlinkSync(localObject.tempEncryptedFilePath);
+
+                localObject.tempEncryptedFilePath = null;
+                localObject.keyBundleB64 = null;
+                this.transition(localObject, "intial");
             }
         },
 
         uploaded: {
             _onEnter: function (localObject) {
 
-                fs.unlinkSync(localObject.tempEncryptedFilePath);
-                localObject.tempEncryptedFilePath = null;
-                localObject.save();
+
             }
         }
     },
@@ -181,25 +208,13 @@ const stateMachine = new machina.BehavioralFsm({
         logger.debug("[publishStateMachine] publish called");
         this.handle(localObject, "publish")
     },
-    encryptForUpload: function (localObject) {
-        logger.debug("[publishStateMachine] encryptForUpload called");
-        this.handle(localObject, "encryptForUpload")
-    },
-    encryptionProblem: function (localObject) {
-        logger.debug("[publishStateMachine] encryptionProblem called");
-        this.handle(localObject, "encryptionProblem")
-    },
-    startUpload: function (localObject) {
-        logger.debug("[publishStateMachine] startUpload called");
-        this.handle(localObject, "startUpload")
-    },
-    retryObjectCreate: function (localObject) {
-        logger.debug("[publishStateMachine] retryObjectCreate called");
-        this.handle(localObject, "retryObjectCreate")
-    },
     reset: function (localObject) {
         logger.debug("[publishStateMachine] reset called");
         this.handle(localObject, "reset")
+    },
+    retry: function (localObject) {
+        logger.debug("[publishStateMachine] retry called");
+        this.handle(localObject, "retry")
     }
 });
 
