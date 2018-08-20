@@ -108,7 +108,7 @@ self.verifyAuthentication = function (hostname, id, key, callback) {
 self.uploadPrintjob = function (hostname, id, key, jobname, filepath, callback) {
     const options = buildOptionsForRequest(
         'POST',
-        '192.168.178.98',
+        hostname,
         {},
         null,
         '/api/v1/print_job'
@@ -120,12 +120,12 @@ self.uploadPrintjob = function (hostname, id, key, jobname, filepath, callback) 
         'sendImmediately': false
     };
 
-    options.headers = {
-        'connection': 'open'
-        // 'Cache-Control': 'no-cache',
-        // 'Content-Type': 'multipart/form-data',
-        // 'content-type': 'multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW'
-    };
+    // options.headers = {
+    //     'connection': 'open'
+    //     // 'Cache-Control': 'no-cache',
+    //     // 'Content-Type': 'multipart/form-data',
+    //     // 'content-type': 'multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW'
+    // };
     options.json = false;
 
 

@@ -15,6 +15,8 @@ _.mapPick = function (objs, keys) {
     })
 };
 
+const os = require('os');
+
 var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose');
@@ -57,7 +59,7 @@ router.post('/:id/authentication', function (req, res, next) {
             return res.sendStatus(404);
         }
 
-        printer_adapter.requestAuthentication(machine.hostname, "hurz", "foo", function (err, data) {
+        printer_adapter.requestAuthentication(machine.hostname, "ProductionManager", os.hostname(), function (err, data) {
             if (data && data.id && data.key) {
                 machine.auth_id = data.id;
                 machine.auth_key = data.key;
