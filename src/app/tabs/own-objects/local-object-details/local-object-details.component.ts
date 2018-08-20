@@ -178,4 +178,10 @@ export class LocalObjectDetailsComponent implements OnInit {
         this.editing = 'description';
         this.editedDescription = this.object.description;
     }
+    retryPublish() {
+        this.localObjectService.retryPublish(this.object.id).subscribe();
+    }
+    resetPublish() {
+        this.localObjectService.resetPublish(this.object.id).subscribe();
+    }
 }

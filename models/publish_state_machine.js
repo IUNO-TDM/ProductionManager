@@ -113,9 +113,6 @@ const stateMachine = new machina.BehavioralFsm({
                     backgroundColor: '#FFFFFF',
                     encryptedKey: localObject.keyBundleB64
                 };
-                if (fs.existsSync(localObject.image_filepath)) {
-                    objectData.image = fs.readFileSync(localObject.image_filepath, 'utf-8')
-                }
                 ams_adapter.saveObject(objectData, (err, objectId) => {
                     if (err) {
                         this.transition(localObject, "tdmObjectCreateError");
@@ -145,7 +142,43 @@ const stateMachine = new machina.BehavioralFsm({
         },
         tdmObjectCreated: {
             _onEnter: function (localObject) {
-                this.transition(localObject, "uploading");
+                this.transition(localObject, "uploadingImage");
+            }
+        },
+        uploadingImage: {
+            _onEnter: function(localObject) {
+
+                if (fs.existsSync(localObject.image_filepath)) {
+                    ams_adapter.uploadImage(localObject.marketplaceObjectId, localObject.image_filepath, (err, data) => {
+                        if(err){
+                            logger.warn("Error while uploading image", err);
+                            this.transition(localObject, 'imageUploadError');
+                        }else{
+
+                            this.transition(localObject, 'imageUploaded');
+                        }
+                    });
+                }else{
+                    this.transition (localObject, 'uploading');
+                }
+            }
+        },
+        imageUploaded: {
+            _onEnter: function(localObject) {
+                this.transition (localObject, 'uploading');
+            }
+        },
+
+        imageUploadError: {
+            retry: function (localObject) {
+                this.transition(localObject, "uploadingImage");
+            },
+            reset: function (localObject) {
+                fs.unlinkSync(localObject.tempEncryptedFilePath);
+
+                localObject.tempEncryptedFilePath = null;
+                localObject.keyBundleB64 = null;
+                this.transition(localObject, "intial");
             }
         },
 
@@ -174,7 +207,6 @@ const stateMachine = new machina.BehavioralFsm({
                         localObject.save((err) => {
                             this.transition(localObject, "uploaded");
                         });
-
                     }
                 });
             }

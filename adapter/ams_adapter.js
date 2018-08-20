@@ -154,7 +154,7 @@ self.downloadBinaryForObjectWithId = function (objectId, callback) {
                 {},
                 function (err, options) {
                     DownloadService.downloadObjectBinary(objectId, data.productCode, options);
-                    callback(null,null);
+                    callback(null, null);
                 }
             )
         }
@@ -425,6 +425,26 @@ self.uploadFile = function (objectId, path, callback) {
         {},
         function (err, options) {
             UploadService.uploadObjectBinary(objectId, path, options, callback)
+        }
+    );
+};
+
+self.uploadImage = function (objectId, path, callback) {
+    buildOptionsForRequest(
+        'PUT',
+        CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.PROTOCOL,
+        CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.HOST,
+        CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE.PORT,
+        `/objects/${objectId}/image`,
+        {},
+        function (err, options) {
+            options.json = false;
+            delete options.headers['Content-Type'];
+            options.encoding = null;
+            fs.createReadStream(path).pipe(request.put(options, function (e, r, data) {
+                const err = logger.logRequestAndResponse(e, options, r, data);
+                callback(err, data);
+            }));
         }
     );
 };

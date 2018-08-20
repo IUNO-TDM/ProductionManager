@@ -92,13 +92,15 @@
 
                 <button *ngIf="
                 publishState == PublishStateEnum.UPLOAD_ERROR
-                || publishState == PublishStateEnum.TDM_OBJECT_CREATE_ERROR"
+                || publishState == PublishStateEnum.TDM_OBJECT_CREATE_ERROR
+                 || publishState == PublishStateEnum.IMAGE_UPLOAD_ERROR"
                         class="mat-button" (click)="retryPublish()">Veröffentlichung fortsetzen
                 </button>
                 <button *ngIf="
                 publishState == PublishStateEnum.UPLOAD_ERROR
                  || publishState == PublishStateEnum.ENCRYPTION_ERROR
-                 || publishState == PublishStateEnum.TDM_OBJECT_CREATE_ERROR"
+                 || publishState == PublishStateEnum.TDM_OBJECT_CREATE_ERROR
+                 || publishState == PublishStateEnum.IMAGE_UPLOAD_ERROR"
                         class="mat-button" (click)="resetPublish()">Veröffentlichung abbrechen
                 </button>
                 <button class="mat-button" (click)="deleteObject()">Objekt löschen</button>

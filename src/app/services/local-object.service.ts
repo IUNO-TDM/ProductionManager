@@ -51,7 +51,10 @@ export enum PublishState {
     TDM_OBJECT_CREATED = 'tdmObjectCreated',
     UPLOADING = 'uploading',
     UPLOAD_ERROR = 'uploadError',
-    UPLOADED = 'uploaded'
+    UPLOADED = 'uploaded',
+    UPLOADING_IMAGE = 'uploadingImage',
+    IMAGE_UPLOADED = 'imageUploaded',
+    IMAGE_UPLOAD_ERROR = 'imageUploadError'
 }
 
 
@@ -151,6 +154,18 @@ export class LocalObjectService {
         }
 
         return this.http.patch<LocalObject>(url, body);
+    }
+
+    retryPublish(objectId: string) {
+        const url = this.apiUrl + '/' + objectId + '/publish/retry';
+        const body = {};
+        return this.http.post(url, body, {responseType: 'text'});
+    }
+
+    resetPublish(objectId: string) {
+        const url = this.apiUrl + '/' + objectId + '/publish/reset';
+        const body = {};
+        return this.http.post(url, body, {responseType: 'text'});
     }
 
 }
