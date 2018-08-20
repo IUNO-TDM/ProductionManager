@@ -150,7 +150,7 @@ export class LocalObjectService {
             body['description'] = description;
         }
 
-        return this.http.patch(url, body);
+        return this.http.patch<LocalObject>(url, body);
     }
 
 }
