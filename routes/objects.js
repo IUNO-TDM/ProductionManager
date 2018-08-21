@@ -32,7 +32,7 @@ router.get('/', validate({
 
             const filteredObjects = objects.filter(object => {
                 //first check machine type:
-                if(filter.machines){
+                if(filter.machines && filter.machines.length > 0){
                     let machineFit = false;
                     for (let i = 0; i < filter.machines.length; i++) {
                         if (machineFit) {
@@ -49,7 +49,7 @@ router.get('/', validate({
                         return false;
                     }
                 }
-                if(filter.materials){
+                if(filter.materials && filter.materials.length > 0){
                     for (let i = 0; i < object.materials.length; i++) {
                         let match = false;
                         for (let j = 0; j < filter.materials.length; j++) {
@@ -65,7 +65,7 @@ router.get('/', validate({
                 }
 
 
-                return true;
+                    return true;
             });
             res.json(filteredObjects ? filteredObjects : [])
 

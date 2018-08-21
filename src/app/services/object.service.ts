@@ -3,8 +3,9 @@ import {HttpClient} from '@angular/common/http';
 import {LOCALE_ID} from '@angular/core';
 import {map} from 'rxjs/operators';
 import {TdmObject} from '../models/object';
-import {BehaviorSubject} from 'rxjs';
+import {BehaviorSubject, Observable} from 'rxjs';
 import {DownloadSocketService} from './download-socket.service';
+import {Filter} from '../models/filter';
 
 export class DownloadState {
     UNKNOWN_STATE = 'unknown';
@@ -76,25 +77,26 @@ export class ObjectService {
      * @param purchased boolean value. If true, only objects that were purchased at some times are returned.
      * @returns marketplace objects
      */
-    getObjects(machineTypes: string[], materials: string[], purchased: boolean) {
+    getObjects(filterId: string) {
         const url = this.apiUrl + 'objects';
         var params = {};
 
+        params['filter'] = filterId;
         // add language to query parameters
         //FIXME: set correct language. But be careful, LOCALE_ID is now like 'en-US' instead of 'en'
-        params['lang'] = 'de';
+        // params['lang'] = 'de';
 
         // add machine types to query parameters
-        for (var i = 0; i < machineTypes.length; i += 1) {
-            params['machines[' + i + ']'] = machineTypes[i];
-        }
+        // for (var i = 0; i < machineTypes.length; i += 1) {
+        //     params['machines[' + i + ']'] = machineTypes[i];
+        // }
 
         // add materials to query parameters
-        for (var i = 0; i < materials.length; i += 1) {
-            params['materials[' + i + ']'] = materials[i];
-        }
+        // for (var i = 0; i < materials.length; i += 1) {
+        //     params['materials[' + i + ']'] = materials[i];
+        // }
 
-        params['purchased'] = purchased ? 'true' : 'false';
+        // params['purchased'] = purchased ? 'true' : 'false';
 
         return this.http.get<TdmObject[]>(url, {
             params: params
@@ -163,5 +165,13 @@ export class ObjectService {
             'machineId': machineId
         };
         return this.http.post(url, body);
+    }
+
+    createFilter(filter: Filter): Observable<string> {
+        const url = this.apiUrl + 'objects/filters';
+        return this.http.post(url, filter, {responseType: 'text', observe: 'response'}).pipe(map(response => {
+            const location = response.headers.get('location');
+            return location.substr(location.lastIndexOf('/') + 1);
+        }));
     }
 }

@@ -7,6 +7,7 @@ import {MachineType} from '../../models/machineType';
 import {ShoppingCartService} from '../../services/shopping-cart.service';
 import {Router} from '@angular/router';
 import {OrderService} from '../../services/order.service';
+import {Filter} from '../../models/filter';
 
 @Component({
     selector: 'app-marketplace',
@@ -93,7 +94,7 @@ export class MarketplaceComponent implements OnInit {
      */
     onMachineTypeCheckboxChanged(id, checked) {
         if (checked) {
-            if (this.machineTypesSelected.indexOf(id) == -1) {
+            if (this.machineTypesSelected.indexOf(id) === -1) {
                 this.machineTypesSelected.push(id);
             }
         } else {
@@ -111,7 +112,7 @@ export class MarketplaceComponent implements OnInit {
      * @returns true if the machineType id is in the array of selected machinetypes, false if not
      */
     isMachineTypeSelected(id): boolean {
-        return this.machineTypesSelected.indexOf(id) != -1;
+        return this.machineTypesSelected.indexOf(id) !== -1;
     }
 
     /**
@@ -124,7 +125,7 @@ export class MarketplaceComponent implements OnInit {
      */
     onMaterialCheckboxChanged(id, checked) {
         if (checked) {
-            if (this.materialsSelected.indexOf(id) == -1) {
+            if (this.materialsSelected.indexOf(id) === -1) {
                 this.materialsSelected.push(id);
             }
         } else {
@@ -142,7 +143,7 @@ export class MarketplaceComponent implements OnInit {
      * @returns true if the materials id is in the array of selected materials, false if not
      */
     isMaterialSelected(id): boolean {
-        return this.materialsSelected.indexOf(id) != -1;
+        return this.materialsSelected.indexOf(id) !== -1;
     }
 
 
@@ -158,30 +159,43 @@ export class MarketplaceComponent implements OnInit {
 
             // setup machine type array
             var machineTypeIds = this.machineTypesSelected;
-            if (machineTypeIds.length == 0) {
+            if (machineTypeIds.length === 0) {
                 machineTypeIds = this.machineTypes.map(machineType => machineType.id);
             }
 
             // setup material type array
             var materialIds = this.materialsSelected;
-            if (materialIds.length == 0) {
+            if (materialIds.length === 0) {
                 materialIds = this.materials.map(material => material.id);
             }
 
-            // perform query
-            this.objectService.getObjects(machineTypeIds, materialIds, false).subscribe(objects => {
-                if (this.searchQuery.length > 0) {
-                    this.objects = objects.filter(object => {
-                        var include = false;
-                        include = include || object.name.toUpperCase().indexOf(this.searchQuery.toUpperCase()) != -1;
-                        include = include || object.description.toUpperCase().indexOf(this.searchQuery.toUpperCase()) != -1;
-                        return include;
-                    });
-                } else {
-                    this.objects = objects;
-                }
-                this.loading = false;
+
+            const filter = new Filter();
+            filter.lang = 'de';
+            filter.purchased = false;
+            filter.materials = materialIds;
+            filter.machines = machineTypeIds;
+
+            this.objectService.createFilter(filter).subscribe((filterId) => {
+                this.objectService.getObjects(filterId).subscribe(objects => {
+                    if (this.searchQuery.length > 0) {
+                        this.objects = objects.filter(object => {
+                            var include = false;
+                            include = include || object.name.toUpperCase().indexOf(this.searchQuery.toUpperCase()) !== -1;
+                            include = include || object.description.toUpperCase().indexOf(this.searchQuery.toUpperCase()) !== -1;
+                            return include;
+                        });
+                    } else {
+                        this.objects = objects;
+                    }
+                    this.loading = false;
+                });
+            }, err => {
+                console.log(err);
             });
+
+            // perform query
+
         } else {
             this.objects = [];
         }
