@@ -104,7 +104,8 @@ const stateMachine = new machina.BehavioralFsm({
         creatingTdmObject: {
             _onEnter: function (localObject) {
                 //posting here
-                const components = localObject.machines;
+                let components = localObject.machines;
+                components = components.concat(localObject.materials);
                 const objectData = {
                     components: components,
                     description: localObject.name,

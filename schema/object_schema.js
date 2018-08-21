@@ -18,29 +18,11 @@ self.Empty = {
 self.Object_Query = {
     type: 'object',
     properties: {
-        materials: {
-            type: 'array',
-            items: {
-                type: 'string',
-                format: 'uuid'
-            },
-            additionalItems: false
-        },
-        machines: {
-            type: 'array',
-            items: {
-                type: 'string',
-                format: 'uuid'
-            },
-            additionalItems: false
-        },
-        lang: languageProperty,
-        purchased: {
-            type: 'string',
-            enum: ['true', 'false']
+        filter: {
+            type: 'string'
         }
     },
-    required: [ 'lang'],
+    required: [ 'filter'],
     additionalProperties: false
 };
 
@@ -104,6 +86,36 @@ self.PrintObject_Body = {
         minLength: 1,
         maxLength: 50
     }
+};
+
+self.Filter_Body = {
+    type: 'object',
+    properties: {
+        materials: {
+            type: 'array',
+            maxLength: 200,
+            items: {
+                type: 'string',
+                format: 'uuid'
+            }
+        },
+        machines: {
+            type: 'array',
+            minLength: 1,
+            maxLength: 200,
+            items: {
+                type: 'string',
+                format: 'uuid'
+            }
+        },
+        lang: languageProperty,
+        purchased: {
+            type: 'boolean'
+        }
+    },
+    required: ['purchased', 'lang'],
+    additionalProperties: false
+
 };
 
 

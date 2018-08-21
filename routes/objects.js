@@ -5,6 +5,7 @@ const common = require('tdm-common');
 const fs = require('fs');
 const CONFIG = require('../config/config_loader');
 
+const logger = require('../global/logger');
 const Validator = require('express-json-validator-middleware').Validator;
 const validator = new Validator({allErrors: true});
 const validate = validator.validate;
@@ -12,39 +13,85 @@ const validation_schema = require('../schema/object_schema');
 const encryption = require('../services/encryption_service');
 const printerAdapter = require('../adapter/ultimaker_printer_adapter');
 const Machine = require('../models/machine');
+const Filter = require('../models/filter');
 const downloadService = require('../services/download_service');
-
-// function getBinaryState(objectId) {
-//     if (/^[0-9a-zA-Z\-]+$/.test(objectId)) {
-//         let path = CONFIG.FILE_DIR + '/' + objectId + '.dat'
-//         return fs.existsSync(path)
-//     } else {
-//         return false
-//     }
-// }
-
+const objectHash = require('object-hash');
 
 router.get('/', validate({
     query: validation_schema.Object_Query,
     body: validation_schema.Empty
 }), function (req, res, next) {
-    const language = req.query['lang'] || 'en';
-    const machines = req.query['machines'];
-    const materials = req.query['materials'];
-    const purchased = req.query['purchased'];
 
-    ams_adapter.getObjects(language, machines, materials, purchased, (err, objects) => {
+
+    const getObjects = function(filter){
+        //we always load all objects and then filter here. (filtering at the marketplace is to limited)
+        ams_adapter.getObjects(filter.lang, [], [], filter.purchased, (err, objects) => {
+            if (err) {
+                return next(err);
+            }
+
+            const filteredObjects = objects.filter(object => {
+                //first check machine type:
+                if(filter.machines){
+                    let machineFit = false;
+                    for (let i = 0; i < filter.machines.length; i++) {
+                        if (machineFit) {
+                            break;
+                        }
+                        for (let j = 0; j < object.machines.length; j++) {
+                            if (object.machines[j].id === filter.machines[i]) {
+                                machineFit = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (!machineFit) {
+                        return false;
+                    }
+                }
+                if(filter.materials){
+                    for (let i = 0; i < object.materials.length; i++) {
+                        let match = false;
+                        for (let j = 0; j < filter.materials.length; j++) {
+                            if (object.materials[i].id === filter.materials[j]) {
+                                match = true;
+                                break;
+                            }
+                        }
+                        if (!match) {
+                            return false;
+                        }
+                    }
+                }
+
+
+                return true;
+            });
+            res.json(filteredObjects ? filteredObjects : [])
+
+        });
+    };
+
+
+    const filterId = req.query['filter'];
+
+    Filter.findById(filterId, (err, filter) => {
         if (err) {
-            return next(err);
+            logger.fatal("Problems getting filter", err);
+            return res.sendStatus(400);
+        }else{
+            if(!filter){
+                res.status(404).send({message: "Filter not found"})
+            }else{
+
+                getObjects(filter);
+            }
         }
-        // if (objects) {
-        //     objects.forEach(object => {
-        //         let downloaded = getBinaryState(object.id)
-        //         object['downloaded'] = downloaded
-        //     })
-        // }
-        res.json(objects ? objects : [])
-    })
+
+    });
+
+
+
 });
 
 router.post('/', function (req, res, next) {
@@ -95,11 +142,6 @@ router.get('/:id/binary', validate({
         }
         res.write("ENQUEUED")
     })
-
-    // downloadService.downloadBinary(req.params['id'], (err) => {
-    //     console.log("Download finished!")
-    // })
-    // res.write("ENQUEUED")
 });
 
 
@@ -151,6 +193,58 @@ router.post('/:id/print', validate({
             }
         })
     });
+
+router.post('/filters', validate({
+    query: validation_schema.Empty,
+    body: validation_schema.Filter_Body
+}), (req, res, next) => {
+
+    buildFullUrlFromRequest = function (req) {
+        return req.protocol + '://' + req.get('host') + req.baseUrl + '/';
+    };
+    var body = req.body;
+    const hash = objectHash(body);
+    Filter.findById(hash, (err, foundFilter) => {
+        if (err) {
+            logger.fatal("Cannot find filter: ", err);
+            return res.sendStatus(400);
+        }
+        if (foundFilter) {
+            const fullUrl = buildFullUrlFromRequest(req);
+            res.set('Location', fullUrl + 'filters/' + foundFilter._id);
+            res.status(201);
+            res.send('' + foundFilter._id);
+        } else {
+            body._id = hash;
+            Filter.create(body, (err, filter) => {
+                if (err) {
+                    logger.error("Cannot create filter: ", err);
+                    return res.sendStatus(400);
+                }
+
+                const fullUrl = buildFullUrlFromRequest(req);
+                res.set('Location', fullUrl + 'filters/' + filter._id);
+                res.status(201);
+                res.send('' + filter._id);
+            })
+        }
+    });
+
+});
+
+router.get('/filters/:id', (req, res, next) => {
+    Filter.findById(req.params.id, (err, foundFilter) => {
+        if (err) {
+            logger.error("Cannot find filter: ", err);
+            return res.sendStatus(400);
+        }
+        if (foundFilter) {
+            res.send(foundFilter);
+        } else {
+            res.sendStatus(404);
+        }
+    });
+});
 
 
 module.exports = router;

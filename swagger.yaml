@@ -473,7 +473,7 @@ paths:
             items:
               $ref: '#/definitions/License'   
           
-  /machinestypes:
+  /machinetypes:
     get:
       tags: 
       - "machine types"
@@ -633,25 +633,11 @@ paths:
       - "objects"
       summary: "gets a list of objects from TDM"
       parameters: 
-      - name: "materials"
+      - name: "filter"
         in: "query"
-        description: "the materialIds to filter the results, none equals all"
+        description: "the filter created before"
         required: false
-        type: array
-        items:
-          type: string
-      - name: "machines"
-        in: "query"
-        description: "the machinetypeIds to filter the results, none equals all"
-        required: false
-        type: array
-        items:
-          type: string
-      - name: lang
-        in: "query"
-        description: "defines the language the texts should be returned"
-        required: true
-        type: "string"
+        type: string
       produces: 
       - "application/json"
       responses:
@@ -693,7 +679,45 @@ paths:
       responses:
         200:
           description: "the image"
-  
+
+
+  /objects/filters:
+    post:
+      tags:
+        - "objects"
+      summary: "creates a filter"
+      parameters:
+        - name: "filter"
+          in: "body"
+          description: "the filter to create"
+          required: "true"
+          schema:
+            $ref: "#/definitions/Filter"
+      responses:
+        201:
+          description: "object created"
+          headers:
+            Location:
+              type: "string"
+              description: "the path to the created object"
+
+  /objects/filters/{filterId}:
+    get:
+      tags:
+        - "objects"
+      summary: "gets a filter"
+      parameters:
+        - name: "filterId"
+          in: "path"
+          description: "the filterid"
+          required: "true"
+          type: "string"
+      responses:
+        200:
+          description: "the filter"
+          schema:
+            $ref: '#/definitions/Filter'
+
   /localobjects:
     post:
       tags: 
@@ -712,7 +736,7 @@ paths:
         in: formData
         type: string
       responses:
-        200:
+        201:
           description: object created
           headers:
             Location:
@@ -934,4 +958,20 @@ definitions:
         type: string
       code:
         type: integer
-        
+
+
+  Filter:
+    type: "object"
+    properties:
+      materials:
+        type: array
+        items:
+          type: string
+      machines:
+        type: array
+        items:
+          type: string
+      lang:
+        type: string
+      purchased:
+        type: boolean

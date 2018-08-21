@@ -48,24 +48,12 @@ export class MachineService {
     }
 
     getMaterialTypes(): Observable<any[]> {
-        return of([
-            {
-                id: 'a02967f3-dc62-495f-bab4-f7132bc2596a',
-                name: 'PLA'
-            },
-            {
-                id: '86a89ceb-4159-47f6-ab97-e9953803d70f',
-                name: 'Generic PVA Generic'
-            },
-            {
-                id: '763c926e-a5f7-4ba0-927d-b4e038ea2735',
-                name: 'Ultimaker ABS Silver Metallic'
-            },
-            {
-                id: '5df7afa6-48bd-4c19-b314-839fe9f08f1f',
-                name: 'Ultimaker ABS Red'
+        const url = this.apiUrl + 'materials';
+        return this.http.get<Material[]>(url, {
+            params: {
+                lang: 'de'
             }
-        ]);
+        });
     }
 
     updateMachineType() {

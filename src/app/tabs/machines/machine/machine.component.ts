@@ -41,7 +41,7 @@ export class MachineComponent implements OnInit {
         this.materialService.getAllMaterials().subscribe((materials) => {
             this.materialDefinitions = materials;
         });
-        this.cameraSrc = this.sanitizer.bypassSecurityTrustResourceUrl( 'api/machines/' + this.machine.id + '/camera/stream');
+        this.cameraSrc = this.sanitizer.bypassSecurityTrustResourceUrl('api/machines/' + this.machine.id + '/camera/stream');
 
     }
 
@@ -76,7 +76,10 @@ export class MachineComponent implements OnInit {
     requestAuthentication() {
         this.machineService.requestAuthentication(this.machine.id).subscribe();
         this.authenticationRequested = true;
-        this.checkAuthenticated();
+        setTimeout(() => {
+
+            this.checkAuthenticated();
+        },2000);
     }
 
     updateMaterials() {
@@ -109,7 +112,6 @@ export class MachineComponent implements OnInit {
         }
         return '#ffffff';
     }
-
 
 
 }
