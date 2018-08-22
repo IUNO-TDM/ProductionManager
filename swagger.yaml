@@ -1219,10 +1219,3 @@ definitions:
     properties:
       machineId:
         type: string
-  License:
-    type: "object"
-    properties:
-      product:
-        type: string
-      count:
-        type: integer
