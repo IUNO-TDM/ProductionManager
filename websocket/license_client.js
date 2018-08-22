@@ -5,14 +5,10 @@
 const logger = require('../global/logger');
 const io = require('socket.io-client');
 const CONFIG = require('../config/config_loader');
-// const orderDB = require('../database/orderDB')
 const EventEmitter = require('events').EventEmitter;
 const util = require('util');
 const authServer = require('../adapter/auth_service_adapter');
-const Machine = require('../models/machine');
 const Order = require('../models/order');
-const orderStateMachine = require('../models/order_state_machine');
-const ams_adapter = require('../adapter/ams_adapter');
 
 const LicenseService = function () {
     const self = this;
@@ -49,7 +45,7 @@ license_service.socket = io(CONFIG.HOST_SETTINGS.ADDITIVE_MACHINE_SERVICE
 license_service.socket.on('connect', function () {
     logger.debug("[license_client] Connected to AMS");
 
-    for (var i = 0; i < license_service.registeredHsmIds.length; i++) {
+    for (let i = 0; i < license_service.registeredHsmIds.length; i++) {
         license_service.socket.emit('room', license_service.registeredHsmIds[i]);
         logger.info("Registered for license updates dongleId:" + license_service.registeredHsmIds[i]);
     }
@@ -105,7 +101,7 @@ license_service.socket.on('updateAvailable', function (data) {
 });
 
 license_service.registerHsmId = function (hsmId) {
-    if(license_service.registeredHsmIds.indexOf(hsmId) !== -1){
+    if (license_service.registeredHsmIds.indexOf(hsmId) !== -1) {
         return;
     }
     if (license_service.socket.connected) {

@@ -1,6 +1,6 @@
-var mongoose = require('mongoose');
+const mongoose = require('mongoose');
 
-var LocalObjectSchema = new mongoose.Schema({
+const LocalObjectSchema = new mongoose.Schema({
     name: String,
     gcode_filepath: String,
     image_filepath: String,

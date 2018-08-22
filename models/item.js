@@ -1,8 +1,9 @@
-var mongoose = require('mongoose');
+const mongoose = require('mongoose');
 
-var ItemSchema = new mongoose.Schema({
+const ItemSchema = new mongoose.Schema({
     dataId: String,
     amount: Number,
-    updated: { type: Date, default: Date.now }});
+    updated: {type: Date, default: Date.now}
+});
 
 module.exports = mongoose.model('Item', ItemSchema);

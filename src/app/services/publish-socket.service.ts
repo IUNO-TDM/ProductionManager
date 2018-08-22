@@ -1,6 +1,6 @@
-import { Injectable, NgZone } from '@angular/core';
-import { Socket } from 'ng6-socket-io';
-import { Observable } from 'rxjs';
+import {Injectable, NgZone} from '@angular/core';
+import {Socket} from 'ng6-socket-io';
+import {Observable} from 'rxjs';
 
 @Injectable({
     providedIn: 'root'

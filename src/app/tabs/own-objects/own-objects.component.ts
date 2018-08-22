@@ -3,7 +3,6 @@ import {TitleService} from '../../services/title.service';
 import {MachineService} from '../../services/machine.service';
 import {Router} from '@angular/router';
 import {LocalObjectService} from '../../services/local-object.service';
-import {LocalObject} from '../../models/localObject';
 import {Subscription} from 'rxjs';
 
 @Component({
@@ -13,8 +12,6 @@ import {Subscription} from 'rxjs';
 })
 export class OwnObjectsComponent implements OnInit, AfterViewInit {
     objects = [];
-    // materials = ['763c926e-a5f7-4ba0-927d-b4e038ea2735'];
-    // machineTypes = [];s
     selectedObject: any = null;
     loading = true;
     objectSubscription: Subscription;
@@ -23,13 +20,7 @@ export class OwnObjectsComponent implements OnInit, AfterViewInit {
         private router: Router,
         private titleService: TitleService,
         private objectService: LocalObjectService,
-        private machineService: MachineService
-    ) {
-        // this.machineService.getMachineTypes().subscribe(machineTypes => {
-        //     // this.machineTypes = machineTypes.map(type => type.id);
-        //     this.updateObjects();
-        // });
-    }
+    ) {}
 
     ngOnInit() {
 

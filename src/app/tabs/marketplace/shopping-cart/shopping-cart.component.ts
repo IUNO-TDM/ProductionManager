@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { ShoppingCartService, ShoppingCartItem } from '../../../services/shopping-cart.service';
 import { MachineService } from '../../../services/machine.service';
 import { Machine } from '../../../models/machine';
-import { OrderService } from '../../../services/order.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -18,8 +17,7 @@ export class ShoppingCartComponent implements OnInit {
   constructor(
     private router: Router,
     private shoppingCartService: ShoppingCartService,
-    private machineService: MachineService,
-    private orderService: OrderService
+    private machineService: MachineService
   ) { }
 
   ngOnInit() {
@@ -35,29 +33,28 @@ export class ShoppingCartComponent implements OnInit {
           machines.forEach(machine => {
             if (!this.selectedHsmId) {
               if (machine.hsmIds && machine.hsmIds.length > 0) {
-                this.selectedHsmId = machine.hsmIds[0]
+                this.selectedHsmId = machine.hsmIds[0];
               }
             }
           });
-          // this.selectedHsmId = machines[0].id
         }
-      })
-    })
+      });
+    });
   }
 
   onRemoveItem(item) {
     this.shoppingCartService.removeItem(item).subscribe(result => {
-    })
+    });
   }
 
   onBackButtonClicked() {
-    this.router.navigateByUrl('marketplace')
+    this.router.navigateByUrl('marketplace');
   }
 
   onOrderClicked() {
     this.shoppingCartService.order(this.selectedHsmId).subscribe(result => {
-      this.router.navigateByUrl('marketplace')
-    })
+      this.router.navigateByUrl('marketplace');
+    });
   }
 
 }

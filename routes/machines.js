@@ -1,30 +1,13 @@
-var express = require('express');
-var router = express.Router();
-var mongoose = require('mongoose');
-var Machine = require('../models/machine');
-var printer_adapter = require('../adapter/ultimaker_printer_adapter');
-var async = require('async');
-var parseString = require('xml2js').parseString;
-var _ = require('lodash');
-var request = require('request');
+const express = require('express');
+const router = express.Router();
+const Machine = require('../models/machine');
+const printer_adapter = require('../adapter/ultimaker_printer_adapter');
+const async = require('async');
+const parseString = require('xml2js').parseString;
+const _ = require('lodash');
+const request = require('request');
 const logger = require('../global/logger');
-
-_.mapPick = function (objs, keys) {
-    return _.map(objs, function (obj) {
-        return _.pick(obj, keys)
-    })
-};
-
 const os = require('os');
-
-var express = require('express');
-var router = express.Router();
-var mongoose = require('mongoose');
-var Machine = require('../models/machine');
-var printer_adapter = require('../adapter/ultimaker_printer_adapter');
-var async = require('async');
-var parseString = require('xml2js').parseString;
-var _ = require('lodash');
 const licenseManager = require('../adapter/license_manager_adapter');
 
 _.mapPick = function (objs, keys) {
@@ -63,7 +46,7 @@ router.post('/:id/authentication', function (req, res, next) {
             if (data && data.id && data.key) {
                 machine.auth_id = data.id;
                 machine.auth_key = data.key;
-                Machine.findByIdAndUpdate(machine._id, machine, function (err, doc) {
+                Machine.findByIdconstAndUpdate(machine._id, machine, function (err, doc) {
                     if (!err) {
                         res.sendStatus(201);
                     } else {
@@ -89,7 +72,7 @@ router.get('/:id/authentication', function (req, res, next) {
             return res.send({"message": "not requested"});
         }
         printer_adapter.checkAuthentication(machine.hostname, machine.auth_id, function (err, data) {
-            var authenticated = false;
+            let authenticated = false;
             if (data.message === "authorized") {
                 authenticated = true;
             }
@@ -144,7 +127,7 @@ router.get('/:id/hsm/all/licenses', function (req, res, next) {
         if (!machine || !machine.hostname) {
             return res.sendStatus(404);
         }
-        licenseManager.getLicenses(machine.hostname, null,null, (err, results) => {
+        licenseManager.getLicenses(machine.hostname, null, null, (err, results) => {
             if (err) {
                 res.status(500);
                 res.send(err.message);
@@ -161,7 +144,7 @@ router.get('/:id/hsm/:hsmId/licenses', function (req, res, next) {
         if (!machine || !machine.hostname) {
             return res.sendStatus(404);
         }
-        licenseManager.getLicenses(machine.hostname, req.params.hsmId,null, (err, results) => {
+        licenseManager.getLicenses(machine.hostname, req.params.hsmId, null, (err, results) => {
             if (err) {
                 res.status(500);
                 res.send(err.message);
@@ -179,7 +162,7 @@ router.get('/:id/hsm/:hsmId/productcodes/:productCode', function (req, res, next
         if (!machine || !machine.hostname) {
             return res.sendStatus(404);
         }
-        licenseManager.getLicenses(machine.hostname, req.params.hsmId,req.params.productCode, (err, results) => {
+        licenseManager.getLicenses(machine.hostname, req.params.hsmId, req.params.productCode, (err, results) => {
             if (err) {
                 res.status(500);
                 res.send(err.message);

@@ -17,8 +17,8 @@
  * @returns {config}
  */
 
-var ENV_NAME = 'TDM_PM_CONFIG';
-var config = require('./config_defaults');
+const ENV_NAME = 'TDM_PM_CONFIG';
+const config = require('./config_defaults');
 
 if (process.env[ENV_NAME]) {
     console.info('Loading configuration file: ' + process.env[ENV_NAME]);
@@ -26,7 +26,7 @@ if (process.env[ENV_NAME]) {
     try {
         var customConfig = require('./' + process.env[ENV_NAME]);
         // override default values from custom configuration
-        for (var key in customConfig) {
+        for (const key in customConfig) {
             config[key] = customConfig[key];
         }
     }

@@ -1,7 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {TitleService} from '../../services/title.service';
 import {ObjectService} from '../../services/object.service';
-import {Machine} from '../../models/machine';
 import {MachineService} from '../../services/machine.service';
 import {MachineType} from '../../models/machineType';
 import {ShoppingCartService} from '../../services/shopping-cart.service';
@@ -151,20 +150,19 @@ export class MarketplaceComponent implements OnInit {
      * Fetches all objects from backend which matches to the selected machinetypes and materials.
      * If no machinetype is selected, all machinetypes are queried.
      * If no material is selected, all materials are queried.
-     * @param
      * @returns
      */
     private updateObjects() {
         if (this.machineTypes.length > 0 && this.materials.length > 0) {
 
             // setup machine type array
-            var machineTypeIds = this.machineTypesSelected;
+            let machineTypeIds = this.machineTypesSelected;
             if (machineTypeIds.length === 0) {
                 machineTypeIds = this.machineTypes.map(machineType => machineType.id);
             }
 
             // setup material type array
-            var materialIds = this.materialsSelected;
+            let materialIds = this.materialsSelected;
             if (materialIds.length === 0) {
                 materialIds = this.materials.map(material => material.id);
             }
@@ -180,7 +178,7 @@ export class MarketplaceComponent implements OnInit {
                 this.objectService.getObjects(filterId).subscribe(objects => {
                     if (this.searchQuery.length > 0) {
                         this.objects = objects.filter(object => {
-                            var include = false;
+                            let include = false;
                             include = include || object.name.toUpperCase().indexOf(this.searchQuery.toUpperCase()) !== -1;
                             include = include || object.description.toUpperCase().indexOf(this.searchQuery.toUpperCase()) !== -1;
                             return include;

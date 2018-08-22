@@ -2,7 +2,6 @@ const EventEmitter = require('events').EventEmitter;
 const util = require('util');
 const logger = require('../global/logger');
 const fs = require('fs');
-const CONFIG = require('../config/config_loader');
 const request = require('request');
 
 
@@ -52,10 +51,10 @@ UploadService.prototype.uploadObjectBinary = function (objectId, path, options, 
 
         callback(err)
     });
-    var form = req.form();
+    let form = req.form();
     const stats = fs.statSync(path);
     const fileSizeInBytes = stats.size;
-    var stream = fs.createReadStream(path);
+    const stream = fs.createReadStream(path);
     form.append('file', stream, {
         filename: objectId + '.iunoum3'
     });
@@ -64,7 +63,7 @@ UploadService.prototype.uploadObjectBinary = function (objectId, path, options, 
 };
 
 UploadService.prototype.observeUploadRequest = function (uploadId, req, bytesTotal) {
-    var upload = {
+    const upload = {
         id: uploadId,
         request: req,
         bytesTotal: bytesTotal,
@@ -77,9 +76,6 @@ UploadService.prototype.observeUploadRequest = function (uploadId, req, bytesTot
         let state = uploadService.getUploadState(uploadId);
         uploadService.emit('state_change', state)
     });
-    req.on('end', chunk => {
-        // logger.debug("Upload " + uploadId + " ended");
-    })
 };
 
 module.exports = uploadService;

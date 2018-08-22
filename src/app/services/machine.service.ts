@@ -3,7 +3,6 @@ import {HttpClient} from '@angular/common/http';
 import {Machine} from '../models/machine';
 import {BehaviorSubject} from 'rxjs';
 import {Observable} from 'rxjs';
-import {of} from 'rxjs';
 import {MachineType} from '../models/machineType';
 import {Material} from '../models/material';
 
@@ -54,9 +53,6 @@ export class MachineService {
                 lang: 'de'
             }
         });
-    }
-
-    updateMachineType() {
     }
 
     getAuthenticated(machineId: string) {

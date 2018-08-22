@@ -3,12 +3,11 @@
 /**
  * Module dependencies.
  */
+const app = require('../app');
+const debug = require('debug')('ProductionManager:server');
+const http = require('http');
 
-var app = require('../app');
-var debug = require('debug')('ProductionManager:server');
-var http = require('http');
-
-var timer = require('timers');
+require('timers');
 
 if (app.get('env') === 'development') {
     console.warn(' -- RUNNING DEVELOPMENT MODE --');
@@ -24,17 +23,17 @@ DownloadService.purgeDownloadFiles();
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '3042');
+const port = normalizePort(process.env.PORT || '3042');
 app.set('port', port);
 
 /**
  * Create HTTP server.
  */
 
-var server = http.createServer(app);
+const server = http.createServer(app);
 
-var io = require('socket.io').listen(app.listen(port));
-var ioController = require('../controller/socket_io_controller')(io);
+const io = require('socket.io').listen(app.listen(port));
+require('../controller/socket_io_controller')(io);
 
 // setup websocket clients
 app.ws_clients = {
@@ -54,7 +53,7 @@ server.on('listening', onListening);
  */
 
 function normalizePort(val) {
-    var port = parseInt(val, 10);
+    const port = parseInt(val, 10);
 
     if (isNaN(port)) {
         // named pipe
@@ -78,7 +77,7 @@ function onError(error) {
         throw error;
     }
 
-    var bind = typeof port === 'string'
+    const bind = typeof port === 'string'
         ? 'Pipe ' + port
         : 'Port ' + port;
 
@@ -102,8 +101,8 @@ function onError(error) {
  */
 
 function onListening() {
-    var addr = server.address();
-    var bind = typeof addr === 'string'
+    const addr = server.address();
+    const bind = typeof addr === 'string'
         ? 'pipe ' + addr
         : 'port ' + addr.port;
     debug('Listening on ' + bind);
@@ -114,7 +113,7 @@ function onListening() {
  * Don't crash on errors during production
  */
 
-if (app.get('env') != 'development') {
+if (app.get('env') !== 'development') {
     process.on('uncaughtException', function (err) {
         // handle the error safely
         console.error(err);

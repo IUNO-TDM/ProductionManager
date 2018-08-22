@@ -4,9 +4,9 @@
 
 const Order = require('../models/order');
 const LocalObject = require('../models/local_object');
-var logger = require('../global/logger');
-var orderStateMachine = require('../models/order_state_machine');
-var publishStateMachine = require('../models/publish_state_machine');
+const logger = require('../global/logger');
+const orderStateMachine = require('../models/order_state_machine');
+const publishStateMachine = require('../models/publish_state_machine');
 const downloadService = require('../services/download_service');
 const uploadService = require('../services/upload_service');
 
@@ -18,13 +18,13 @@ function onOrderNamespaceConnect(socket) {
         logger.info('[socket_io_controller] a user joins order ' + orderId + ' on socket ' + socket.id);
         socket.join(orderId);
 
-        if (orderId == 'allOrders') {
+        if (orderId === 'allOrders') {
             Order.find(function (error, orders) {
                 if (!orders || error) {
                     return
                 }
                 orders.forEach(order => {
-                    var state = order.state;
+                    const state = order.state;
                     socket.emit("state", {"orderNumber": order.id, "toState": state})
                 })
             })
@@ -33,7 +33,7 @@ function onOrderNamespaceConnect(socket) {
                 if (!order || error) {
                     return
                 }
-                var state = order.state;
+                const state = order.state;
                 socket.emit("state", {"orderNumber": order.id, "toState": state})
             })
         }
@@ -141,13 +141,13 @@ function onPublishNamespaceConnect(socket) {
         logger.info('[socket_io_controller] a user joins publish for  ' + localObjectId + ' on socket ' + socket.id);
         socket.join(localObjectId);
 
-        if (localObjectId == 'allObjects') {
+        if (localObjectId === 'allObjects') {
             LocalObject.find(function (error, objects) {
                 if (!objects || error) {
                     return
                 }
                 objects.forEach(object => {
-                    var state = object.state;
+                    const state = object.state;
                     socket.emit("state", {"localObjectId": object.id, "toState": state})
                 })
             })
@@ -156,7 +156,7 @@ function onPublishNamespaceConnect(socket) {
                 if (!object || error) {
                     return
                 }
-                var state = object.state;
+                const state = object.state;
                 socket.emit("state", {"localObjectId": object.id, "toState": state})
             })
         }
@@ -187,7 +187,7 @@ function registerPublishStateEvents(publishNamespace) {
             "toState": data.toState
         });
     });
-    publishStateMachine.on('upload_state_change', function(data){
+    publishStateMachine.on('upload_state_change', function (data) {
         publishNamespace.to(data.localObjectId).emit("uploadState", {
             localObjectId: data.localObjectId,
             state: data.state,
@@ -207,19 +207,19 @@ function registerPublishStateEvents(publishNamespace) {
 module.exports = function (io) {
     logger.info("[socket_io_controller] Installing socket_io_controller.");
 
-    var orderNamespace = io.of('/orders');
+    const orderNamespace = io.of('/orders');
     orderNamespace.on('connection', onOrderNamespaceConnect);
     registerOrderStateEvents(orderNamespace);
 
-    var downloadNamespace = io.of('/downloadservice');
+    const downloadNamespace = io.of('/downloadservice');
     downloadNamespace.on('connection', onDownloadNamespaceConnect);
     registerDownloadEvents(downloadNamespace);
 
-    var uploadNamespace = io.of('/uploadservice');
+    const uploadNamespace = io.of('/uploadservice');
     uploadNamespace.on('connection', onUploadNamespaceConnect);
     registerUploadEvents(uploadNamespace);
 
-    var publishNamespace = io.of('/publish');
+    const publishNamespace = io.of('/publish');
     publishNamespace.on('connection', onPublishNamespaceConnect);
     registerPublishStateEvents(publishNamespace);
 };

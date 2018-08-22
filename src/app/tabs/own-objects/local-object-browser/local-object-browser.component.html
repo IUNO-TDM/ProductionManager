@@ -1,14 +1,11 @@
 <div fxFlex fxLayout="row wrap" fxLayoutGap="15px">
     <mat-card *ngFor="let object of objects" class="object-card" (click)="onObjectClick(object)">
         <mat-card-header>
-          <mat-card-title i18n>{{object.name}}</mat-card-title>
-          <mat-card-subtitle>{{object.id}}</mat-card-subtitle>
-          <!-- <mat-card-subtitle>{{machine.hostname}}</mat-card-subtitle> -->
+            <mat-card-title i18n>{{object.name}}</mat-card-title>
+            <mat-card-subtitle>{{object.id}}</mat-card-subtitle>
         </mat-card-header>
         <mat-card-content fxLayoutAlign="center">
-          <img [src]="'api/localobjects/' + object.id + '/image'" class="object-image">
-          <!-- <div *ngIf="licensesChart"> -->
-          <!-- </div> -->
+            <img [src]="'api/localobjects/' + object.id + '/image'" class="object-image">
         </mat-card-content>
-      </mat-card>
-  </div>
+    </mat-card>
+</div>

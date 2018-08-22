@@ -24,6 +24,4 @@ self.PatchObject_Body = {
     additionalProperties: false
 };
 
-
-
 module.exports = self;

@@ -15,7 +15,6 @@ export class PurchasedObjectsComponent implements OnInit {
     objects: TdmObject[] = [];
     downloadStates = {};
     materials = [];
-    machineTypes = [];
     selectedObject: any = null;
     loading = true;
     orders = [];
@@ -48,9 +47,6 @@ export class PurchasedObjectsComponent implements OnInit {
 
     }
 
-    ngOnDestroy() {
-    }
-
     ngAfterViewInit() {
         this.titleService.setTitle('Gekaufte Objekte');
     }
@@ -69,7 +65,6 @@ export class PurchasedObjectsComponent implements OnInit {
         this.printDialogRef.afterClosed().subscribe((result: string) => {
             this.printDialogRef = null;
         });
-
     }
 
     deselectObject() {
@@ -77,12 +72,10 @@ export class PurchasedObjectsComponent implements OnInit {
     }
 
     isDownloadRequired(objectId) {
-        let downloadRequired = this.downloadStates[objectId] && this.downloadStates[objectId].isDownloadRequiredState();
-        return downloadRequired;
+        return this.downloadStates[objectId] && this.downloadStates[objectId].isDownloadRequiredState();
     }
 
     isPrintable(objectId) {
-        let printable = this.downloadStates[objectId] && this.downloadStates[objectId].isReadyState();
-        return printable;
+        return this.downloadStates[objectId] && this.downloadStates[objectId].isReadyState();
     }
 }

@@ -1,43 +1,46 @@
 <div fxFlex class="content" fxLayout="row wrap" fxLayoutGap="15px">
-  <ng-container *ngIf="!selectedMachine">
-    <mat-card *ngFor="let machine of machines" class="machine-card" fxFlex (click)="onMachineClick(machine)">
-      <mat-card-header>
-        <mat-card-title i18n>{{machine.displayname}}</mat-card-title>
-        <mat-card-subtitle>{{machine.variant}}</mat-card-subtitle>
-      </mat-card-header>
+    <ng-container *ngIf="!selectedMachine">
+        <mat-card *ngFor="let machine of machines" class="machine-card" fxFlex (click)="onMachineClick(machine)">
+            <mat-card-header>
+                <mat-card-title i18n>{{machine.displayname}}</mat-card-title>
+                <mat-card-subtitle>{{machine.variant}}</mat-card-subtitle>
+            </mat-card-header>
 
-      <mat-card-content fxLayoutAlign="center">
-        <ng-container *ngIf="!machine.isOnline;else webcam">
-          <div class="machine-image" fxLayoutAlign="center center">
-            Die Maschine ist offline
-          </div>
-        </ng-container>
-        <ng-template #webcam>
-          <ng-container *ngIf="machine.cameraSnapshot">
-            <img [src]="machine.cameraSnapshot" class="machine-image">
-          </ng-container>
-          <ng-container *ngIf="!machine.cameraSnapshot && cameraSnapshotStates[machine.id]=='updating'">
-            <div class="machine-image" fxLayoutAlign="center center">
-              <mat-progress-spinner mode="indeterminate" diameter="30" strokeWidth="2"></mat-progress-spinner>
+            <mat-card-content fxLayoutAlign="center">
+                <ng-container *ngIf="!machine.isOnline;else webcam">
+                    <div class="machine-image" fxLayoutAlign="center center">
+                        Die Maschine ist offline
+                    </div>
+                </ng-container>
+                <ng-template #webcam>
+                    <ng-container *ngIf="machine.cameraSnapshot">
+                        <img [src]="machine.cameraSnapshot" class="machine-image">
+                    </ng-container>
+                    <ng-container *ngIf="!machine.cameraSnapshot && cameraSnapshotStates[machine.id]=='updating'">
+                        <div class="machine-image" fxLayoutAlign="center center">
+                            <mat-progress-spinner mode="indeterminate" diameter="30"
+                                                  strokeWidth="2"></mat-progress-spinner>
+                        </div>
+                    </ng-container>
+                    <ng-container *ngIf="cameraSnapshotStates[machine.id]=='not available'">
+                        <div class="machine-image" fxLayoutAlign="center center">
+                            Nicht verfügbar
+                        </div>
+                    </ng-container>
+                </ng-template>
+            </mat-card-content>
+            <mat-card-footer>
+                <mat-icon [ngClass]="machine.isAuthenticated ? 'authenticated-icon' : 'not-authenticated-icon'">https
+                </mat-icon>
+            </mat-card-footer>
+        </mat-card>
+    </ng-container>
+    <ng-container *ngIf="selectedMachine">
+        <div fxLayout="column" fxLayoutGap="15px">
+            <div>
+                <button mat-button (click)="deselectMachine()">← Zurück</button>
             </div>
-          </ng-container>
-          <ng-container *ngIf="cameraSnapshotStates[machine.id]=='not available'">
-            <div class="machine-image" fxLayoutAlign="center center">
-              Nicht verfügbar
-            </div>
-          </ng-container>
-        </ng-template>
-      </mat-card-content>
-      <mat-card-footer>
-        <mat-icon [ngClass]="machine.isAuthenticated ? 'authenticated-icon' : 'not-authenticated-icon'">https</mat-icon></mat-card-footer>
-    </mat-card>
-  </ng-container>
-  <ng-container *ngIf="selectedMachine">
-    <div fxLayout="column" fxLayoutGap="15px">
-      <div>
-        <button mat-button (click)="deselectMachine()">← Zurück</button>
-      </div>
-      <app-machine [machine]="selectedMachine"></app-machine>
-    </div>
-  </ng-container>
+            <app-machine [machine]="selectedMachine"></app-machine>
+        </div>
+    </ng-container>
 </div>

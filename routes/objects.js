@@ -1,10 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const ams_adapter = require('../adapter/ams_adapter');
-const common = require('tdm-common');
-const fs = require('fs');
-const CONFIG = require('../config/config_loader');
-
 const logger = require('../global/logger');
 const Validator = require('express-json-validator-middleware').Validator;
 const validator = new Validator({allErrors: true});
@@ -21,9 +17,7 @@ router.get('/', validate({
     query: validation_schema.Object_Query,
     body: validation_schema.Empty
 }), function (req, res, next) {
-
-
-    const getObjects = function(filter){
+    const getObjects = function (filter) {
         //we always load all objects and then filter here. (filtering at the marketplace is to limited)
         ams_adapter.getObjects(filter.lang, [], [], filter.purchased, (err, objects) => {
             if (err) {
@@ -32,7 +26,7 @@ router.get('/', validate({
 
             const filteredObjects = objects.filter(object => {
                 //first check machine type:
-                if(filter.machines && filter.machines.length > 0){
+                if (filter.machines && filter.machines.length > 0) {
                     let machineFit = false;
                     for (let i = 0; i < filter.machines.length; i++) {
                         if (machineFit) {
@@ -49,7 +43,7 @@ router.get('/', validate({
                         return false;
                     }
                 }
-                if(filter.materials && filter.materials.length > 0){
+                if (filter.materials && filter.materials.length > 0) {
                     for (let i = 0; i < object.materials.length; i++) {
                         let match = false;
                         for (let j = 0; j < filter.materials.length; j++) {
@@ -65,7 +59,7 @@ router.get('/', validate({
                 }
 
 
-                    return true;
+                return true;
             });
             res.json(filteredObjects ? filteredObjects : [])
 
@@ -79,56 +73,15 @@ router.get('/', validate({
         if (err) {
             logger.fatal("Problems getting filter", err);
             return res.sendStatus(400);
-        }else{
-            if(!filter){
+        } else {
+            if (!filter) {
                 res.status(404).send({message: "Filter not found"})
-            }else{
+            } else {
 
                 getObjects(filter);
             }
         }
-
     });
-
-
-
-});
-
-router.post('/', function (req, res, next) {
-
-    const gcode = 'BlaFasel'; //TODO: get the real gcode with fs.readFileSync(gcode_path, 'utf8');
-    const encryptionResult = encryption.encryptGCode(gcode);
-
-    var od = {};
-    od.components = ["adb4c297-45bd-437e-ac90-a33d0f24de7e", "763c926e-a5f7-4ba0-927d-b4e038ea2735"];
-    // od.encryptedBinary = "c2RmZ2hqa2zDtmhnZmRzeWZnaGpraGdmZHh5c2ZnaGprbGhnZmRzeWZnaGprbGpoZ2Zkc3lmZ2hqa2zDtmpoZ2ZkaGprbMO2amhnZmRzdG8=";
-    // od.licenseType = 0
-    od.description = "dfghjkl";
-    od.licenseFee = 1;
-    od.title = "Dies ist ein günstiges Teil";
-    od.backgroundColor = "#777777";
-    od.encryptedKey = encryptionResult.keyBundleB64;
-
-    ams_adapter.saveObject(od, function (err, dataId) {
-
-        ams_adapter.uploadFile(dataId, encryptionResult.encryptedFileBuffer, (err) => {
-            if (err) {
-                if (err.statusCode >= 500) {
-                    return next(err);
-                }
-                return res.sendStatus(err.statusCode);
-
-                //TODO: Following is example code for create a decryption bundle for the ultimaker
-                const productCode = 12345; //TODO: get this from the actual object
-                const decryptionBundle = encryption.createDecryptionBundle(
-                    encryptionResult.keyBundleB64,
-                    productCode,
-                    encryptionResult.encryptedFileBuffer);
-            }
-
-            return res.sendStatus(201);
-        })
-    })
 });
 
 router.get('/:id/binary', validate({

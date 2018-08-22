@@ -79,7 +79,7 @@ export class MachineComponent implements OnInit {
         setTimeout(() => {
 
             this.checkAuthenticated();
-        },2000);
+        }, 2000);
     }
 
     updateMaterials() {

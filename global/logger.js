@@ -5,11 +5,11 @@
  *  var logger = require('../global/logger');
  *  logger.debug('Foo');
  */
-var winston = require('winston');
-var config = require('../config/config_loader');
+const winston = require('winston');
+const config = require('../config/config_loader');
 
 // Set up logger
-var customColors = {
+const customColors = {
     trace: 'white',
     debug: 'green',
     info: 'green',
@@ -18,7 +18,7 @@ var customColors = {
     fatal: 'red'
 };
 
-var logger = new (winston.Logger)({
+const logger = new (winston.Logger)({
     colors: customColors,
     levels: {
         fatal: 1,
@@ -41,10 +41,10 @@ var logger = new (winston.Logger)({
 winston.addColors(customColors);
 
 //Logging wrapper, to remove "unknown function" warnings
-var origLog = logger.log;
+const origLog = logger.log;
 logger.log = function (level, msg) {
     if (arguments.length > 2) {
-        for (var i = 2; i < arguments.length; i++) {
+        for (let i = 2; i < arguments.length; i++) {
             msg += ' ' + JSON.stringify(arguments[i]);
         }
     }
@@ -55,50 +55,50 @@ logger.log = function (level, msg) {
     origLog.call(logger, level, msg);
 };
 
-var origFatal = logger.fatal;
+const origFatal = logger.fatal;
 logger.fatal = function (msg) {
     if (arguments.length > 1) {
-        for (var i = 1; i < arguments.length; i++) {
+        for (let i = 1; i < arguments.length; i++) {
             msg += ' ' + JSON.stringify(arguments[i]);
         }
     }
     origFatal.call(logger, msg);
 };
 
-var origCrit = logger.crit;
+const origCrit = logger.crit;
 logger.crit = function (msg) {
     if (arguments.length > 1) {
-        for (var i = 1; i < arguments.length; i++) {
+        for (let i = 1; i < arguments.length; i++) {
             msg += ' ' + JSON.stringify(arguments[i]);
         }
     }
     origCrit.call(logger, msg);
 };
 
-var origWarn = logger.warn;
+const origWarn = logger.warn;
 logger.warn = function (msg) {
     if (arguments.length > 1) {
-        for (var i = 1; i < arguments.length; i++) {
+        for (let i = 1; i < arguments.length; i++) {
             msg += ' ' + JSON.stringify(arguments[i]);
         }
     }
     origWarn.call(logger, msg);
 };
 
-var origInfo = logger.info;
+const origInfo = logger.info;
 logger.info = function (msg) {
     if (arguments.length > 1) {
-        for (var i = 1; i < arguments.length; i++) {
+        for (let i = 1; i < arguments.length; i++) {
             msg += ' ' + JSON.stringify(arguments[i]);
         }
     }
     origInfo.call(logger, msg);
 };
 
-var origDebug = logger.debug;
+const origDebug = logger.debug;
 logger.debug = function (msg) {
     if (arguments.length > 1) {
-        for (var i = 1; i < arguments.length; i++) {
+        for (let i = 1; i < arguments.length; i++) {
             msg += ' ' + JSON.stringify(arguments[i]);
         }
     }
@@ -106,14 +106,14 @@ logger.debug = function (msg) {
 };
 
 // Always log the error trace when tracing
-var origTrace = logger.trace;
+const origTrace = logger.trace;
 logger.trace = function (msg) {
-    var objType = Object.prototype.toString.call(msg);
+    const objType = Object.prototype.toString.call(msg);
     if (objType === '[object Error]') {
         origTrace.call(logger, msg);
     } else {
         if (arguments.length > 1) {
-            for (var i = 1; i < arguments.length; i++) {
+            for (let i = 1; i < arguments.length; i++) {
                 msg += ' ' + JSON.stringify(arguments[i]);
             }
         }

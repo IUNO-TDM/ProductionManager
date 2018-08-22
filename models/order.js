@@ -1,6 +1,6 @@
-var mongoose = require('mongoose');
+const mongoose = require('mongoose');
 
-var OrderSchema = new mongoose.Schema({
+const OrderSchema = new mongoose.Schema({
     items: [
         {
             dataId: String,
@@ -13,7 +13,7 @@ var OrderSchema = new mongoose.Schema({
     },
     hsmId: String,
     state: String,
-    createdAt: { type: Date, default: Date.now }
+    createdAt: {type: Date, default: Date.now}
 });
 
 module.exports = mongoose.model('Order', OrderSchema);

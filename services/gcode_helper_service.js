@@ -1,10 +1,9 @@
-
 const logger = require('../global/logger');
 const LineByLineReader = require('line-by-line');
 
 var self = {};
 
-self.extractMaterials = function(pathToGcode, callback){
+self.extractMaterials = function (pathToGcode, callback) {
 
     var lineReader = new LineByLineReader(pathToGcode);
     var materials = [];
@@ -13,15 +12,15 @@ self.extractMaterials = function(pathToGcode, callback){
         callback(err, null);
     });
 
-    lineReader.on('line', (line) =>{
-        if(line.indexOf("MATERIAL.GUID:") !== -1){
+    lineReader.on('line', (line) => {
+        if (line.indexOf("MATERIAL.GUID:") !== -1) {
             materials.push(line.split(':')[1]);
         }
-        if(!line.startsWith(';')){
+        if (!line.startsWith(';')) {
             lineReader.close();
         }
     });
-    lineReader.on('end', function(){
+    lineReader.on('end', function () {
         callback(null, materials);
     })
 };

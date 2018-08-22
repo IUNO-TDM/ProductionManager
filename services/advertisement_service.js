@@ -1,6 +1,5 @@
 var dnssd = require('dnssd');
 const logger = require('../global/logger');
-const os = require('os');
 
 const AdvertisementService = function (servicename, port) {
 

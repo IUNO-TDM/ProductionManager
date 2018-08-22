@@ -1,11 +1,10 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef, MatRadioChange} from '@angular/material';
 import {LocalObject} from '../models/localObject';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {FormBuilder} from '@angular/forms';
 import {TdmObject} from '../models/object';
 import {MachineService} from '../services/machine.service';
 import {Machine} from '../models/machine';
-import {MaterialDefinition} from '../models/materialDefinition';
 import {MaterialService} from '../services/material.service';
 import {ObjectService} from '../services/object.service';
 import {LocalObjectService} from '../services/local-object.service';
@@ -25,8 +24,6 @@ export class PrintDialogComponent implements OnInit {
     private licenseCounts = {};
 
     materialDefinitions = [];
-
-    // private publishInfos: FormGroup;
 
     constructor(public dialogRef: MatDialogRef<PrintDialogComponent>,
                 @Inject(MAT_DIALOG_DATA) public data: any, formBuilder: FormBuilder, private machineService: MachineService,

@@ -46,15 +46,11 @@ const updateMachine = function (machine, callback) {
             machine.displayname = results[1];
             machine.variant = results[2];
             machine.hsmIds = results[3];
-            if (results[4] && results[4].message === "ok"){
-                machine.isAuthenticated = true;
-            }else{
-                machine.isAuthenticated = false;
-            }
+            machine.isAuthenticated = !!(results[4] && results[4].message === "ok");
 
             machine.isOnline = true;
             if (machine.hsmIds && machine.hsmIds.length > 0) {
-                for (var i = 0; i < machine.hsmIds.length; i++) {
+                for (let i = 0; i < machine.hsmIds.length; i++) {
                     licenseClient.registerHsmId(machine.hsmIds[i]);
                 }
             }

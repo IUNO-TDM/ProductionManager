@@ -14,8 +14,8 @@ export class DownloadState {
     READY_STATE = 'ready';
 
     state: string = this.UNKNOWN_STATE;
-    bytesTotal: number = -1;
-    bytesDownloaded: number = -1;
+    bytesTotal = -1;
+    bytesDownloaded = -1;
 
     /**
      * Constructor of DownloadState
@@ -49,6 +49,7 @@ export class DownloadState {
 @Injectable({
     providedIn: 'root'
 })
+
 export class ObjectService {
     private apiUrl = '/api/';
     private downloadStates = {};
@@ -62,7 +63,7 @@ export class ObjectService {
         this.locale = locale;
         console.log('Locale: ' + locale);
         this.downloadSocketService.getUpdates('state_change').subscribe(state => {
-            var downloadState = this.downloadStates[state.id];
+            const downloadState = this.downloadStates[state.id];
             if (downloadState) {
                 downloadState.next(new DownloadState(state));
             }
@@ -79,24 +80,9 @@ export class ObjectService {
      */
     getObjects(filterId: string) {
         const url = this.apiUrl + 'objects';
-        var params = {};
+        const params = {};
 
         params['filter'] = filterId;
-        // add language to query parameters
-        //FIXME: set correct language. But be careful, LOCALE_ID is now like 'en-US' instead of 'en'
-        // params['lang'] = 'de';
-
-        // add machine types to query parameters
-        // for (var i = 0; i < machineTypes.length; i += 1) {
-        //     params['machines[' + i + ']'] = machineTypes[i];
-        // }
-
-        // add materials to query parameters
-        // for (var i = 0; i < materials.length; i += 1) {
-        //     params['materials[' + i + ']'] = materials[i];
-        // }
-
-        // params['purchased'] = purchased ? 'true' : 'false';
 
         return this.http.get<TdmObject[]>(url, {
             params: params
@@ -110,7 +96,7 @@ export class ObjectService {
      */
     getObject(id: string) {
         const url = this.apiUrl + 'objects';
-        var params = {};
+        const params = {};
 
         // add language to query parameters
         //FIXME: set correct language. But be careful, LOCALE_ID is now like 'en-US' instead of 'en'
@@ -123,11 +109,6 @@ export class ObjectService {
                 return object.id === id;
             }))
         );
-    }
-
-    getImage(id: string) {
-        const url = this.apiUrl + 'objects/' + id + '/image';
-        return this.http.get(url, {responseType: 'blob'});
     }
 
     /**
@@ -147,7 +128,7 @@ export class ObjectService {
      * @returns a BehaviorSubject for the download state of the provided object id. The initial value of the subject is null.
      */
     getDownloadState(id: string): BehaviorSubject<DownloadState> {
-        var downloadState: BehaviorSubject<DownloadState> = this.downloadStates[id];
+        let downloadState: BehaviorSubject<DownloadState> = this.downloadStates[id];
         if (!downloadState) {
             // No download state exists. Create a new BehaviorSubject and join
             // the socket.id room for state change events of the provided object id.

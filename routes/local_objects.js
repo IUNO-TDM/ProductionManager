@@ -1,8 +1,7 @@
-var express = require('express');
-var router = express.Router();
-var mongoose = require('mongoose');
-var LocalObject = require('../models/local_object');
-var unzipper = require('unzipper');
+const express = require('express');
+const router = express.Router();
+const LocalObject = require('../models/local_object');
+const unzipper = require('unzipper');
 const fs = require('fs');
 const helper = require('../services/helper_service');
 const CONFIG = require('../config/config_loader');
@@ -13,7 +12,7 @@ const Machine = require('../models/machine');
 const publishStateMachine = require('../models/publish_state_machine');
 const path = require('path');
 
-var _ = require('lodash');
+const _ = require('lodash');
 _.mapPick = function (objs, keys) {
     return _.map(objs, function (obj) {
         return _.pick(obj, keys)
@@ -73,7 +72,7 @@ router.post('/', require('../services/file_upload_handler'), function (req, res,
         return res.sendStatus(400);
     }
 
-    var localObj = {
+    const localObj = {
         name: req.body.title,
         createdAt: Date(),
         machines: [
@@ -86,8 +85,8 @@ router.post('/', require('../services/file_upload_handler'), function (req, res,
     LocalObject.create(localObj, function (err, locObj) {
         if (err) return next(err);
 
-        var stats = fs.statSync(req.file.path);
-        var fileSizeInBytes = stats["size"];
+        const stats = fs.statSync(req.file.path);
+        const fileSizeInBytes = stats["size"];
         if (fileSizeInBytes === 0) {
             deleteFile(req.file.path);
             res.status(400);
@@ -99,12 +98,12 @@ router.post('/', require('../services/file_upload_handler'), function (req, res,
         res.set('Location', fullUrl + locObj["id"]);
         res.sendStatus(201);
 
-        var gcode_filepath;
-        var image_filepath;
+        let gcode_filepath;
+        let image_filepath;
         const filepath_components = path.parse(req.file.path);
         fs.createReadStream(req.file.path).pipe(unzipper.Parse()).on('entry', function (entry) {
-            var fileName = entry.path;
-            var type = entry.type; // 'Directory' or 'File'
+            let fileName = entry.path;
+            let type = entry.type; // 'Directory' or 'File'
             if (type === 'File' && fileName.endsWith('.gcode')) {
                 gcode_filepath = CONFIG.FILE_DIR + '/'
                     + filepath_components.name
@@ -146,25 +145,25 @@ router.post('/', require('../services/file_upload_handler'), function (req, res,
 });
 
 
-router.patch('/:id', function(req, res, next){
-    LocalObject.findById(req.params.id, (err, localObject)=>{
-        if(err){
+router.patch('/:id', function (req, res, next) {
+    LocalObject.findById(req.params.id, (err, localObject) => {
+        if (err) {
             return res.status(500).send(err);
-        }else if(!localObject){
+        } else if (!localObject) {
             return res.sendStatus(404);
         }
-        for(let key in req.body){
-            if(key === 'name'){
+        for (let key in req.body) {
+            if (key === 'name') {
                 localObject.name = req.body[key]
             }
-            else if(key === 'description'){
+            else if (key === 'description') {
                 localObject.description = req.body[key]
             }
         }
-        localObject.save((err)=>{
-            if(err){
+        localObject.save((err) => {
+            if (err) {
                 res.status(500).send(err);
-            }else{
+            } else {
 
                 res.json(_.pick(localObject, ['id', 'name', 'description', 'createdAt', 'materials', 'machines']));
             }
@@ -259,7 +258,7 @@ router.post('/:id/print', function (req, res, next) {
             return next(err);
         }
         if (!object) {
-            return res.status(404), res.send("No local object with this id");
+            return res.status(404).send("No local object with this id");
         }
 
         Machine.findById(req.body.machineId, function (err, machine) {
@@ -267,10 +266,10 @@ router.post('/:id/print', function (req, res, next) {
                 return res.next(err);
             }
             if (!machine) {
-                return res.status(404), res.send("Machine not found");
+                return res.status(404).send("Machine not found");
             }
             if (!machine.auth_id && !machine.auth_key) {
-                return res.status(405), res.send("not authenticated at the machine");
+                return res.status(405).send("not authenticated at the machine");
             }
             ultimaker_printer_adapter.uploadPrintjob(machine.hostname, machine.auth_id, machine.auth_key, object.name, object.gcode_filepath, function (err, data) {
                 if (err) {

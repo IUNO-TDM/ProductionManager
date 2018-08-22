@@ -7,7 +7,8 @@
             <div fxFlex fxLayoutAlign="center" fxLayoutGap="15px">
                 <button mat-button class="lightupper" (click)="onMarketplaceButtonClicked()">Marktplatz</button>
                 <button mat-button class="lightupper" (click)="onMachinesButtonClicked()">Maschinen</button>
-                <button mat-button class="lightupper" (click)="onPurchasedObjectsButtonClicked()">Gekaufte Objekte</button>
+                <button mat-button class="lightupper" (click)="onPurchasedObjectsButtonClicked()">Gekaufte Objekte
+                </button>
                 <button mat-button class="lightupper" (click)="onOwnObjectsButtonClicked()">Eigene Objekte</button>
             </div>
             <div fxFlex="15">
@@ -19,88 +20,4 @@
             <router-outlet></router-outlet>
         </div>
     </div>
-    <!-- <mat-sidenav-container class="container" fxFlex>
-        <mat-sidenav fxLayout="column" #drawer class="sidenav mat-elevation-z6" mode="side" opened="true" fxFlex="300px">
-            <div class="main-header" fxFlex="64px" fxLayoutAlign="center center">
-                TDM-Production-Manager
-            </div>
-            <hr>
-        </mat-sidenav>
-        <mat-sidenav-content fxFlex fxLayout="column" fxLayoutGap="30px">
-            <div fxFlex fxLayoutAlign="center">
-                <div class="content" fxFlex>
-                    <router-outlet></router-outlet>
-                </div>
-            </div>
-        </mat-sidenav-content>
-    </mat-sidenav-container> -->
 </div>
-
-
-<!-- Sidebar -->
-<!-- <div class="app" fxLayout="column">
-            <mat-sidenav-container class="container" fxFlex>
-                <mat-sidenav fxLayout="column" #drawer class="sidenav mat-elevation-z6" mode="side" opened="true" fxFlex="300px">
-                    <div class="main-header" fxFlex="64px" fxLayoutAlign="center center">
-                        TDM-Production-Manager
-                    </div>
-                    <hr>
-                    <mat-nav-list fxFlex>
-                        <a mat-list-item (click)="onMarketplaceButtonClicked()" class="nav-button">Marktplatz</a>
-                        <a mat-list-item (click)="onMachinesButtonClicked()" class="nav-button">Maschinen</a>
-                        <a mat-list-item (click)="onPurchasedObjectsButtonClicked()" class="nav-button">Gekaufte Objekte</a>
-                        <a mat-list-item (click)="onOwnObjectsButtonClicked()" class="nav-button">Eigene Objekte</a>
-                    </mat-nav-list>
-                </mat-sidenav>
-                <mat-sidenav-content fxFlex fxLayout="column" fxLayoutGap="30px">
-                    <mat-toolbar color="primary">
-                        <mat-toolbar-row>
-                            <button type="button" mat-button (click)="drawer.toggle()">
-                                <mat-icon>menu</mat-icon>
-                            </button>
-                            <span>{{navigationTitle}}</span>
-                            <span class="spacer"></span>
-                        </mat-toolbar-row>
-                    </mat-toolbar>
-                    <div fxFlex fxLayoutAlign="center">
-                        <div class="content" fxFlex>
-                            <router-outlet></router-outlet>
-                        </div>
-                    </div>
-                </mat-sidenav-content>
-            </mat-sidenav-container>
-        </div> -->
-
-
-<!-- TABS -->
-
-<!-- <div class="app" fxLayout="column">
-    <mat-toolbar color="primary">
-        <mat-toolbar-row>
-            <span>TDM-Production-Manager</span>
-            <span class="pm-spacer"></span>
-        </mat-toolbar-row>
-    </mat-toolbar>
-    <mat-tab-group fxFill>
-        <mat-tab label="Marktplatz">
-            <ng-template matTabContent>
-                <app-marketplace></app-marketplace>
-            </ng-template>
-        </mat-tab>
-        <mat-tab label="Maschinen">
-            <ng-template matTabContent>
-                <app-machines fxFill></app-machines>
-            </ng-template>
-        </mat-tab>
-        <mat-tab label="Gekaufte Objekte">
-            <ng-template matTabContent>
-                <app-purchased-objects></app-purchased-objects>
-            </ng-template>
-        </mat-tab>
-        <mat-tab label="Eigene Objekte">
-            <ng-template matTabContent>
-                <app-own-objects></app-own-objects>
-            </ng-template>
-        </mat-tab>
-    </mat-tab-group>
-</div> -->

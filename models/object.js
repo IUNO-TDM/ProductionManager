@@ -1,6 +1,6 @@
-var mongoose = require('mongoose');
+const mongoose = require('mongoose');
 
-var PurchasedObjectSchema = new mongoose.Schema({
+const PurchasedObjectSchema = new mongoose.Schema({
     dataId: String,
     name: String,
     state: String,

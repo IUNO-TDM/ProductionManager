@@ -1,7 +1,6 @@
 const EventEmitter = require('events').EventEmitter;
 const util = require('util');
 const logger = require('../global/logger');
-const ams_adapter = require('../adapter/ams_adapter');
 const fs = require('fs');
 const CONFIG = require('../config/config_loader');
 const request = require('request');
@@ -18,10 +17,10 @@ util.inherits(DownloadService, EventEmitter);
  * Removes *.download files (unfinished downloads) from the CONFIG.FILE_DIR directory.
  * This function should only be called in the webserver startup sequence.
  */
-DownloadService.prototype.purgeDownloadFiles = function() {
-    var files = fs.readdirSync(CONFIG.FILE_DIR);
-    for (var i = 0; i < files.length; i += 1) {
-        var filePath = CONFIG.FILE_DIR + '/' + files[i];
+DownloadService.prototype.purgeDownloadFiles = function () {
+    const files = fs.readdirSync(CONFIG.FILE_DIR);
+    for (let i = 0; i < files.length; i += 1) {
+        const filePath = CONFIG.FILE_DIR + '/' + files[i];
         if (fs.statSync(filePath).isFile() && filePath.endsWith(".download")) {
             fs.unlinkSync(filePath)
         }
@@ -33,14 +32,11 @@ DownloadService.prototype.getPath = function (downloadId) {
         throw "Not a valid objectid"
     }
 
-    let path = CONFIG.FILE_DIR + '/' + downloadId + '.iunoum3';
-    return path
+    return CONFIG.FILE_DIR + '/' + downloadId + '.iunoum3'
 };
 
 DownloadService.prototype.getDownloadingPath = function (downloadId) {
-    var path = this.getPath(downloadId);
-    path += ".download";
-    return path
+    return this.getPath(downloadId) + ".download"
 };
 
 DownloadService.prototype.getDownloadState = function (downloadId) {
@@ -54,7 +50,6 @@ DownloadService.prototype.getDownloadState = function (downloadId) {
         }
     } else {
         let path = this.getPath(downloadId);
-        let downloadingPath = this.getDownloadingPath(downloadId);
         if (fs.existsSync(path)) {
             const stats = fs.statSync(path);
             const fileSizeInBytes = stats.size;
@@ -75,14 +70,10 @@ DownloadService.prototype.getDownloadState = function (downloadId) {
     }
 };
 
-DownloadService.prototype.download = function (options, targetPath) {
-
-};
-
 DownloadService.prototype.downloadObjectBinary = function (objectId, productCode, options) {
     let downloadingPath = downloadService.getDownloadingPath(objectId);
 
-    var outStream = fs.createWriteStream(downloadingPath);
+    let outStream = fs.createWriteStream(downloadingPath);
     let req = request(options, function (err, r, binary) {
         if (err) {
             logger.crit(err)
@@ -93,7 +84,7 @@ DownloadService.prototype.downloadObjectBinary = function (objectId, productCode
         downloadService.emit('state_change', state)
     });
     req.on('response', data => {
-        var key = data.headers['key'];
+        const key = data.headers['key'];
         // decode base64 string into buffer
         const encryptedKeyBuffer = Buffer.from(key, 'base64');
 
@@ -110,7 +101,7 @@ DownloadService.prototype.downloadObjectBinary = function (objectId, productCode
 };
 
 DownloadService.prototype.observeDownloadRequest = function (downloadId, req) {
-    var download = {
+    const download = {
         id: downloadId,
         request: req,
         bytesTotal: -1,
@@ -127,73 +118,14 @@ DownloadService.prototype.observeDownloadRequest = function (downloadId, req) {
         download.bytesDownloaded += chunk.length;
         let state = downloadService.getDownloadState(downloadId);
         downloadService.emit('state_change', state)
-
-        // var now = new Date().getTime();
-        // while(new Date().getTime() < now + 25){ /* do nothing */ }
-        // console.log("data received!")
     });
     req.on('end', chunk => {
-        // download.state = 'ready'
         delete this.downloads[downloadId]
-        // let state = downloadService.getDownloadState(downloadId)
-        // downloadService.emit('state_change', state)
     })
 };
 
 DownloadService.prototype.cancelDownload = function (downloadId) {
     download.request.abort()
 };
-
-// var self = {};
-// self.downloadRequests = []
-
-// self.downloadBinary = function (objectId, callback) {
-//     console.log("Hallo!")
-//     if (!/^[0-9a-zA-Z\-]+$/.test(objectId)) {
-//         callback("Not a valid objectid")
-//         return
-//     }
-
-//     let path = CONFIG.FILE_DIR + '/' + objectId + '.dat'
-//     if (fs.existsSync(path)) {
-//         callback("file already exists")
-//         return
-//     }
-
-//     var dl = downloader.download(url, path)
-//     dl.start()
-
-//     self.downloadRequests.push({
-//         id: objectId,
-//         callback: callback
-//     })
-
-//     // console.log("Download handlers:")
-//     // console.log(self.downloadRequests)
-//     // console.log("------------------")
-
-//     // console.log("GO")
-//     ams_adapter.getBinaryForObjectWithId(objectId, (err, binary, key) => {
-//         console.log("GO1")
-//         if (err) {
-//             console.log("GO2")
-//             callback(err)
-//             console.log("GO3")
-//             return
-//         } else {
-//             console.log("1")
-//             // fs.writeFile(path, key, function (err) {
-//             //     if (!err) {
-//             //         fs.appendFile(path, binary, function (err) {
-//             //             console.log("2")
-//             //             callback(err)
-//             //             console.log("3")
-//             //         })
-//             //     }
-//             // })
-//             console.log("4")
-//         }
-//     })
-// }
 
 module.exports = downloadService;

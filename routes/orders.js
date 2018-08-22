@@ -1,11 +1,7 @@
-var express = require('express');
-var router = express.Router();
-var mongoose = require('mongoose');
-var Order = require('../models/order');
-var async = require('async');
-var parseString = require('xml2js').parseString;
-var _ = require('lodash');
-var request = require('request');
+const express = require('express');
+const router = express.Router();
+const Order = require('../models/order');
+const _ = require('lodash');
 const orderStateMachine = require('../models/order_state_machine');
 
 _.mapPick = function (objs, keys) {
@@ -14,7 +10,7 @@ _.mapPick = function (objs, keys) {
     })
 };
 
-_.mapReturnValues = function(elements) {
+_.mapReturnValues = function (elements) {
     return _.mapPick(elements, ['id', 'orderNumber', 'createdAt', 'offer', 'items', 'state'])
 };
 
@@ -39,7 +35,7 @@ router.get('/:id', function (req, res, next) {
 });
 
 router.delete('/:id', function (req, res, next) {
-    Order.remove({_id: req.params.id}, function(err, order) {
+    Order.remove({_id: req.params.id}, function (err, order) {
         if (err) {
             return next(err);
         }
@@ -50,18 +46,13 @@ router.delete('/:id', function (req, res, next) {
 });
 
 router.get('/:id/licenseupdate', function (req, res, next) {
-    console.log("Licenseopdate of id '"+req.params.id+"'");
+    console.log("Licenseopdate of id '" + req.params.id + "'");
     Order.findById(req.params.id, function (err, order) {
-        if (order.state == 'licenseUpdateAvailable') {
+        if (order.state === 'licenseUpdateAvailable') {
             orderStateMachine.licenseUpdateAvailable(order)
-        } else if (order.state == 'licenseUpdateError') {
+        } else if (order.state === 'licenseUpdateError') {
             orderStateMachine.licenseUpdateAvailable(order)
         }
-        // if (err) {
-        //     return next(err);
-        // }
-
-        // res.json(_.pick(order, ['_id', 'orderNumber', 'items', 'createdAt']));
     })
 });
 

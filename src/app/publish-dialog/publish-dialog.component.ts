@@ -26,10 +26,10 @@ export class PublishDialogComponent implements OnInit {
     }
 
     onPublishClicked() {
-        this.dialogRef.close(this.publishInfos.value)
+        this.dialogRef.close(this.publishInfos.value);
     }
 
     onCancelClicked() {
-        this.dialogRef.close(null)
+        this.dialogRef.close(null);
     }
 }

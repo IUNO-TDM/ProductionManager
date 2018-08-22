@@ -4,7 +4,6 @@
 
 const machina = require('machina');
 const logger = require('../global/logger');
-const Order = require('../models/order');
 const TdmObject = require('../models/object');
 
 const stateMachine = new machina.BehavioralFsm({

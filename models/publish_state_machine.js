@@ -4,8 +4,6 @@
 
 const machina = require('machina');
 const logger = require('../global/logger');
-const Order = require('../models/order');
-const LocalObject = require('../models/local_object');
 
 const IUNOm3Encryption = require('../services/iuno_m3_encryption');
 const ams_adapter = require('../adapter/ams_adapter');
@@ -147,26 +145,26 @@ const stateMachine = new machina.BehavioralFsm({
             }
         },
         uploadingImage: {
-            _onEnter: function(localObject) {
+            _onEnter: function (localObject) {
 
                 if (fs.existsSync(localObject.image_filepath)) {
                     ams_adapter.uploadImage(localObject.marketplaceObjectId, localObject.image_filepath, (err, data) => {
-                        if(err){
+                        if (err) {
                             logger.warn("Error while uploading image", err);
                             this.transition(localObject, 'imageUploadError');
-                        }else{
+                        } else {
 
                             this.transition(localObject, 'imageUploaded');
                         }
                     });
-                }else{
-                    this.transition (localObject, 'uploading');
+                } else {
+                    this.transition(localObject, 'uploading');
                 }
             }
         },
         imageUploaded: {
-            _onEnter: function(localObject) {
-                this.transition (localObject, 'uploading');
+            _onEnter: function (localObject) {
+                this.transition(localObject, 'uploading');
             }
         },
 

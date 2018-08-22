@@ -1,87 +1,81 @@
 <ng-container *ngIf="!loading">
-  <div fxLayout="row" style='height: 100%;'>
-    <div class="sidebar" fxLayout="column">
-      <div class="sidebar-item-container">
-        <form>
-          <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
-            <mat-icon matPrefix>search</mat-icon>
-            <mat-form-field class="example-full-width" floatLabel="never">
-              <input type="text" name="searchQuery" matInput placeholder="Suchen" [(ngModel)]="searchQuery" (input)="onSearchQueryChanged()">
-            </mat-form-field>
-          </div>
-        </form>
-      </div>
-      <div class="sidebar-item-container">
-        <h1 class="title">Material</h1>
-        <mat-checkbox *ngFor="let material of materials" class="filter-item" color="primary" [checked]="isMaterialSelected(material.id)"
-          (change)="onMaterialCheckboxChanged(material.id, $event.checked)">{{material.name}}</mat-checkbox>
-      </div>
-      <div class="sidebar-item-container">
-        <h1 class="title">Maschinen</h1>
-        <mat-checkbox *ngFor="let machineType of machineTypes" class="filter-item" color="primary" [checked]="isMachineTypeSelected(machineType.id)"
-          (change)="onMachineTypeCheckboxChanged(machineType.id, $event.checked)">{{machineType.name}}</mat-checkbox>
-      </div>
-      <div class="sidebar-item-container" fxLayout="column">
-        <button *ngIf="shoppingCartItemCount == 0" mat-raised-button color="primary" (click)="onShoppingCartClicked()">
-          <mat-icon>shopping_cart</mat-icon> Warenkorb</button>
-        <button *ngIf="shoppingCartItemCount > 0" mat-raised-button color="primary" (click)="onShoppingCartClicked()">
-          <mat-icon>shopping_cart</mat-icon> Warenkorb ({{shoppingCartItemCount}})</button>
-      </div>
-      <div fxFlex></div>
-    </div>
-    <ng-container *ngIf="loading">
-      <div fxFlex fxLayoutAlign="center center">
-        <mat-progress-spinner mode="indeterminate" diameter="30" strokeWidth="2"></mat-progress-spinner>
-      </div>
-    </ng-container>
-    <ng-container *ngIf="!loading">
-      <div fxFlex fxLayoutAlign="center">
-        <div class="content" fxFlex>
-          <ng-container *ngIf="selectedObject">
-            <div fxLayout="column" fxLayoutGap="15px">
-              <div>
-                <button mat-button (click)="deselectObject()">← Zurück</button>
-              </div>
-              <app-object-details [object]="selectedObject">
-                  <app-object-details-actions>
-                      <button mat-raised-button color="primary" (click)="onAddToShoppingCartClicked()">In den Warenkorb</button>
-                  </app-object-details-actions>
-              </app-object-details>
+    <div fxLayout="row" style='height: 100%;'>
+        <div class="sidebar" fxLayout="column">
+            <div class="sidebar-item-container">
+                <form>
+                    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
+                        <mat-icon matPrefix>search</mat-icon>
+                        <mat-form-field class="example-full-width" floatLabel="never">
+                            <input type="text" name="searchQuery" matInput placeholder="Suchen"
+                                   [(ngModel)]="searchQuery" (input)="onSearchQueryChanged()">
+                        </mat-form-field>
+                    </div>
+                </form>
             </div>
-          </ng-container>
-          <ng-container *ngIf="!selectedObject">
-            <ng-container *ngIf="objects.length > 0">
-              <app-object-browser [objects]="objects" (onObjectSelected)="onObjectSelected($event)"></app-object-browser>
-            </ng-container>
-            <ng-container *ngIf="objects.length == 0">
-              <div fxFlex fxLayoutAlign="center center">
-                Es wurden keine Objekte gefunden.
-              </div>
-            </ng-container>
-          </ng-container>
+            <div class="sidebar-item-container">
+                <h1 class="title">Material</h1>
+                <mat-checkbox *ngFor="let material of materials" class="filter-item" color="primary"
+                              [checked]="isMaterialSelected(material.id)"
+                              (change)="onMaterialCheckboxChanged(material.id, $event.checked)">{{material.name}}
+                </mat-checkbox>
+            </div>
+            <div class="sidebar-item-container">
+                <h1 class="title">Maschinen</h1>
+                <mat-checkbox *ngFor="let machineType of machineTypes" class="filter-item" color="primary"
+                              [checked]="isMachineTypeSelected(machineType.id)"
+                              (change)="onMachineTypeCheckboxChanged(machineType.id, $event.checked)">
+                    {{machineType.name}}
+                </mat-checkbox>
+            </div>
+            <div class="sidebar-item-container" fxLayout="column">
+                <button *ngIf="shoppingCartItemCount == 0" mat-raised-button color="primary"
+                        (click)="onShoppingCartClicked()">
+                    <mat-icon>shopping_cart</mat-icon>
+                    Warenkorb
+                </button>
+                <button *ngIf="shoppingCartItemCount > 0" mat-raised-button color="primary"
+                        (click)="onShoppingCartClicked()">
+                    <mat-icon>shopping_cart</mat-icon>
+                    Warenkorb ({{shoppingCartItemCount}})
+                </button>
+            </div>
+            <div fxFlex></div>
         </div>
-      </div>
-    </ng-container>
-  </div>
+        <ng-container *ngIf="loading">
+            <div fxFlex fxLayoutAlign="center center">
+                <mat-progress-spinner mode="indeterminate" diameter="30" strokeWidth="2"></mat-progress-spinner>
+            </div>
+        </ng-container>
+        <ng-container *ngIf="!loading">
+            <div fxFlex fxLayoutAlign="center">
+                <div class="content" fxFlex>
+                    <ng-container *ngIf="selectedObject">
+                        <div fxLayout="column" fxLayoutGap="15px">
+                            <div>
+                                <button mat-button (click)="deselectObject()">← Zurück</button>
+                            </div>
+                            <app-object-details [object]="selectedObject">
+                                <app-object-details-actions>
+                                    <button mat-raised-button color="primary" (click)="onAddToShoppingCartClicked()">In
+                                        den Warenkorb
+                                    </button>
+                                </app-object-details-actions>
+                            </app-object-details>
+                        </div>
+                    </ng-container>
+                    <ng-container *ngIf="!selectedObject">
+                        <ng-container *ngIf="objects.length > 0">
+                            <app-object-browser [objects]="objects"
+                                                (onObjectSelected)="onObjectSelected($event)"></app-object-browser>
+                        </ng-container>
+                        <ng-container *ngIf="objects.length == 0">
+                            <div fxFlex fxLayoutAlign="center center">
+                                Es wurden keine Objekte gefunden.
+                            </div>
+                        </ng-container>
+                    </ng-container>
+                </div>
+            </div>
+        </ng-container>
+    </div>
 </ng-container>
-<!-- <div fxLayout="column" fxLayoutGap="15px">
-  <mat-card>
-    <button mat-button>Material</button>
-    <button mat-button>Maschine</button>
-    <div fxFlex></div>
-    <form class="example-form">
-
-      <mat-form-field class="example-full-width">
-        <mat-icon matPrefix>search</mat-icon>
-        <input type="tel" matInput matNoFloat placeholder="Telephone">
-      </mat-form-field>
-
-    </form>
-    <div fxFlex></div>
-    <button mat-button>Warenkorb
-      <mat-icon>shopping_cart</mat-icon>
-    </button>
-  </mat-card>
-  <app-object-browser [objects]="objects"></app-object-browser>
-
-</div> -->

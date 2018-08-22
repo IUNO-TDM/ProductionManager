@@ -75,20 +75,10 @@ export class MachinesComponent implements OnInit, OnDestroy, AfterViewInit {
         }
     }
 
-    // private updateCameraSnapshots() {
-    //   this.machines.forEach(machine => {
-    //     this.machineService.getCameraSnapshot(machine).subscribe(imageData => {
-    //       this.createImageFromBlob(imageData, machine);
-    //     })
-    //   })
-    //   setTimeout(() => {
-    //     this.updateCameraSnapshots()
-    //   }, 5000)
-    // }
 
     // https://stackoverflow.com/a/45630579/1771537
     createImageFromBlob(image: Blob, machine: Machine) {
-        let reader = new FileReader();
+        const reader = new FileReader();
         reader.addEventListener('load', () => {
             machine.cameraSnapshot = reader.result;
         }, false);

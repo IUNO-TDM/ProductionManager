@@ -1,6 +1,6 @@
-var mongoose = require('mongoose');
+const mongoose = require('mongoose');
 
-var MachineSchema = new mongoose.Schema({
+const MachineSchema = new mongoose.Schema({
     _id: String,
     displayname: String,
     hsmIds: [String],

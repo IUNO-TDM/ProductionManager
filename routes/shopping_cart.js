@@ -1,13 +1,10 @@
-var express = require('express');
-var router = express.Router();
-var mongoose = require('mongoose');
-var Item = require('../models/item');
-var Order = require('../models/order');
-var _ = require('lodash');
+const express = require('express');
+const router = express.Router();
+const Item = require('../models/item');
+const Order = require('../models/order');
+const _ = require('lodash');
 const ams_adapter = require('../adapter/ams_adapter');
-const common = require('tdm-common');
 const orderStateMachine = require('../models/order_state_machine');
-
 
 
 _.mapPick = function (objs, keys) {
@@ -20,9 +17,9 @@ _.mapPick = function (objs, keys) {
  * Creates a new order in the database by moving all items from the shopping cart
  * to the order document. Then the marketplace is asked for creating an offer
  * for this order.
- * @returns created order object 
+ * @returns created order object
  */
-router.post('/order',  function (req, res, next) {
+router.post('/order', function (req, res, next) {
     // check if there is an open order.
     const orderCompletedStates = ["completed", "canceled"];
     Order.find({"state": {"$nin": orderCompletedStates}}, function (err, orders) {
@@ -56,7 +53,7 @@ router.post('/order',  function (req, res, next) {
         console.log(offerRequest);
         console.log("-------------------------");
 
-        ams_adapter.createOfferForRequest(offerRequest, function(err, offer) {
+        ams_adapter.createOfferForRequest(offerRequest, function (err, offer) {
             if (err) {
                 console.log(err);
                 return res.status(500).send(err);
@@ -73,12 +70,12 @@ router.post('/order',  function (req, res, next) {
                 state: "initial"
             };
 
-            Order.create(order, function(err, order) {
+            Order.create(order, function (err, order) {
                 if (err) {
                     return next(err);
                 }
                 Item.remove({}, function (err) {
-                    if(err) {
+                    if (err) {
                         console.error("Error on deleting shopping cart items", err);
                     }
                     res.json(order)

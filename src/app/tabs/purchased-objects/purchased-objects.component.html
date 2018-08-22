@@ -6,8 +6,12 @@
             </div>
             <app-object-details [object]="selectedObject">
                 <app-object-details-actions>
-                    <button *ngIf="isPrintable(selectedObject.id)" mat-raised-button color="primary" (click)="onPrintClicked()">Drucken</button>
-                    <button *ngIf="isDownloadRequired(selectedObject.id)" mat-raised-button color="primary" (click)="onDownloadClicked()">Herunterladen</button>
+                    <button *ngIf="isPrintable(selectedObject.id)" mat-raised-button color="primary"
+                            (click)="onPrintClicked()">Drucken
+                    </button>
+                    <button *ngIf="isDownloadRequired(selectedObject.id)" mat-raised-button color="primary"
+                            (click)="onDownloadClicked()">Herunterladen
+                    </button>
                 </app-object-details-actions>
             </app-object-details>
         </div>
@@ -20,7 +24,8 @@
     <ng-container *ngIf="!loading">
         <ng-container *ngIf="selectedObject == null">
             <ng-container *ngIf="objects.length > 0">
-                <app-object-browser [objects]="objects" (onObjectSelected)="onObjectSelected($event)"></app-object-browser>
+                <app-object-browser [objects]="objects"
+                                    (onObjectSelected)="onObjectSelected($event)"></app-object-browser>
             </ng-container>
             <ng-container *ngIf="objects.length == 0">
                 <div fxFlex fxLayoutAlign="center center">

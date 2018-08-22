@@ -1,23 +1,22 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import {Component, OnInit, Input, Output, EventEmitter} from '@angular/core';
 
 @Component({
-  selector: 'app-object-browser',
-  templateUrl: './object-browser.component.html',
-  styleUrls: ['./object-browser.component.css']
+    selector: 'app-object-browser',
+    templateUrl: './object-browser.component.html',
+    styleUrls: ['./object-browser.component.css']
 })
 export class ObjectBrowserComponent implements OnInit {
-  @Input() objects: any[];
-  @Output() onObjectSelected = new EventEmitter();
+    @Input() objects: any[];
+    @Output() onObjectSelected = new EventEmitter();
 
-  images = {};
-  
-  constructor() { }
+    constructor() {
+    }
 
-  ngOnInit() {
-  }
+    ngOnInit() {
+    }
 
-  onObjectClick(object: any) {
-    this.onObjectSelected.emit(object)
-  }
+    onObjectClick(object: any) {
+        this.onObjectSelected.emit(object);
+    }
 
 }

@@ -9,5 +9,5 @@ export class Order {
         amount: Number
     }];
     state: String;
-    createdAt: string
+    createdAt: string;
 }
