@@ -134,6 +134,105 @@ paths:
             properties:
               message:
                 type: string
+
+  /machines/{machineId}/hsm:
+    get:
+      tags:
+        - "machines"
+      summary: "gets all hsm ids for machine"
+      parameters:
+        - name: "machineId"
+          in: "path"
+          description: "ID of machine to return"
+          required: true
+          type: "string"
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: "a list of hsm ids"
+          schema:
+            type: array
+            items:
+              type: string
+
+  /machines/{machineId}/hsm/all/licenses:
+    get:
+      tags:
+        - "machines"
+      summary: "gets all licenses"
+      parameters:
+        - name: "machineId"
+          in: "path"
+          description: "ID of machine to return"
+          required: true
+          type: "string"
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: "a list of hsm ids"
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/License"
+
+  /machines/{machineId}/hsm/{hsmId}/licenses:
+     get:
+       tags:
+         - "machines"
+       summary: "gets all licenses of a hsm"
+       parameters:
+         - name: "machineId"
+           in: "path"
+           description: "ID of machine to return"
+           required: true
+           type: "string"
+         - name: "hsmId"
+           in: "path"
+           description: "ID of the hsm"
+           required: true
+           type: "string"
+       produces:
+         - "application/json"
+       responses:
+         200:
+           description: "a list of hsm ids"
+           schema:
+             type: array
+             items:
+               $ref: "#/definitions/License"
+  /machines/{machineId}/hsm/{hsmId}/productcodes/{productcode}:
+     get:
+       tags:
+         - "machines"
+       summary: "get license count for product code"
+       parameters:
+         - name: "machineId"
+           in: "path"
+           description: "ID of machine to return"
+           required: true
+           type: "string"
+         - name: "hsmId"
+           in: "path"
+           description: "ID of the hsm"
+           required: true
+           type: "string"
+         - name: "productcode"
+           in: "path"
+           description: "productcode"
+           required: true
+           type: "string"
+       produces:
+         - "text/plain"
+       responses:
+         200:
+           description: "the count of licenses"
+           schema:
+             type: integer
+
+
+
   /machines/{machineId}/materials/active:
     get:
       tags: 
@@ -400,79 +499,7 @@ paths:
       responses:
         200:
           description: "the snapshot"
-  
-  
-  /machines/{machineId}/hsm:
-    get:
-      tags: 
-      - "machines"
-      summary: "gets the machines hsms"
-      operationId: "getMachinesHsms"
-      parameters:
-      - name: "machineId"
-        in: "path"
-        description: "ID of machine to return"
-        required: true
-        type: "string"
-      produces: 
-      - "application/json"
-      responses:
-        200:
-          description: "the hsms"
-          schema:
-            type: array
-            items:
-              type: string
-              
-  /machines/{machineId}/hsm/all/licenses:
-    get:
-      tags: 
-      - "machines"
-      summary: "gets the machines current printjob"
-      operationId: "getMachinesLicenses"
-      parameters:
-      - name: "machineId"
-        in: "path"
-        description: "ID of machine to return"
-        required: true
-        type: "string"
-      produces: 
-      - "application/json"
-      responses:
-        200:
-          description: "the licenses"
-          schema:
-            type: array
-            items:
-              $ref: '#/definitions/License'
-              
-  /machines/{machineId}/hsm/{hsmId}/licenses:
-    get:
-      tags: 
-      - "machines"
-      summary: "gets the machines current printjob"
-      operationId: "getMachinesLicensesByHsmid"
-      parameters:
-      - name: "machineId"
-        in: "path"
-        description: "ID of machine to return"
-        required: true
-        type: "string"
-      - name: "hsmId"
-        in: "path"
-        description: "ID of machine to return"
-        required: true
-        type: "string"
-      produces: 
-      - "application/json"
-      responses:
-        200:
-          description: "the licenses"
-          schema:
-            type: array
-            items:
-              $ref: '#/definitions/License'   
-          
+
   /machinetypes:
     get:
       tags: 
@@ -626,7 +653,82 @@ paths:
           description: "the resulting order"
           schema:
             $ref: '#/definitions/Order'          
-  
+
+  /orders:
+    get:
+      tags:
+      - "orders"
+      summary: "get all orders"
+      produces:
+        - application/json
+      responses:
+        200:
+          description: "all order"
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Order'
+    delete:
+       tags:
+       - "orders"
+       summary: "delete all orders"
+       produces:
+         - application/json
+       responses:
+        200:
+          description: "all orders deleted"
+
+  /orders/{orderId}:
+     get:
+       tags:
+       - "orders"
+       summary: "get all orders"
+       parameters:
+         - name: "orderId"
+           in: "path"
+           description: "ID of order"
+           required: true
+           type: "string"
+       produces:
+         - application/json
+       responses:
+         200:
+           description: "all order"
+           schema:
+             $ref: '#/definitions/Order'
+     delete:
+        tags:
+        - "orders"
+        summary: "delete all orders"
+        parameters:
+         - name: "orderId"
+           in: "path"
+           description: "ID of order"
+           required: true
+           type: "string"
+        produces:
+          - application/json
+        responses:
+         200:
+           description: "order deleted"
+
+  /orders/{orderId}/licenseupdate:
+     get:
+       tags:
+       - "orders"
+       summary: "trigger licenseupdate"
+       parameters:
+         - name: "orderId"
+           in: "path"
+           description: "ID of order"
+           required: true
+           type: "string"
+       produces:
+         - application/json
+       responses:
+         200:
+           description: "triggered licenseupdate"
+
   /objects:
     get:
       tags:
@@ -646,7 +748,8 @@ paths:
           schema:
             type: array
             items:
-              $ref: '#/definitions/Object' 
+              $ref: '#/definitions/Object'
+
   /objects/{objectId}/image:
     get:
       tags:
@@ -679,6 +782,21 @@ paths:
       responses:
         200:
           description: "the image"
+
+  /objects/{objectId}/print:
+    post:
+      tags:
+      - "objects"
+      summary: "prints this object"
+      parameters:
+      - name: "objectId"
+        in: "path"
+        description: "ID of object to return"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "triggered print"
 
 
   /objects/filters:
@@ -730,8 +848,7 @@ paths:
       - name: file
         description: "The ufp containing gcode and image"
         in: formData
-        type: string
-        format: binary
+        type: file
       - name: title
         in: formData
         type: string
@@ -809,6 +926,32 @@ paths:
       responses:
         200:
           description: "deleted"
+
+    patch:
+      tags:
+        - "local objects"
+      summary: "can be used to update title or description of a local object"
+      parameters:
+      - name: "localObjectId"
+        in: "path"
+        description: "ID of object to delete"
+        required: true
+        type: "string"
+      - name: patch
+        in: "body"
+        description: "the properties of the local object to patch"
+        required: true
+        schema:
+         $ref: '#/definitions/LocalObjectPatch'
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "the local object"
+          schema:
+            $ref: '#/definitions/LocalObject'
+
+
   /localobjects/{localObjectId}/image:
     get:
       tags:
@@ -825,6 +968,82 @@ paths:
       responses:
         200:
           description: "the image"
+
+  /localobjects/{localObjectId}/publish:
+    post:
+      tags:
+        - "local objects"
+        - "objects"
+      summary: "starts upload process to tdm"
+      parameters:
+      - name: "localObjectId"
+        in: "path"
+        description: "ID of object to return"
+        required: true
+        type: "string"
+      - name: publishInfo
+        in: "body"
+        description: "the information for publish"
+        required: true
+        schema:
+         $ref: '#/definitions/PublishInfo'
+      responses:
+        201:
+          description: "published"
+
+  /localobjects/{localObjectId}/publish/retry:
+    post:
+      tags:
+        - "local objects"
+        - "objects"
+      summary: "retries upload process to tdm"
+      parameters:
+      - name: "localObjectId"
+        in: "path"
+        description: "ID of object to return"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "triggered retry"
+
+  /localobjects/{localObjectId}/publish/reset:
+    post:
+      tags:
+        - "local objects"
+        - "objects"
+      summary: "resets upload process to tdm"
+      parameters:
+      - name: "localObjectId"
+        in: "path"
+        description: "ID of object to return"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "triggered retry"
+
+  /localobjects/{localObjectId}/print:
+    post:
+      tags:
+        - "local objects"
+      summary: "prints the local object"
+      parameters:
+      - name: "localObjectId"
+        in: "path"
+        description: "ID of object to return"
+        required: true
+        type: "string"
+      - name: printInfo
+        in: "body"
+        description: "the information for printing"
+        required: true
+        schema:
+         $ref: '#/definitions/PrintInfo'
+      responses:
+        200:
+          description: "triggered print"
+
                
 definitions:
   LocalObject:
@@ -838,7 +1057,6 @@ definitions:
         type: string
       createdAt:
         type: string
-      
       materials:
         type: array
         items:
@@ -911,6 +1129,8 @@ definitions:
         type: string
       description:
         type: string
+      parentId:
+        type: string
       id:
         type: string
       displayColor:
@@ -975,3 +1195,34 @@ definitions:
         type: string
       purchased:
         type: boolean
+
+  LocalObjectPatch:
+    type: "object"
+    properties:
+      name:
+        type: string
+      description:
+        type: string
+
+  PublishInfo:
+    type: "object"
+    properties:
+      name:
+        type: string
+      description:
+        type: string
+      licenseFee:
+        type: integer
+
+  PrintInfo:
+    type: "object"
+    properties:
+      machineId:
+        type: string
+  License:
+    type: "object"
+    properties:
+      product:
+        type: string
+      count:
+        type: integer

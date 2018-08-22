@@ -24,6 +24,16 @@ router.get('/', function (req, res, next) {
     })
 });
 
+router.delete('/', function (req, res, next) {
+    Order.remove({}, function (err) {
+        if (err) {
+            return next(err);
+        } else {
+            res.send("success");
+        }
+    });
+});
+
 router.get('/:id', function (req, res, next) {
     Order.findById(req.params.id, function (err, order) {
         if (err) {
@@ -45,7 +55,7 @@ router.delete('/:id', function (req, res, next) {
     })
 });
 
-router.get('/:id/licenseupdate', function (req, res, next) {
+router.post('/:id/licenseupdate', function (req, res, next) {
     console.log("Licenseopdate of id '" + req.params.id + "'");
     Order.findById(req.params.id, function (err, order) {
         if (order.state === 'licenseUpdateAvailable') {
@@ -53,18 +63,9 @@ router.get('/:id/licenseupdate', function (req, res, next) {
         } else if (order.state === 'licenseUpdateError') {
             orderStateMachine.licenseUpdateAvailable(order)
         }
+        res.sendStatus(200);
     })
 });
 
-
-router.delete('/', function (req, res, next) {
-    Order.remove({}, function (err) {
-        if (err) {
-            return next(err);
-        } else {
-            res.send("success");
-        }
-    });
-});
 
 module.exports = router;

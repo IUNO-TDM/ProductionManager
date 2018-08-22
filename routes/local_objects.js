@@ -39,32 +39,6 @@ router.get('/', function (req, res, next) {
     })
 });
 
-router.get('/:id', function (req, res, next) {
-    LocalObject.findById(req.params.id, function (err, item) {
-        if (err) {
-            return next(err);
-        }
-
-        res.json(_.pick(item, ['id', 'name', 'description', 'createdAt', 'materials', 'machines']));
-    })
-});
-
-
-router.get('/:id/image', function (req, res, next) {
-    LocalObject.findById(req.params.id, function (err, item) {
-        if (err) {
-            return next(err);
-        }
-
-        if (item && item.image_filepath) {
-            res.sendFile(item.image_filepath);
-        } else {
-            res.sendStatus(400);
-        }
-    })
-});
-
-
 router.post('/', require('../services/file_upload_handler'), function (req, res, next) {
 
 
@@ -144,6 +118,35 @@ router.post('/', require('../services/file_upload_handler'), function (req, res,
     });
 });
 
+router.get('/:id', function (req, res, next) {
+    LocalObject.findById(req.params.id, function (err, item) {
+        if (err) {
+            return next(err);
+        }
+
+        res.json(_.pick(item, ['id', 'name', 'description', 'createdAt', 'materials', 'machines']));
+    })
+});
+
+router.delete('/:id', function (req, res, next) {
+    LocalObject.findById(req.params.id, function (err, item) {
+        if (err) {
+            return next(err);
+        }
+        if (!item) {
+            return res.sendStatus(404);
+        }
+        deleteFile(item.image_filepath);
+        deleteFile(item.gcode_filepath);
+        LocalObject.findByIdAndRemove(req.params.id, function (err, item) {
+            if (err) {
+                next(err);
+            } else {
+                res.sendStatus(200);
+            }
+        });
+    })
+});
 
 router.patch('/:id', function (req, res, next) {
     LocalObject.findById(req.params.id, (err, localObject) => {
@@ -172,23 +175,18 @@ router.patch('/:id', function (req, res, next) {
     })
 });
 
-router.delete('/:id', function (req, res, next) {
+
+router.get('/:id/image', function (req, res, next) {
     LocalObject.findById(req.params.id, function (err, item) {
         if (err) {
             return next(err);
         }
-        if (!item) {
-            return res.sendStatus(404);
+
+        if (item && item.image_filepath) {
+            res.sendFile(item.image_filepath);
+        } else {
+            res.sendStatus(400);
         }
-        deleteFile(item.image_filepath);
-        deleteFile(item.gcode_filepath);
-        LocalObject.findByIdAndRemove(req.params.id, function (err, item) {
-            if (err) {
-                next(err);
-            } else {
-                res.sendStatus(200);
-            }
-        });
     })
 });
 
@@ -237,6 +235,7 @@ router.post('/:id/publish/retry', function (req, res, next) {
             return res.sendStatus(404);
         }
         publishStateMachine.retry(localObject);
+        res.send(200);
     })
 });
 router.post('/:id/publish/reset', function (req, res, next) {
@@ -248,6 +247,7 @@ router.post('/:id/publish/reset', function (req, res, next) {
             return res.sendStatus(404);
         }
         publishStateMachine.reset(localObject);
+        res.send(200);
     })
 });
 
@@ -277,7 +277,6 @@ router.post('/:id/print', function (req, res, next) {
                 }
                 res.status(200);
                 res.send(data);
-
             });
 
         });

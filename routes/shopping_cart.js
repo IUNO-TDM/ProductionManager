@@ -150,16 +150,6 @@ router.delete('/items/:id', function (req, res, next) {
     })
 });
 
-router.delete('/items/:id', function (req, res, next) {
-    Item.findOneAndRemove({dataId: req.params.id}, function (err, item) {
-        if (err) {
-            return next(err);
-        }
-
-        res.json(_.pick(item, ['id', 'dataId', 'amount', 'updated']));
-    })
-});
-
 router.put('/items/:id', function (req, res, next) {
     Item.findOneAndUpdate({dataId: req.params.id}, _.pick(req.body, ['dataId']), {new: true}, function (err, item) {
         if (err) {

@@ -36,6 +36,15 @@ router.get('/:id', function (req, res, next) {
     })
 });
 
+router.delete('/:id', function (req, res, next) {
+    Machine.findByIdAndRemove(req.params.id, req.body, function (err, post) {
+        if (err) {
+            return next(err);
+        }
+        res.json(post);
+    })
+});
+
 router.post('/:id/authentication', function (req, res, next) {
     Machine.findById(req.params.id, function (err, machine) {
         if (!machine || !machine.hostname) {
@@ -439,15 +448,6 @@ router.get('/:id/camera/snapshot', function (req, res, next) {
             return res.sendStatus(404);
         }).pipe(res);
     });
-});
-
-router.delete('/:id', function (req, res, next) {
-    Machine.findByIdAndRemove(req.params.id, req.body, function (err, post) {
-        if (err) {
-            return next(err);
-        }
-        res.json(post);
-    })
 });
 
 

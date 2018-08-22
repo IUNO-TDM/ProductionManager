@@ -50,7 +50,7 @@ export class OrderService {
 
     updateLicense(order) {
         const url = this.apiUrl + 'orders/' + order.id + '/licenseupdate';
-        return this.http.get<Order[]>(url);
+        return this.http.post(url, null, {responseType: 'text'});
     }
 
     cancelOrder(order) {
