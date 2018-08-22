@@ -44,7 +44,7 @@ export class LocalObjectDetailsComponent implements OnInit {
     ngOnInit() {
         this.editedName = this.object.name;
         this.editedDescription = this.object.description;
-        this.materialService.getAllMaterials().subscribe((materialDefinitions) => {
+        this.materialService.getAllMaterials(false).subscribe((materialDefinitions) => {
             this.materialDefinitions = materialDefinitions;
         });
 

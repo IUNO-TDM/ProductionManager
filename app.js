@@ -8,6 +8,7 @@ const CONFIG = require('./config/config_loader');
 var rootCas = require('ssl-root-cas/latest').create();
 require('https').globalAgent.options.ca = rootCas;
 require('./services/advertisement_service')('iuno-pm', process.env.PORT || '3042');
+const queryParser = require('./services/query_parser');
 
 const contentTypeValidation = require('./services/content_type_validation');
 const schemaValidation = require('./services/schema_validation');
@@ -46,6 +47,7 @@ app.set('views', path.join(__dirname, 'views'));
 
 app.use(bodyParser.json());
 app.use(bodyParser.text());
+app.use(queryParser);
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
 

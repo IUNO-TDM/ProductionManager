@@ -43,7 +43,7 @@ export class PrintDialogComponent implements OnInit {
             });
         });
 
-        this.materialService.getAllMaterials().subscribe((materialDefinitions) => {
+        this.materialService.getAllMaterials(false).subscribe((materialDefinitions) => {
             this.materialDefinitions = materialDefinitions;
         });
     }

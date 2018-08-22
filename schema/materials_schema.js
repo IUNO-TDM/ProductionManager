@@ -21,7 +21,7 @@ self.Material_Query = {
         lang: languageProperty
     },
     required: ['lang'],
-    additionalProperties: false
+    additionalProperties: false,
 };
 
 module.exports = self;

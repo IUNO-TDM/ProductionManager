@@ -38,7 +38,7 @@ export class MachineComponent implements OnInit {
     ngOnInit() {
         this.checkAuthenticated();
         this.updateMaterials();
-        this.materialService.getAllMaterials().subscribe((materials) => {
+        this.materialService.getAllMaterials(false).subscribe((materials) => {
             this.materialDefinitions = materials;
         });
         this.cameraSrc = this.sanitizer.bypassSecurityTrustResourceUrl('api/machines/' + this.machine.id + '/camera/stream');

@@ -14,9 +14,10 @@ export class MaterialService {
     ) {
     }
 
-    getAllMaterials(): Observable<Array<MaterialDefinition>> {
-        const url = this.apiUrl;
-        let params = {};
+    getAllMaterials(hierarchical: boolean): Observable<Array<MaterialDefinition>> {
+        const url = this.apiUrl + (hierarchical ? '/hierarchical' : '');
+
+        const params = {};
         // add language to query parameters
         params['lang'] = 'de';
         return this.http.get<Array<MaterialDefinition>>(url, {

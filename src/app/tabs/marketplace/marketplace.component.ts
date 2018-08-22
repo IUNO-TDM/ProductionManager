@@ -7,6 +7,7 @@ import {ShoppingCartService} from '../../services/shopping-cart.service';
 import {Router} from '@angular/router';
 import {OrderService} from '../../services/order.service';
 import {Filter} from '../../models/filter';
+import {MaterialService} from '../../services/material.service';
 
 @Component({
     selector: 'app-marketplace',
@@ -29,6 +30,7 @@ export class MarketplaceComponent implements OnInit {
         private titleService: TitleService,
         private objectService: ObjectService,
         private machineService: MachineService,
+        private materialService: MaterialService,
         private orderService: OrderService,
         private shoppingCartService: ShoppingCartService
     ) {
@@ -51,7 +53,7 @@ export class MarketplaceComponent implements OnInit {
             this.machineTypes = machineTypes;
             this.updateObjects();
         });
-        this.machineService.getMaterialTypes().subscribe(materials => {
+        this.materialService.getAllMaterials(false).subscribe(materials => {
             this.materialsSelected = materials.map(material => material.id);
             this.materials = materials;
             this.updateObjects();

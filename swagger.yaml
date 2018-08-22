@@ -533,6 +533,26 @@ paths:
             type: array
             items:
               $ref: '#/definitions/Component'
+  /materials/hierarchical:
+      get:
+        tags:
+          - materials
+        summary: Gets the materials defined in the TDM in a hierarchical layout
+        parameters:
+          - name: lang
+            in: query
+            description: defines the language the texts should be returned
+            required: true
+            type: string
+        produces:
+          - application/json
+        responses:
+          '200':
+            description: a hierarchy of material types
+            schema:
+              type: array
+              items:
+                $ref: '#/definitions/Component'
   /shopping_cart/items:
     post:
       tags:
@@ -1102,6 +1122,8 @@ definitions:
         type: string
       parentId:
         type: string
+      children:
+        type: object
       id:
         type: string
       displayColor:
