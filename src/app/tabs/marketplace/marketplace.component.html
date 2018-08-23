@@ -14,10 +14,34 @@
             </div>
             <div class="sidebar-item-container">
                 <h1 class="title">Material</h1>
-                <mat-checkbox *ngFor="let material of materials" class="filter-item" color="primary"
-                              [checked]="isMaterialSelected(material.id)"
-                              (change)="onMaterialCheckboxChanged(material.id, $event.checked)">{{material.name}}
-                </mat-checkbox>
+                <!--<mat-checkbox *ngFor="let material of materials" class="filter-item" color="primary"-->
+                              <!--[checked]="isMaterialSelected(material.id)"-->
+                              <!--(change)="onMaterialCheckboxChanged(material.id, $event.checked)">{{material.name}}-->
+                <!--</mat-checkbox>-->
+
+
+                <mat-tree [dataSource]="materialDataSource" [treeControl]="materialTreeControl">
+                    <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle matTreeNodePadding>
+                        <mat-checkbox class="checklist-leaf-node" [checked]="checklistSelection.isSelected(node)"
+                                      (change)="checklistSelection.toggle(node);">{{node.name}}</mat-checkbox>
+                    </mat-tree-node>
+                    <mat-tree-node *matTreeNodeDef="let node; when: hasChild" matTreeNodePadding>
+                        <button mat-icon-button matTreeNodeToggle>
+                            <mat-icon class="mat-icon-rtl-mirror">
+                                {{materialTreeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+                            </mat-icon>
+                        </button>
+                        <mat-checkbox [checked]="descendantsAllSelected(node)"
+                                      [indeterminate]="descendantsPartiallySelected(node)"
+                                      (change)="materialItemSelectionToggle(node)">{{node.name}}</mat-checkbox>
+                    </mat-tree-node>
+
+                </mat-tree>
+
+
+
+
+
             </div>
             <div class="sidebar-item-container">
                 <h1 class="title">Maschinen</h1>

@@ -42,8 +42,9 @@ import {MachineComponent} from './tabs/machines/machine/machine.component';
 import {LocalObjectDetailsComponent} from './tabs/own-objects/local-object-details/local-object-details.component';
 import {LocalObjectBrowserComponent} from './tabs/own-objects/local-object-browser/local-object-browser.component';
 import {PublishDialogComponent} from './publish-dialog/publish-dialog.component';
-import {MatFormFieldModule, MatSelectModule} from '@angular/material';
+import {MatFormFieldModule, MatSelectModule, MatTreeModule} from '@angular/material';
 import {PrintDialogComponent} from './print-dialog/print-dialog.component';
+import {CdkTreeModule} from '@angular/cdk/tree';
 
 // import { TdmCommonModule } from 'tdm-common'
 
@@ -97,6 +98,8 @@ import {PrintDialogComponent} from './print-dialog/print-dialog.component';
         MatFormFieldModule,
         MatInputModule,
         MatSelectModule,
+        MatTreeModule,
+        CdkTreeModule,
         // Product Manager Modules
         AppRoutingModule,
         // TdmCommonModule,
