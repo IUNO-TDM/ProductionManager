@@ -22,6 +22,7 @@
 
                 <mat-tree [dataSource]="materialDataSource" [treeControl]="materialTreeControl">
                     <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle matTreeNodePadding>
+                        <button mat-icon-button disabled></button>
                         <mat-checkbox class="checklist-leaf-node" [checked]="checklistSelection.isSelected(node)"
                                       (change)="checklistSelection.toggle(node);">{{node.name}}</mat-checkbox>
                     </mat-tree-node>
