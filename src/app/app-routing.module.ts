@@ -10,13 +10,14 @@ import {OrderComponent} from './tabs/marketplace/order/order.component';
 import {ObjectDetailsComponent} from './object-details/object-details.component';
 
 const routes: Routes = [
-    {path: '', redirectTo: 'marketplace', pathMatch: 'full'},
-    {path: 'marketplace', component: MarketplaceComponent},
+    {path: '', redirectTo: 'marketplace/', pathMatch: 'full'},
+    {path: 'marketplace', redirectTo: 'marketplace/'},
     {path: 'marketplace/shoppingcart', component: ShoppingCartComponent},
     {path: 'marketplace/order', component: OrderComponent},
+    {path: 'marketplace/:id', component: MarketplaceComponent},
     {path: 'machines', component: MachinesComponent},
-    {path: 'purchased-objects', component: PurchasedObjectsComponent},
-    {path: 'purchased-objects/:id', component: ObjectDetailsComponent},
+    {path: 'purchased-objects', redirectTo: 'purchased-objects/'},
+    {path: 'purchased-objects/:id', component: PurchasedObjectsComponent},
     {path: 'own-objects', component: OwnObjectsComponent},
     {path: 'own-objects/create', component: CreateObjectComponent},
 ];

@@ -77,11 +77,24 @@ router.get('/', validate({
             if (!filter) {
                 res.status(404).send({message: "Filter not found"})
             } else {
-
                 getObjects(filter);
             }
         }
     });
+});
+
+router.get('/:id', validate({
+    query: validation_schema.GetObjectWithId_Query,
+    body: validation_schema.Empty
+}), function (req, res, next) {
+    const language = req.query['lang'];
+    ams_adapter.getObjectWithId(req.params['id'], language, (err, data) => {
+        if (err) {
+            next(err);
+            return;
+        }
+        res.send(data)
+    })
 });
 
 router.get('/:id/binary', validate({

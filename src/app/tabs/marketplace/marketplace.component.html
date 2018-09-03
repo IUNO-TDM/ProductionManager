@@ -75,12 +75,12 @@
         <ng-container *ngIf="!loading">
             <div fxFlex fxLayoutAlign="center">
                 <div class="content" fxFlex>
-                    <ng-container *ngIf="selectedObject">
+                    <ng-container *ngIf="selectedObjectId">
                         <div fxLayout="column" fxLayoutGap="15px">
                             <div>
                                 <button mat-button (click)="deselectObject()">← Zurück</button>
                             </div>
-                            <app-object-details [object]="selectedObject">
+                            <app-object-details [objectId]="selectedObjectId">
                                 <app-object-details-actions>
                                     <button mat-raised-button color="primary" (click)="onAddToShoppingCartClicked()">In
                                         den Warenkorb
@@ -89,7 +89,7 @@
                             </app-object-details>
                         </div>
                     </ng-container>
-                    <ng-container *ngIf="!selectedObject">
+                    <ng-container *ngIf="!selectedObjectId">
                         <ng-container *ngIf="objects.length > 0">
                             <app-object-browser [objects]="objects"
                                                 (onObjectSelected)="onObjectSelected($event)"></app-object-browser>

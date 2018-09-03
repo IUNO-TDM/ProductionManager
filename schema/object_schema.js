@@ -26,6 +26,20 @@ self.Object_Query = {
     additionalProperties: false
 };
 
+self.GetObjectWithId_Query = {
+    type: 'object',
+    properties: {
+        id: {
+            type: 'string',
+            minLength: 1,
+            maxLength: 50
+        },
+        lang: languageProperty,
+    },
+    required: ['lang'],
+    additionalProperties: false
+};
+
 self.GetBinary_Query = {
     type: 'object',
     properties: {

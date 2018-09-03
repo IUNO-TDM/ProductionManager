@@ -4,7 +4,7 @@ import {ObjectService} from '../../services/object.service';
 import {MachineService} from '../../services/machine.service';
 import {MachineType} from '../../models/machineType';
 import {ShoppingCartService} from '../../services/shopping-cart.service';
-import {Router} from '@angular/router';
+import {Router, ActivatedRoute} from '@angular/router';
 import {OrderService} from '../../services/order.service';
 import {Filter} from '../../models/filter';
 import {MaterialService} from '../../services/material.service';
@@ -33,6 +33,7 @@ export class MaterialDefinitionFlat {
 export class MarketplaceComponent implements OnInit {
     objects: any[] = [];
     selectedObject: any = null;
+    selectedObjectId: string = null;
     machineTypes: MachineType[] = [];
     machineTypesSelected = [];
     searchQuery = '';
@@ -52,18 +53,21 @@ export class MarketplaceComponent implements OnInit {
 
     constructor(
         private router: Router,
+        private route: ActivatedRoute,
         private titleService: TitleService,
         private objectService: ObjectService,
         private machineService: MachineService,
         private materialService: MaterialService,
         private orderService: OrderService,
-        private shoppingCartService: ShoppingCartService
+        private shoppingCartService: ShoppingCartService,
     ) {
         this.materialTreeFlattener = new MatTreeFlattener(this.transformer, this.getLevel,
             this.isExpandable, this.getChildren);
         this.materialTreeControl = new FlatTreeControl<MaterialDefinitionFlat>(this.getLevel, this.isExpandable);
         this.materialDataSource = new MatTreeFlatDataSource(this.materialTreeControl, this.materialTreeFlattener);
-
+        route.params.subscribe(params => {
+            this.selectedObjectId = params['id']
+            })
     }
 
     getLevel = (node: MaterialDefinitionFlat) => node.level;
@@ -151,7 +155,7 @@ export class MarketplaceComponent implements OnInit {
     }
 
     onAddToShoppingCartClicked() {
-        this.shoppingCartService.addToShoppingCart(this.selectedObject).subscribe(result => {
+        this.shoppingCartService.addToShoppingCart(this.selectedObjectId).subscribe(result => {
             //TODO: handle return value
         });
     }
@@ -165,11 +169,12 @@ export class MarketplaceComponent implements OnInit {
     }
 
     onObjectSelected(object) {
-        this.selectedObject = object;
+        this.router.navigateByUrl('marketplace/' + object.id);
+        // this.selectedObject = object;
     }
 
     deselectObject() {
-        this.selectedObject = null;
+        this.router.navigateByUrl('marketplace/');
     }
 
     /**
@@ -266,6 +271,9 @@ export class MarketplaceComponent implements OnInit {
 
             this.objectService.createFilter(filter).subscribe((filterId) => {
                 this.objectService.getObjects(filterId).subscribe(objects => {
+                    this.selectedObject = objects.find(o => {
+                        return o.id === this.selectedObjectId
+                    })
                     if (this.searchQuery.length > 0) {
                         this.objects = objects.filter(object => {
                             let include = false;

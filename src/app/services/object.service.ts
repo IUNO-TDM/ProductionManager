@@ -95,20 +95,16 @@ export class ObjectService {
      * @returns the object details for the corresponding id.
      */
     getObject(id: string) {
-        const url = this.apiUrl + 'objects';
+        const url = this.apiUrl + 'objects/' + id;
         const params = {};
 
         // add language to query parameters
-        //FIXME: set correct language. But be careful, LOCALE_ID is now like 'en-US' instead of 'en'
+        // FIXME: set correct language. But be careful, LOCALE_ID is now like 'en-US' instead of 'en'
         params['lang'] = 'de';
 
         return this.http.get<TdmObject[]>(url, {
             params: params
-        }).pipe(
-            map(objects => objects.find(object => {
-                return object.id === id;
-            }))
-        );
+        })
     }
 
     /**

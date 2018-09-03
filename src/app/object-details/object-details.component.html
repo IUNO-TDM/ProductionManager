@@ -1,44 +1,50 @@
-<div fxLayout="column" fxLayoutGap="15px">
-    <div class="creator" fxLayout="row" fxLayoutGap="15px" fxLayoutAlign="start center">
-        <img class="creator-image">
-        <div fxLayout="column">
-            <div class="object-name">{{object.name}}</div>
-            <div class="object-creator-name">Daniel Düsentrieb</div>
-        </div>
+<ng-container *ngIf="loading">
+    <div fxFlex fxLayoutAlign="center center">
+        <mat-progress-spinner mode="indeterminate" diameter="30" strokeWidth="2"></mat-progress-spinner>
     </div>
-    <div class="details" fxLayout="row" fxLayoutGap="15px">
-        <div class="images" fxLayout="column" fxLayoutGap="15px">
-            <img class="preview-image-big" src="/api/objects/{{object.id}}/image">
-        </div>
-        <div class="description" fxLayout="column">
-            <div class="section">
-                <div class="section-title">Beschreibung</div>
-                <div class="section-text">{{object.description}}</div>
+</ng-container>
+<ng-container *ngIf="!loading">
+    <div fxLayout="column" fxLayoutGap="15px">
+        <div class="creator" fxLayout="row" fxLayoutGap="15px" fxLayoutAlign="start center">
+            <img class="creator-image">
+            <div fxLayout="column">
+                <div class="object-name">{{object.name}}</div>
+                <div class="object-creator-name">Daniel Düsentrieb</div>
             </div>
-            <div class="section">
-                <div class="section-title">Designed für</div>
-                <div class="section-text">
-                    <div *ngFor="let material of object.materials">{{material.name}}</div>
+        </div>
+        <div class="details" fxLayout="row" fxLayoutGap="15px">
+            <div class="images" fxLayout="column" fxLayoutGap="15px">
+                <img class="preview-image-big" src="/api/objects/{{object.id}}/image">
+            </div>
+            <div class="description" fxLayout="column">
+                <div class="section">
+                    <div class="section-title">Beschreibung</div>
+                    <div class="section-text">{{object.description}}</div>
+                </div>
+                <div class="section">
+                    <div class="section-title">Designed für</div>
+                    <div class="section-text">
+                        <div *ngFor="let material of object.materials">{{material.name}}</div>
+                    </div>
+                </div>
+                <div class="section">
+                    <div class="section-title">Kompatibel mit</div>
+                    <div class="section-text">
+                        <div *ngFor="let machine of object.machines">{{machine.name}}</div>
+                    </div>
+                </div>
+                <div class="section">
+                    <div class="section-title">Lizenzkosten</div>
+                    <div class="section-text">{{object.licenseFee}}</div>
+                </div>
+                <div class="action">
+                    <ng-content select="app-object-details-actions"></ng-content>
+                </div>
+                <div *ngIf="downloadState && downloadState.isDownloadingState()" fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="5px">
+                    <mat-progress-bar mode="determinate" [value]="progress"></mat-progress-bar>
+                    <div>Wird heruntergeladen</div>
                 </div>
             </div>
-            <div class="section">
-                <div class="section-title">Kompatibel mit</div>
-                <div class="section-text">
-                    <div *ngFor="let machine of object.machines">{{machine.name}}</div>
-                </div>
-            </div>
-            <div class="section">
-                <div class="section-title">Lizenzkosten</div>
-                <div class="section-text">{{object.licenseFee}}</div>
-            </div>
-            <div class="action">
-                <ng-content select="app-object-details-actions"></ng-content>
-            </div>
-            <div *ngIf="downloadState.isDownloadingState()" fxLayout="column" fxLayoutAlign="center center"
-                 fxLayoutGap="5px">
-                <mat-progress-bar mode="determinate" [value]="progress"></mat-progress-bar>
-                <div>Wird heruntergeladen</div>
-            </div>
         </div>
     </div>
-</div>
+</ng-container>

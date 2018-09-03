@@ -29,14 +29,14 @@ export class ShoppingCartService {
 
     /**
      * Adds the object to the shopping cart.
-     * @param object the object to add to the shopping cart.
+     * @param objectId the id of the object to add to the shopping cart.
      * @returns an observable with the http request.
      */
-    addToShoppingCart(object) {
+    addToShoppingCart(objectId) {
         const url = this.apiUrl + 'shopping_cart/items';
 
         const body = {
-            'dataId': object.id,
+            'dataId': objectId,
             'amount': 1
         };
         return this.http.post(url, body).pipe(

@@ -1,5 +1,5 @@
-import {Component, OnInit, Input, NgZone} from '@angular/core';
-import {ObjectService, DownloadState} from '../services/object.service';
+import { Component, OnInit, Input, NgZone } from '@angular/core';
+import { ObjectService, DownloadState } from '../services/object.service';
 
 @Component({
     selector: 'app-object-details-actions',
@@ -16,9 +16,12 @@ export class ObjectDetailsActionsComponent {
     styleUrls: ['./object-details.component.css']
 })
 export class ObjectDetailsComponent implements OnInit {
-    @Input() object: any;
+    // @Input() object: any;
+    @Input() objectId: string
+    private object: any
+    private loading = true
     progress = 0;
-    downloadState = new DownloadState(null);
+    downloadState = new DownloadState(null)
 
     constructor(
         private zone: NgZone,
@@ -27,16 +30,21 @@ export class ObjectDetailsComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.objectService.getDownloadState(this.object.id).subscribe(downloadState => {
-            this.zone.run(() => {
-                this.downloadState = downloadState;
-                if (downloadState.bytesTotal > 0) {
-                    this.progress = 100 * +downloadState.bytesDownloaded / +downloadState.bytesTotal;
-                } else {
+        this.objectService.getObject(this.objectId).subscribe(object => {
+            this.object = object
+            this.objectService.getDownloadState(this.object.id).subscribe(downloadState => {
+                this.zone.run(() => {
+                    this.downloadState = downloadState;
                     this.progress = 1;
-                }
+                    if (this.downloadState) {
+                        if (downloadState.bytesTotal > 0) {
+                            this.progress = 100 * +downloadState.bytesDownloaded / +downloadState.bytesTotal;
+                        }
+                    }
+                    this.loading = false
+                });
             });
-        });
+        })
     }
 
     ngOnDestroy() {

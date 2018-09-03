@@ -1,10 +1,11 @@
-import {Component, OnInit} from '@angular/core';
-import {TitleService} from '../../services/title.service';
-import {ObjectService} from '../../services/object.service';
-import {TdmObject} from '../../models/object';
-import {MatDialogRef, MatDialog} from '@angular/material';
-import {PrintDialogComponent} from '../../print-dialog/print-dialog.component';
-import {Filter} from '../../models/filter';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { TitleService } from '../../services/title.service';
+import { ObjectService } from '../../services/object.service';
+import { TdmObject } from '../../models/object';
+import { MatDialogRef, MatDialog } from '@angular/material';
+import { PrintDialogComponent } from '../../print-dialog/print-dialog.component';
+import { Filter } from '../../models/filter';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
     selector: 'app-purchased-objects',
@@ -15,16 +16,23 @@ export class PurchasedObjectsComponent implements OnInit {
     objects: TdmObject[] = [];
     downloadStates = {};
     materials = [];
-    selectedObject: any = null;
+    //    selectedObject: any = null;
+    selectedObjectId: string = null;
     loading = true;
     orders = [];
     printDialogRef: MatDialogRef<PrintDialogComponent> | null;
 
     constructor(
+        private router: Router,
+        private route: ActivatedRoute,
         private titleService: TitleService,
         private objectService: ObjectService,
-        private dialog: MatDialog
+        private dialog: MatDialog,
+        private changeDetectorRef: ChangeDetectorRef
     ) {
+        route.params.subscribe(params => {
+            this.selectedObjectId = params['id']
+        })
     }
 
     ngOnInit() {
@@ -39,6 +47,7 @@ export class PurchasedObjectsComponent implements OnInit {
                 this.objects.forEach(object => {
                     this.objectService.getDownloadState(object.id).subscribe(downloadState => {
                         this.downloadStates[object.id] = downloadState;
+                        this.changeDetectorRef.detectChanges()
                     });
                 });
                 this.loading = false;
@@ -52,23 +61,26 @@ export class PurchasedObjectsComponent implements OnInit {
     }
 
     onObjectSelected(object) {
-        this.selectedObject = object;
+        this.router.navigateByUrl('purchased-objects/' + object.id);
+        // this.selectedObject = object;
     }
 
     onDownloadClicked() {
-        this.objectService.startDownloadingBinary(this.selectedObject.id).subscribe();
+        this.objectService.startDownloadingBinary(this.selectedObjectId).subscribe();
     }
 
     onPrintClicked() {
-
-        this.printDialogRef = this.dialog.open(PrintDialogComponent, {data: {tdmObject: this.selectedObject}});
-        this.printDialogRef.afterClosed().subscribe((result: string) => {
-            this.printDialogRef = null;
-        });
+        const selectedObject = this.objects.find(object => object.id === this.selectedObjectId)
+        if (selectedObject) {
+            this.printDialogRef = this.dialog.open(PrintDialogComponent, { data: { tdmObject: selectedObject } });
+            this.printDialogRef.afterClosed().subscribe((result: string) => {
+                this.printDialogRef = null;
+            });
+        }
     }
 
     deselectObject() {
-        this.selectedObject = null;
+        this.router.navigateByUrl('purchased-objects/');
     }
 
     isDownloadRequired(objectId) {

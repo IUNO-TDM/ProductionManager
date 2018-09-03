@@ -1,15 +1,15 @@
 <div class="content">
-    <ng-container *ngIf="selectedObject">
+    <ng-container *ngIf="selectedObjectId">
         <div fxLayout="column" fxLayoutGap="15px">
             <div>
                 <button mat-button (click)="deselectObject()">← Zurück</button>
             </div>
-            <app-object-details [object]="selectedObject">
+            <app-object-details [objectId]="selectedObjectId">
                 <app-object-details-actions>
-                    <button *ngIf="isPrintable(selectedObject.id)" mat-raised-button color="primary"
+                    <button *ngIf="isPrintable(selectedObjectId)" mat-raised-button color="primary"
                             (click)="onPrintClicked()">Drucken
                     </button>
-                    <button *ngIf="isDownloadRequired(selectedObject.id)" mat-raised-button color="primary"
+                    <button *ngIf="isDownloadRequired(selectedObjectId)" mat-raised-button color="primary"
                             (click)="onDownloadClicked()">Herunterladen
                     </button>
                 </app-object-details-actions>
@@ -22,7 +22,7 @@
         </div>
     </ng-container>
     <ng-container *ngIf="!loading">
-        <ng-container *ngIf="selectedObject == null">
+        <ng-container *ngIf="!selectedObjectId">
             <ng-container *ngIf="objects.length > 0">
                 <app-object-browser [objects]="objects"
                                     (onObjectSelected)="onObjectSelected($event)"></app-object-browser>
