@@ -13,4 +13,19 @@ $my-theme: mat-light-theme(
     $my-theme-warn
 );
 
+$config: mat-typography-config();
+
+.object-title {
+    font-size: 21px;
+    font-weight: 300;
+    font-family: mat-font-family($config);
+    margin-bottom: 5px;
+  }
+
+  .object-status {
+    font-size: 13px;
+    font-weight: 300;
+    font-family: mat-font-family($config);
+  }
+
 @include angular-material-theme($my-theme);

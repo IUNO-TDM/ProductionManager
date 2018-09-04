@@ -1,11 +1,33 @@
 <div fxFlex fxLayout="row wrap" fxLayoutGap="15px">
-    <mat-card *ngFor="let object of objects" class="object-card" (click)="onObjectClick(object)">
-        <mat-card-header>
+    <mat-card *ngFor="let object of objects" class="object-card mat-elevation-z1" (click)="onObjectClick(object)">
+        <!-- <mat-card-header>
             <mat-card-title i18n>{{object.name}}</mat-card-title>
-            <mat-card-subtitle>{{object.id}}</mat-card-subtitle>
-        </mat-card-header>
-        <mat-card-content fxLayoutAlign="center">
-            <img [src]="'api/localobjects/' + object.id + '/image'" class="object-image">
+            <mat-card-subtitle [ngSwitch]="object.state">
+                <div *ngSwitchCase="'uploaded'"><img src="assets/dot_green.svg" style="width: 10px; height: 10px" />
+                    Bereit zum Verkauf</div>
+                <div *ngSwitchCase="'notPublished'"><img src="assets/dot_yellow.svg" style="width: 10px; height: 10px" />
+                    In Vorbereitung</div>
+                <div *ngSwitchCase="'tdmObjectCreateError'"><img src="assets/dot_red.svg" style="width: 10px; height: 10px" />
+                    Fehler</div>
+                <div *ngSwitchDefault><span class="red">&#9679;</span>{{object.state}}</div>
+            </mat-card-subtitle>
+        </mat-card-header> -->
+        <mat-card-content fxLayout="column">
+            <div class="image" fxLayoutAlign="center center">
+                <img [src]="'api/localobjects/' + object.id + '/image'" class="object-image">
+            </div>
+            <div fxFlex></div>
+            <div class="object-title" i18n>{{object.name}}</div>
+            <div class="object-status" [ngSwitch]="object.state">
+                <div *ngSwitchCase="'uploaded'"><img src="assets/dot_green.svg" style="width: 10px; height: 10px" />
+                    Bereit
+                    zum Verkauf</div>
+                <div *ngSwitchCase="'notPublished'"><img src="assets/dot_yellow.svg" style="width: 10px; height: 10px" />
+                    In Vorbereitung</div>
+                <div *ngSwitchCase="'tdmObjectCreateError'"><img src="assets/dot_red.svg" style="width: 10px; height: 10px" />
+                    Fehler</div>
+                <div *ngSwitchDefault><span class="red">&#9679;</span>{{object.state}}</div>
+            </div>
         </mat-card-content>
     </mat-card>
 </div>

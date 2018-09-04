@@ -35,7 +35,7 @@ router.get('/', function (req, res, next) {
             return next(err);
         }
 
-        res.json(_.mapPick(products, ['id', 'name', 'description', 'createdAt', 'materials', 'machines']));
+        res.json(_.mapPick(products, ['id', 'name', 'description', 'state', 'createdAt', 'materials', 'machines']));
     })
 });
 
@@ -124,7 +124,7 @@ router.get('/:id', function (req, res, next) {
             return next(err);
         }
 
-        res.json(_.pick(item, ['id', 'name', 'description', 'createdAt', 'materials', 'machines']));
+        res.json(_.pick(item, ['id', 'name', 'description', 'state', 'createdAt', 'materials', 'machines']));
     })
 });
 
@@ -168,7 +168,7 @@ router.patch('/:id', function (req, res, next) {
                 res.status(500).send(err);
             } else {
 
-                res.json(_.pick(localObject, ['id', 'name', 'description', 'createdAt', 'materials', 'machines']));
+                res.json(_.pick(localObject, ['id', 'name', 'description', 'state', 'createdAt', 'materials', 'machines']));
             }
         })
 

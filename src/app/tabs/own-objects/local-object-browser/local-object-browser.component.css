@@ -1,7 +1,7 @@
 .object-card {
-    min-width: 310px;
-    max-width: 310px;
-    height: 200px;
+    min-width: 200px;
+    max-width: 200px;
+    height: 230px;
     position: relative;
     margin-bottom: 15px;
 }
@@ -17,9 +17,22 @@
 .object-image {
     width: 150px;
     height: 150px;
+    margin-bottom: 15px;
 }
 
 .object-image-na {
     width: 150px;
     height: 150px;
+}
+
+.green {
+    color: #0b0;
+}
+
+.yellow {
+    color: #feee43;
+}
+
+.red {
+    color: #e11;
 }

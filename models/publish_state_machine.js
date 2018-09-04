@@ -106,7 +106,7 @@ const stateMachine = new machina.BehavioralFsm({
                 components = components.concat(localObject.materials);
                 const objectData = {
                     components: components,
-                    description: localObject.name,
+                    description: localObject.description,
                     licenseFee: localObject.licenseFee,
                     title: localObject.name,
                     backgroundColor: '#FFFFFF',

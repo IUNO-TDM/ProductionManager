@@ -4,9 +4,9 @@
     </div>
 </ng-container>
 <ng-container *ngIf="!loading">
-    <div fxLayout="column" fxLayoutGap="15px">
+    <div fxLayout="column" fxLayoutGap="15px" fxFlex>
         <div class="creator" fxLayout="row" fxLayoutGap="15px" fxLayoutAlign="start center">
-            <div fxLayout="row" fxLayoutAlign="center center">
+            <!-- <div fxLayout="row" fxLayoutAlign="center center">
                 <mat-form-field *ngIf="editing == 'title'">
                     <input matInput placeholder="Neuer Titel" [(ngModel)]="editedName">
                 </mat-form-field>
@@ -20,13 +20,28 @@
                 <button mat-icon-button *ngIf="editing == 'title'" (click)="updateTitle()">
                     <mat-icon>send</mat-icon>
                 </button>
-            </div>
+            </div> -->
         </div>
-        <div class="details" fxLayout="row" fxLayoutGap="15px">
+        <div class="details  mat-elevation-z2" fxLayout="row" fxLayoutGap="15px">
             <div class="images" fxLayout="column" fxLayoutGap="15px">
                 <img class="preview-image-big" [src]="'api/localobjects/' + object.id + '/image'">
             </div>
             <div class="description" fxLayout="column">
+                <div fxLayout="row" fxLayoutAlign="start center">
+                    <mat-form-field *ngIf="editing == 'title'">
+                        <input matInput placeholder="Neuer Titel" [(ngModel)]="editedName">
+                    </mat-form-field>
+                    <div *ngIf="editing != 'title'" class="object-name">{{object.name}}</div>
+                    <button mat-icon-button *ngIf="editing != 'title'" (click)="startUpdateTitle()">
+                        <mat-icon>create</mat-icon>
+                    </button>
+                    <button mat-icon-button *ngIf="editing == 'title'" (click)="editing = ''">
+                        <mat-icon>undo</mat-icon>
+                    </button>
+                    <button mat-icon-button *ngIf="editing == 'title'" (click)="updateTitle()">
+                        <mat-icon>send</mat-icon>
+                    </button>
+                </div>
                 <div class="section">
                     <div fxLayout="row" fxLayoutAlign="left center">
                         <div class="section-title">Beschreibung</div>
@@ -52,20 +67,23 @@
                 </div>
                 <div *ngIf="materialDefinitions" class="section">
                     <div class="section-title">Designed für</div>
-                    <div class="section-text">
+                    <div class="section-text" fxLayout="column">
+                        <span *ngFor="let material of object.materials">{{materialNameForGuid(material)}}</span>
+<!-- 
                         <mat-list>
                             <mat-list-item *ngFor="let material of object.materials">{{materialNameForGuid(material)}}
                             </mat-list-item>
-                        </mat-list>
+                        </mat-list> -->
                     </div>
                 </div>
                 <div class="section">
                     <div class="section-title">Kompatibel mit</div>
-                    <div class="section-text">
-                        <mat-list>
+                    <div class="section-text" fxLayout="column">
+                            <span *ngFor="let machine of object.machines">{{machineNameForId(machine)}}</span>
+                            <!-- <mat-list>
                             <mat-list-item *ngFor="let machine of object.machines">{{machineNameForId(machine)}}
                             </mat-list-item>
-                        </mat-list>
+                        </mat-list> -->
                     </div>
                 </div>
 
@@ -90,27 +108,27 @@
                     <div class="section-title">Erstelldatum</div>
                     <div class="section-text">{{object.createdAt}}</div>
                 </div>
-                <div class="action">
-                    <button class="mat-button" (click)="printObject()">Drucken</button>
-                    <button *ngIf="publishState == PublishStateEnum.NOT_PUBLISHED" class="mat-button" (click)="publishObject()">Objekt
-                        am Marktplatz veröffentlichen
-                    </button>
-
-                    <button *ngIf="
-                publishState == PublishStateEnum.UPLOAD_ERROR
-                || publishState == PublishStateEnum.TDM_OBJECT_CREATE_ERROR
-                 || publishState == PublishStateEnum.IMAGE_UPLOAD_ERROR"
-                        class="mat-button" (click)="retryPublish()">Veröffentlichung fortsetzen
-                    </button>
-                    <button *ngIf="
-                publishState == PublishStateEnum.UPLOAD_ERROR
-                 || publishState == PublishStateEnum.ENCRYPTION_ERROR
-                 || publishState == PublishStateEnum.TDM_OBJECT_CREATE_ERROR
-                 || publishState == PublishStateEnum.IMAGE_UPLOAD_ERROR"
-                        class="mat-button" (click)="resetPublish()">Veröffentlichung abbrechen
-                    </button>
-                    <button class="mat-button" (click)="deleteObject()">Objekt löschen</button>
-                </div>
+                <div class="action" fxLayout="column" fxLayoutGap="5px">
+                    <button mat-raised-button color="primary" (click)="printObject()">Drucken</button>
+                    <button mat-raised-button color="primary" (click)="deleteObject()">Objekt löschen</button>
+                    <button mat-raised-button color="primary" *ngIf="publishState == PublishStateEnum.NOT_PUBLISHED" (click)="publishObject()">Objekt
+                            am Marktplatz veröffentlichen
+                        </button>
+    
+                        <button mat-raised-button color="primary" *ngIf="
+                    publishState == PublishStateEnum.UPLOAD_ERROR
+                    || publishState == PublishStateEnum.TDM_OBJECT_CREATE_ERROR
+                     || publishState == PublishStateEnum.IMAGE_UPLOAD_ERROR"
+                            (click)="retryPublish()">Veröffentlichung fortsetzen
+                        </button>
+                        <button mat-raised-button color="primary" *ngIf="
+                    publishState == PublishStateEnum.UPLOAD_ERROR
+                     || publishState == PublishStateEnum.ENCRYPTION_ERROR
+                     || publishState == PublishStateEnum.TDM_OBJECT_CREATE_ERROR
+                     || publishState == PublishStateEnum.IMAGE_UPLOAD_ERROR"
+                            (click)="resetPublish()">Veröffentlichung abbrechen
+                        </button>
+                    </div>
 
 
             </div>
