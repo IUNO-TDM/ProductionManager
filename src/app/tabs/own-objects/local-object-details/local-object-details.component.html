@@ -69,7 +69,7 @@
                     <div class="section-title">Designed für</div>
                     <div class="section-text" fxLayout="column">
                         <span *ngFor="let material of object.materials">{{materialNameForGuid(material)}}</span>
-<!-- 
+                        <!-- 
                         <mat-list>
                             <mat-list-item *ngFor="let material of object.materials">{{materialNameForGuid(material)}}
                             </mat-list-item>
@@ -79,18 +79,40 @@
                 <div class="section">
                     <div class="section-title">Kompatibel mit</div>
                     <div class="section-text" fxLayout="column">
-                            <span *ngFor="let machine of object.machines">{{machineNameForId(machine)}}</span>
-                            <!-- <mat-list>
+                        <span *ngFor="let machine of object.machines">{{machineNameForId(machine)}}</span>
+                        <!-- <mat-list>
                             <mat-list-item *ngFor="let machine of object.machines">{{machineNameForId(machine)}}
                             </mat-list-item>
                         </mat-list> -->
                     </div>
                 </div>
 
-                <div>
+                <!-- <div> -->
+                <div class="section">
+                    <div class="section-title">Erstelldatum</div>
+                    <div class="section-text">{{object.createdAt}}</div>
+                </div>
 
-                    <div class="section-title">Marktplatz:</div>
-                    <div *ngIf="publishState == PublishStateEnum.UPLOADED; else not_uploaded">
+                <div class="section">
+                    <div class="section-title">Marktplatz Status:</div>
+                    <ng-container *ngIf="publishState == PublishStateEnum.UPLOADING">
+                        <p>Lädt hoch</p>
+                        <mat-progress-bar mode="determinate" [value]="progress"></mat-progress-bar>
+                    </ng-container>
+                    <ng-container *ngIf="publishState != PublishStateEnum.UPLOADING">
+                        <div class="section-text" [ngSwitch]="object.state">
+                            <div *ngSwitchCase="'uploaded'"><img src="assets/dot_green.svg" style="width: 10px; height: 10px" />
+                                Bereit
+                                zum Verkauf</div>
+                            <div *ngSwitchCase="'notPublished'"><img src="assets/dot_yellow.svg" style="width: 10px; height: 10px" />
+                                In Vorbereitung</div>
+                            <div *ngSwitchCase="'tdmObjectCreateError'"><img src="assets/dot_red.svg" style="width: 10px; height: 10px" />
+                                Fehler</div>
+                            <div *ngSwitchDefault><span class="red">&#9679;</span>{{object.state}}</div>
+                        </div>
+                    </ng-container>
+                </div>
+                <!-- <div *ngIf="publishState == PublishStateEnum.UPLOADED; else not_uploaded">
                         Der Artikel wird im Marktplatz angeboten.
                     </div>
                     <ng-template #not_uploaded>
@@ -101,35 +123,33 @@
                         <ng-template #not_uploading>
                             {{publishState}}
                         </ng-template>
-                    </ng-template>
+                    </ng-template> -->
 
-                </div>
-                <div class="section">
-                    <div class="section-title">Erstelldatum</div>
-                    <div class="section-text">{{object.createdAt}}</div>
-                </div>
+                <!-- </div> -->
+                <div fxLayout="row">
                 <div class="action" fxLayout="column" fxLayoutGap="5px">
                     <button mat-raised-button color="primary" (click)="printObject()">Drucken</button>
                     <button mat-raised-button color="primary" (click)="deleteObject()">Objekt löschen</button>
-                    <button mat-raised-button color="primary" *ngIf="publishState == PublishStateEnum.NOT_PUBLISHED" (click)="publishObject()">Objekt
-                            am Marktplatz veröffentlichen
-                        </button>
-    
-                        <button mat-raised-button color="primary" *ngIf="
+                    <button mat-raised-button color="primary" *ngIf="publishState == PublishStateEnum.NOT_PUBLISHED"
+                        (click)="publishObject()">Objekt
+                        am Marktplatz veröffentlichen
+                    </button>
+
+                    <button mat-raised-button color="primary" *ngIf="
                     publishState == PublishStateEnum.UPLOAD_ERROR
                     || publishState == PublishStateEnum.TDM_OBJECT_CREATE_ERROR
                      || publishState == PublishStateEnum.IMAGE_UPLOAD_ERROR"
-                            (click)="retryPublish()">Veröffentlichung fortsetzen
-                        </button>
-                        <button mat-raised-button color="primary" *ngIf="
+                        (click)="retryPublish()">Veröffentlichung fortsetzen
+                    </button>
+                    <button mat-raised-button color="primary" *ngIf="
                     publishState == PublishStateEnum.UPLOAD_ERROR
                      || publishState == PublishStateEnum.ENCRYPTION_ERROR
                      || publishState == PublishStateEnum.TDM_OBJECT_CREATE_ERROR
                      || publishState == PublishStateEnum.IMAGE_UPLOAD_ERROR"
-                            (click)="resetPublish()">Veröffentlichung abbrechen
-                        </button>
-                    </div>
-
+                        (click)="resetPublish()">Veröffentlichung abbrechen
+                    </button>
+                </div>
+                </div>
 
             </div>
         </div>
