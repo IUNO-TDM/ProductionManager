@@ -1,7 +1,7 @@
 import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {TitleService} from '../../services/title.service';
 import {MachineService} from '../../services/machine.service';
-import {Router} from '@angular/router';
+import {Router, ActivatedRoute} from '@angular/router';
 import {LocalObjectService} from '../../services/local-object.service';
 import {Subscription} from 'rxjs';
 
@@ -12,18 +12,23 @@ import {Subscription} from 'rxjs';
 })
 export class OwnObjectsComponent implements OnInit, AfterViewInit {
     objects = [];
-    selectedObject: any = null;
+    selectedObjectId: string = null
+    // selectedObject: any = null;
     loading = true;
     objectSubscription: Subscription;
 
     constructor(
         private router: Router,
+        private route: ActivatedRoute,
         private titleService: TitleService,
         private objectService: LocalObjectService,
-    ) {}
+    ) {
+        route.params.subscribe(params => {
+            this.selectedObjectId = params['id']
+        })
+    }
 
     ngOnInit() {
-
         this.updateObjects();
     }
 
@@ -36,11 +41,11 @@ export class OwnObjectsComponent implements OnInit, AfterViewInit {
     }
 
     onObjectSelected(object) {
-        this.selectedObject = object;
+        this.router.navigateByUrl('own-objects/' + object.id);
     }
 
     deselectObject() {
-        this.selectedObject = null;
+        this.router.navigateByUrl('own-objects/');
     }
 
     updateObjects() {
@@ -52,7 +57,11 @@ export class OwnObjectsComponent implements OnInit, AfterViewInit {
     }
 
     objectDeleted() {
-        this.selectedObject = null;
+        this.selectedObjectId = null
+        this.updateObjects();
+    }
+
+    objectChanged() {
         this.updateObjects();
     }
 }

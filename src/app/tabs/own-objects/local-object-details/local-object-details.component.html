@@ -1,112 +1,119 @@
-<div fxLayout="column" fxLayoutGap="15px">
-    <div class="creator" fxLayout="row" fxLayoutGap="15px" fxLayoutAlign="start center">
-        <div fxLayout="row" fxLayoutAlign="center center">
-            <mat-form-field *ngIf="editing == 'title'">
-                <input matInput placeholder="Neuer Titel" [(ngModel)]="editedName">
-            </mat-form-field>
-            <div *ngIf="editing != 'title'" class="object-name">{{object.name}}</div>
-            <button mat-icon-button *ngIf="editing != 'title'" (click)="startUpdateTitle()">
-                <mat-icon>create</mat-icon>
-            </button>
-            <button mat-icon-button *ngIf="editing == 'title'" (click)="editing = ''">
-                <mat-icon>undo</mat-icon>
-            </button>
-            <button mat-icon-button *ngIf="editing == 'title'" (click)="updateTitle()">
-                <mat-icon>send</mat-icon>
-            </button>
-        </div>
+<ng-container *ngIf="loading">
+    <div fxFlex fxLayoutAlign="center center">
+        <mat-progress-spinner mode="indeterminate" diameter="30" strokeWidth="2"></mat-progress-spinner>
     </div>
-    <div class="details" fxLayout="row" fxLayoutGap="15px">
-        <div class="images" fxLayout="column" fxLayoutGap="15px">
-            <img class="preview-image-big" [src]="'api/localobjects/' + object.id + '/image'">
-        </div>
-        <div class="description" fxLayout="column">
-            <div class="section">
-                <div fxLayout="row" fxLayoutAlign="left center">
-                    <div class="section-title">Beschreibung</div>
-                    <button mat-icon-button *ngIf="editing != 'description'" (click)="startUpdateDescription()">
-                        <mat-icon>create</mat-icon>
-                    </button>
-                </div>
-
-                <div *ngIf="editing != 'description'" class="section-text">{{object.description}}</div>
-                <div fxLayout="row">
-                    <mat-form-field *ngIf="editing == 'description'">
-                        <textarea matInput placeholder="Neue Beschreibung" [(ngModel)]="editedDescription"></textarea>
-                    </mat-form-field>
-
-                    <button mat-icon-button *ngIf="editing == 'description'" (click)="editing = ''">
-                        <mat-icon>undo</mat-icon>
-                    </button>
-                    <button mat-icon-button *ngIf="editing == 'description'" (click)="updateDescription()">
-                        <mat-icon>send</mat-icon>
-                    </button>
-                </div>
-
-            </div>
-            <div *ngIf="materialDefinitions" class="section">
-                <div class="section-title">Designed für</div>
-                <div class="section-text">
-                    <mat-list>
-                        <mat-list-item *ngFor="let material of object.materials">{{materialNameForGuid(material)}}
-                        </mat-list-item>
-                    </mat-list>
-                </div>
-            </div>
-            <div class="section">
-                <div class="section-title">Kompatibel mit</div>
-                <div class="section-text">
-                    <mat-list>
-                        <mat-list-item *ngFor="let machine of object.machines">{{machineNameForId(machine)}}
-                        </mat-list-item>
-                    </mat-list>
-                </div>
-            </div>
-
-            <div>
-
-                <div class="section-title">Marktplatz:</div>
-                <div *ngIf="publishState == PublishStateEnum.UPLOADED; else not_uploaded">
-                    Der Artikel wird im Marktplatz angeboten.
-                </div>
-                <ng-template #not_uploaded>
-                    <div *ngIf="publishState == PublishStateEnum.UPLOADING; else not_uploading">
-                        <p>Lädt hoch</p>
-                        <mat-progress-bar mode="determinate" [value]="progress"></mat-progress-bar>
-                    </div>
-                    <ng-template #not_uploading>
-                        {{publishState}}
-                    </ng-template>
-                </ng-template>
-
-            </div>
-            <div class="section">
-                <div class="section-title">Erstelldatum</div>
-                <div class="section-text">{{object.createdAt}}</div>
-            </div>
-            <div class="action">
-                <button class="mat-button" (click)="printObject()">Drucken</button>
-                <button *ngIf="publishState == PublishStateEnum.NOT_PUBLISHED"
-                        class="mat-button" (click)="publishObject()">Objekt am Marktplatz veröffentlichen
+</ng-container>
+<ng-container *ngIf="!loading">
+    <div fxLayout="column" fxLayoutGap="15px">
+        <div class="creator" fxLayout="row" fxLayoutGap="15px" fxLayoutAlign="start center">
+            <div fxLayout="row" fxLayoutAlign="center center">
+                <mat-form-field *ngIf="editing == 'title'">
+                    <input matInput placeholder="Neuer Titel" [(ngModel)]="editedName">
+                </mat-form-field>
+                <div *ngIf="editing != 'title'" class="object-name">{{object.name}}</div>
+                <button mat-icon-button *ngIf="editing != 'title'" (click)="startUpdateTitle()">
+                    <mat-icon>create</mat-icon>
                 </button>
+                <button mat-icon-button *ngIf="editing == 'title'" (click)="editing = ''">
+                    <mat-icon>undo</mat-icon>
+                </button>
+                <button mat-icon-button *ngIf="editing == 'title'" (click)="updateTitle()">
+                    <mat-icon>send</mat-icon>
+                </button>
+            </div>
+        </div>
+        <div class="details" fxLayout="row" fxLayoutGap="15px">
+            <div class="images" fxLayout="column" fxLayoutGap="15px">
+                <img class="preview-image-big" [src]="'api/localobjects/' + object.id + '/image'">
+            </div>
+            <div class="description" fxLayout="column">
+                <div class="section">
+                    <div fxLayout="row" fxLayoutAlign="left center">
+                        <div class="section-title">Beschreibung</div>
+                        <button mat-icon-button *ngIf="editing != 'description'" (click)="startUpdateDescription()">
+                            <mat-icon>create</mat-icon>
+                        </button>
+                    </div>
 
-                <button *ngIf="
+                    <div *ngIf="editing != 'description'" class="section-text">{{object.description}}</div>
+                    <div fxLayout="row">
+                        <mat-form-field *ngIf="editing == 'description'">
+                            <textarea matInput placeholder="Neue Beschreibung" [(ngModel)]="editedDescription"></textarea>
+                        </mat-form-field>
+
+                        <button mat-icon-button *ngIf="editing == 'description'" (click)="editing = ''">
+                            <mat-icon>undo</mat-icon>
+                        </button>
+                        <button mat-icon-button *ngIf="editing == 'description'" (click)="updateDescription()">
+                            <mat-icon>send</mat-icon>
+                        </button>
+                    </div>
+
+                </div>
+                <div *ngIf="materialDefinitions" class="section">
+                    <div class="section-title">Designed für</div>
+                    <div class="section-text">
+                        <mat-list>
+                            <mat-list-item *ngFor="let material of object.materials">{{materialNameForGuid(material)}}
+                            </mat-list-item>
+                        </mat-list>
+                    </div>
+                </div>
+                <div class="section">
+                    <div class="section-title">Kompatibel mit</div>
+                    <div class="section-text">
+                        <mat-list>
+                            <mat-list-item *ngFor="let machine of object.machines">{{machineNameForId(machine)}}
+                            </mat-list-item>
+                        </mat-list>
+                    </div>
+                </div>
+
+                <div>
+
+                    <div class="section-title">Marktplatz:</div>
+                    <div *ngIf="publishState == PublishStateEnum.UPLOADED; else not_uploaded">
+                        Der Artikel wird im Marktplatz angeboten.
+                    </div>
+                    <ng-template #not_uploaded>
+                        <div *ngIf="publishState == PublishStateEnum.UPLOADING; else not_uploading">
+                            <p>Lädt hoch</p>
+                            <mat-progress-bar mode="determinate" [value]="progress"></mat-progress-bar>
+                        </div>
+                        <ng-template #not_uploading>
+                            {{publishState}}
+                        </ng-template>
+                    </ng-template>
+
+                </div>
+                <div class="section">
+                    <div class="section-title">Erstelldatum</div>
+                    <div class="section-text">{{object.createdAt}}</div>
+                </div>
+                <div class="action">
+                    <button class="mat-button" (click)="printObject()">Drucken</button>
+                    <button *ngIf="publishState == PublishStateEnum.NOT_PUBLISHED" class="mat-button" (click)="publishObject()">Objekt
+                        am Marktplatz veröffentlichen
+                    </button>
+
+                    <button *ngIf="
                 publishState == PublishStateEnum.UPLOAD_ERROR
                 || publishState == PublishStateEnum.TDM_OBJECT_CREATE_ERROR
                  || publishState == PublishStateEnum.IMAGE_UPLOAD_ERROR"
                         class="mat-button" (click)="retryPublish()">Veröffentlichung fortsetzen
-                </button>
-                <button *ngIf="
+                    </button>
+                    <button *ngIf="
                 publishState == PublishStateEnum.UPLOAD_ERROR
                  || publishState == PublishStateEnum.ENCRYPTION_ERROR
                  || publishState == PublishStateEnum.TDM_OBJECT_CREATE_ERROR
                  || publishState == PublishStateEnum.IMAGE_UPLOAD_ERROR"
                         class="mat-button" (click)="resetPublish()">Veröffentlichung abbrechen
-                </button>
-                <button class="mat-button" (click)="deleteObject()">Objekt löschen</button>
+                    </button>
+                    <button class="mat-button" (click)="deleteObject()">Objekt löschen</button>
+                </div>
+
+
             </div>
-
-
         </div>
     </div>
-</div>
+</ng-container>

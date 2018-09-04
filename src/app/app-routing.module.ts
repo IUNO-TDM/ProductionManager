@@ -18,8 +18,9 @@ const routes: Routes = [
     {path: 'machines', component: MachinesComponent},
     {path: 'purchased-objects', redirectTo: 'purchased-objects/'},
     {path: 'purchased-objects/:id', component: PurchasedObjectsComponent},
-    {path: 'own-objects', component: OwnObjectsComponent},
+    {path: 'own-objects', redirectTo: 'own-objects/'},
     {path: 'own-objects/create', component: CreateObjectComponent},
+    {path: 'own-objects/:id', component: OwnObjectsComponent},
 ];
 
 @NgModule({

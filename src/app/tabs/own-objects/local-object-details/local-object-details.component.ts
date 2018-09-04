@@ -7,6 +7,8 @@ import {PublishDialogComponent} from '../../../publish-dialog/publish-dialog.com
 import {PrintDialogComponent} from '../../../print-dialog/print-dialog.component';
 import {ConfirmationDialogComponent} from '../../../confirmation-dialog/confirmation-dialog.component';
 import {LocalObjectService, PublishState, UploadState} from '../../../services/local-object.service';
+import {Observable, forkJoin} from 'rxjs'
+import {flatMap} from 'rxjs/operators'
 
 @Component({
     selector: 'app-local-object-details',
@@ -14,8 +16,11 @@ import {LocalObjectService, PublishState, UploadState} from '../../../services/l
     styleUrls: ['./local-object-details.component.css']
 })
 export class LocalObjectDetailsComponent implements OnInit {
-    @Input() object: LocalObject;
+    @Input() objectId: string;
     @Output() deleted = new EventEmitter();
+    @Output() changed = new EventEmitter();
+    object: LocalObject = null
+    loading = true
 
     PublishStateEnum = PublishState;
 
@@ -42,16 +47,20 @@ export class LocalObjectDetailsComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.editedName = this.object.name;
-        this.editedDescription = this.object.description;
-        this.materialService.getAllMaterials(false).subscribe((materialDefinitions) => {
-            this.materialDefinitions = materialDefinitions;
-        });
-
-        this.machineService.getMachineTypes().subscribe((machineTypes) => {
-            this.machineTypes = machineTypes;
-        });
-        this.localObjectService.getUploadState(this.object.id).subscribe(uploadState => {
+        forkJoin(
+            this.localObjectService.getObject(this.objectId),
+            this.materialService.getAllMaterials(false),
+            this.machineService.getMachineTypes(),
+        ).subscribe(data => {
+            this.object = data[0]
+            this.materialDefinitions = data[1]
+            this.machineTypes = data[2]
+            this.editedName = this.object.name;
+            this.editedDescription = this.object.description;
+            this.loading = false
+        })
+        
+        this.localObjectService.getUploadState(this.objectId).subscribe(uploadState => {
             // this.uploadState = uploadState;
             this.zone.run(() => {
                 if (uploadState) {
@@ -65,7 +74,7 @@ export class LocalObjectDetailsComponent implements OnInit {
                 }
             });
         });
-        this.localObjectService.getPublishState(this.object.id).subscribe(publishState => {
+        this.localObjectService.getPublishState(this.objectId).subscribe(publishState => {
             this.zone.run(() => {
                 this.publishState = publishState;
             });
@@ -103,6 +112,7 @@ export class LocalObjectDetailsComponent implements OnInit {
             if (result) {
                 this.uploadState = new UploadState(null);
                 this.localObjectService.publishObject(this.object.id, result).subscribe();
+                this.changed.emit();
             }
             this.publishDialogRef = null;
         });
@@ -141,6 +151,7 @@ export class LocalObjectDetailsComponent implements OnInit {
     updateTitle() {
         this.localObjectService.updateObject(this.object.id, this.editedName, null).subscribe((data) => {
             this.object = data;
+            this.changed.emit();
         });
         this.editing = '';
     }
@@ -153,6 +164,7 @@ export class LocalObjectDetailsComponent implements OnInit {
     updateDescription() {
         this.localObjectService.updateObject(this.object.id, null, this.editedDescription).subscribe((data) => {
             this.object = data;
+            this.changed.emit();
         });
         this.editing = '';
     }

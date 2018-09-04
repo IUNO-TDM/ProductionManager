@@ -23,7 +23,6 @@ export class MachineService {
 
     updateMachines(callback) {
         const url = this.apiUrl + 'machines';
-        console.log('updating machines with url: ' + url);
         this.http.get<Machine[]>(url).subscribe(machines => {
             this._machines.next(machines);
             if (callback) {

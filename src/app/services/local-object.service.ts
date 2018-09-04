@@ -90,6 +90,11 @@ export class LocalObjectService {
         return this.http.get<Array<LocalObject>>(url);
     }
 
+    getObject(objectId): Observable<LocalObject> {
+        const url = this.apiUrl + '/' + objectId;
+        return this.http.get<LocalObject>(url);
+    }
+
     deleteObject(objectId: string) {
         const url = this.apiUrl + '/' + objectId;
 
