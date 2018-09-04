@@ -45,6 +45,8 @@ import {PublishDialogComponent} from './publish-dialog/publish-dialog.component'
 import {MatFormFieldModule, MatSelectModule, MatTreeModule} from '@angular/material';
 import {PrintDialogComponent} from './print-dialog/print-dialog.component';
 import {CdkTreeModule} from '@angular/cdk/tree';
+import { Satoshi2IunoPipe } from './pipes/satoshi2iuno.pipe';
+import { Btc2iunoPipe } from './pipes/btc2iuno.pipe';
 
 // import { TdmCommonModule } from 'tdm-common'
 
@@ -66,7 +68,9 @@ import {CdkTreeModule} from '@angular/cdk/tree';
         OrderComponent,
         MachineComponent,
         PublishDialogComponent,
-        PrintDialogComponent
+        PrintDialogComponent,
+        Satoshi2IunoPipe,
+        Btc2iunoPipe
     ],
     imports: [
         // Angular Core

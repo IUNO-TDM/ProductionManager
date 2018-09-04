@@ -42,7 +42,7 @@
                             <div>{{item.id}}</div>
                             <div>{{item.amount}}</div>
                         </div>
-                        <div class="total">Gesamtbetrag: {{amount}} IUNO</div>
+                        <div class="total">Gesamtbetrag: {{amount | btc2iuno}}</div>
                         <div class="status">Status: {{order.state}}</div>
                         <div *ngIf="order.state == 'licenseUpdateAvailable'">
                             <button mat-raised-button color="primary" (click)="onUpdateLicenseClicked()">Update
