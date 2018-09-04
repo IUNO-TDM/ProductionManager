@@ -19,21 +19,5 @@ export class AppComponent {
             this.navigationTitle = title;
         });
     }
-
-    onMarketplaceButtonClicked() {
-        this.router.navigateByUrl('marketplace');
-    }
-
-    onMachinesButtonClicked() {
-        this.router.navigateByUrl('machines');
-    }
-
-    onPurchasedObjectsButtonClicked() {
-        this.router.navigateByUrl('purchased-objects');
-    }
-
-    onOwnObjectsButtonClicked() {
-        this.router.navigateByUrl('own-objects');
-    }
 }
 

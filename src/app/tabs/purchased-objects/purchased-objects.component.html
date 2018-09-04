@@ -1,9 +1,9 @@
 <div class="content">
     <ng-container *ngIf="selectedObjectId">
-        <div fxLayout="column" fxLayoutGap="15px">
-            <div>
+        <div fxLayout="column" fxLayoutGap="15px" fxFlex>
+            <!-- <div>
                 <button mat-button (click)="deselectObject()">← Zurück</button>
-            </div>
+            </div> -->
             <app-object-details [objectId]="selectedObjectId">
                 <app-object-details-actions>
                     <button *ngIf="isPrintable(selectedObjectId)" mat-raised-button color="primary"

@@ -9,9 +9,9 @@
         <div class="content" fxFlex>
             <ng-container *ngIf="selectedObjectId">
                 <div fxLayout="column" fxLayoutGap="15px">
-                    <div>
+                    <!-- <div>
                         <button mat-button (click)="deselectObject()">← Zurück</button>
-                    </div>
+                    </div> -->
                     <app-local-object-details [objectId]="selectedObjectId" (deleted)="objectDeleted()" (changed)="objectChanged()"></app-local-object-details>
                 </div>
             </ng-container>

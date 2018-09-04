@@ -5,11 +5,11 @@
                 TDM-Production-Manager
             </div>
             <div fxFlex fxLayoutAlign="center" fxLayoutGap="15px">
-                <button mat-button class="lightupper" (click)="onMarketplaceButtonClicked()">Marktplatz</button>
-                <button mat-button class="lightupper" (click)="onMachinesButtonClicked()">Maschinen</button>
-                <button mat-button class="lightupper" (click)="onPurchasedObjectsButtonClicked()">Gekaufte Objekte
+                <button mat-button class="lightupper inactive" [routerLink]="['marketplace']" routerLinkActive="active">Marktplatz</button>
+                <button mat-button class="lightupper inactive" [routerLink]="['machines']" routerLinkActive="active">Maschinen</button>
+                <button mat-button class="lightupper inactive" [routerLink]="['purchased-objects']" routerLinkActive="active">Gekaufte Objekte
                 </button>
-                <button mat-button class="lightupper" (click)="onOwnObjectsButtonClicked()">Eigene Objekte</button>
+                <button mat-button class="lightupper inactive" [routerLink]="['own-objects']" routerLinkActive="active">Eigene Objekte</button>
             </div>
             <div fxFlex="15">
             </div>

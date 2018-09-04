@@ -36,3 +36,11 @@
 .sidenav {
     /* background-color: #404040;     */
 }
+
+.active {
+    color: white !important;
+}
+
+.inactive {
+    color: lightgray;
+}

@@ -27,10 +27,11 @@
                                       (change)="checklistSelection.toggle(node);">{{node.name}}</mat-checkbox>
                     </mat-tree-node>
                     <mat-tree-node *matTreeNodeDef="let node; when: hasChild" matTreeNodePadding>
-                        <button mat-icon-button matTreeNodeToggle>
+                        <button mat-icon-button matTreeNodeToggle style="width: 30px;">
                             <mat-icon class="mat-icon-rtl-mirror">
                                 {{materialTreeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
                             </mat-icon>
+                            <span fxFlex></span>
                         </button>
                         <mat-checkbox color="primary" class="filter-item"
                             [checked]="descendantsAllSelected(node)"
@@ -77,9 +78,9 @@
                 <div class="content" fxFlex>
                     <ng-container *ngIf="selectedObjectId">
                         <div fxLayout="column" fxLayoutGap="15px">
-                            <div>
+                            <!-- <div>
                                 <button mat-button (click)="deselectObject()">← Zurück</button>
-                            </div>
+                            </div> -->
                             <app-object-details [objectId]="selectedObjectId">
                                 <app-object-details-actions>
                                     <button mat-raised-button color="primary" (click)="onAddToShoppingCartClicked()">In

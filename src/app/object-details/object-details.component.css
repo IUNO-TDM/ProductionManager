@@ -1,3 +1,7 @@
+.details {
+    padding: 30px;
+}
+
 .creator-image {
     width: 64px;
     height: 64px;
@@ -6,6 +10,7 @@
 .object-name {
     font-size: 24px;
     font-weight: bold;
+    margin-bottom: 20px;
 }
 
 .object-creator-name {
