@@ -77,6 +77,9 @@ export class LocalObjectDetailsComponent implements OnInit {
         this.localObjectService.getPublishState(this.objectId).subscribe(publishState => {
             this.zone.run(() => {
                 this.publishState = publishState;
+                this.localObjectService.getObject(this.objectId).subscribe(object => {
+                    this.object = object
+                })
             });
         });
     }
