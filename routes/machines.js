@@ -55,7 +55,7 @@ router.post('/:id/authentication', function (req, res, next) {
             if (data && data.id && data.key) {
                 machine.auth_id = data.id;
                 machine.auth_key = data.key;
-                Machine.findByIdconstAndUpdate(machine._id, machine, function (err, doc) {
+                Machine.findByIdAndUpdate(machine._id, machine, function (err, doc) {
                     if (!err) {
                         res.sendStatus(201);
                     } else {
