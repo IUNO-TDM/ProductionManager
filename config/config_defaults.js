@@ -41,7 +41,10 @@ self.OAUTH_CREDENTIALS = {
 self.STATISTICS_ENABLED_KEY = "StatisticsEnabled";
 self.STATISTICS_ENABLED_DEFAULT = false;
 
-
+self.COMPATIBLE_MACHINES = [
+    "adb4c297-45bd-437e-ac90-a33d0f24de7e",
+    "adb4c297-45bd-437e-ac90-d25bc3b27968"
+];
 self.TMP_DIR = path.resolve(__dirname, '../tmp');
 self.FILE_DIR = path.resolve(__dirname, '../files');
 

@@ -43,6 +43,11 @@ UploadService.prototype.uploadObjectBinary = function (objectId, path, options, 
         if (err) {
             logger.crit(err)
         }
+        if(response.statusCode != 201 && response.statusCode != 200) {
+            err = new Error();
+            err.code = response.statusCode;
+            err.message = data;
+        }
         console.log("uploading done");
         let state = uploadService.getUploadState(objectId);
         state.state = 'ready'; //FIXME: not the correct place to do

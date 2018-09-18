@@ -49,10 +49,7 @@ router.post('/', require('../services/file_upload_handler'), function (req, res,
     const localObj = {
         name: req.body.title,
         createdAt: Date(),
-        machines: [
-            "adb4c297-45bd-437e-ac90-a33d0f24de7e",
-            "adb4c297-45bd-437e-ac90-d25bc3b27968"
-        ],
+        machines: CONFIG.COMPATIBLE_MACHINES,
         state: "initial"
     };
 
